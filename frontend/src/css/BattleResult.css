@@ -1,0 +1,11 @@
+.result-container {
+    background-color: rgb(26, 26, 26);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 70vh;
+    width: 30vw;
+    position: relative;
+    top: 0;
+}

@@ -1,0 +1,45 @@
+.solo-review-page {
+    background-color: rgb(26, 26, 26);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+    left: 0;
+    top: 0;
+}
+
+.solo-nav-bar {
+    background-color: aliceblue;
+    width: 100%;
+}
+
+.solo-title {
+    color: black;
+    left: 0;
+}
+
+.solo-content-container {
+    background-color: olive;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center
+}
+
+.solo-flashcard {
+    background-color: pink;
+    top: 10rem;
+    padding-top: 10px;
+    width: 50%;
+    height: 50%;
+}
+
+.button-container {
+    background-color: tomato;
+    width: 50%;
+    height: 20%;
+}

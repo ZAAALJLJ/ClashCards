@@ -1,0 +1,61 @@
+.study-set {
+    background-color: rgb(26, 26, 26);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100vh;
+    width: calc(100vw - 100px);
+    position: relative;
+    margin-left: 100px;
+    top: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+.study-set-nav-bar {
+    background-color: #11234b;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    height: 70px;
+    top: 0;
+}
+
+.studyset-title {
+    top: 10px;
+    vertical-align: middle;
+    padding-top: 0.8rem;
+    padding-left: 2.5rem;
+    font-size: xx-large;
+    font-weight: bold;
+}
+
+.study-content-container {
+    background-color: #11234b;
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    padding-left: 2.5rem;
+    padding-bottom: 1rem;
+    padding-right: 2rem;
+    width: 100%;
+}
+
+.flashcard-container {
+    max-width: 63rem;
+    display: flex;
+    flex-wrap: wrap;
+    flex: 3;
+    border-radius: 1rem;
+    background-color: #051537;
+    margin-right: 1rem;
+}
+
+.leaderboard {
+    border-radius: 1rem;
+    border: 0.5px solid rgba(240, 248, 255, 0.308);
+    background-color: #11234b;
+    flex: 1;
+    padding: 1rem
+}

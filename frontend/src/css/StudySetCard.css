@@ -1,0 +1,28 @@
+.study-set-card {
+    min-width: 13rem;
+    border-radius: 1rem;
+    background-color: rgb(163, 131, 131);
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    height: 100px;
+    width: 150px;
+    position: relative;
+    margin: 1rem;
+}
+
+.card-overlay {
+    display: flex;
+    justify-content: flex-end;
+    right: 0;
+    position: absolute;
+}
+
+.card-btn {
+    background-color: transparent;
+}
+
+.card-title {
+    bottom: 0;
+}
+
