@@ -8,6 +8,7 @@ import Sidebar from './components/Sidebar'
 import SoloReview from './pages/SoloReview'
 import LiveBattle from './pages/LiveBattle'
 import BattleResult from './pages/BattleResult'
+import CreateFlashcard from './pages/CreateFlashcard'
 
 
 function App() {
@@ -25,7 +26,7 @@ function App() {
           <Route path='/soloreview' element={<SoloReview/>}/>
           <Route path='/livebattle' element={<LiveBattle/>}/>
           <Route path='/battleresult' element={<BattleResult/>}/>
-
+          <Route path='/createflashcard' element={<CreateFlashcard/>}/>
         </Routes>
       </main>
     </div>
