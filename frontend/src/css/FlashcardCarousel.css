@@ -1,16 +1,17 @@
   .flashcard-carousel {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     width: 100%;
     position: relative;
     margin-bottom: 20px;
     min-height: 400px; 
+    max-width: 63rem;
   }
   
   .flashcard-viewport {
     width: 80%;
-    min-height: 350px;
+    min-height: 500px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -19,7 +20,8 @@
   .nav-arrow {
     background: none;
     border: none;
-    font-size: 4rem;
+    border-radius: 50%;
+    width: 6rem;
     cursor: pointer;
     color: #d4e5ff;
     padding: 0 15px;

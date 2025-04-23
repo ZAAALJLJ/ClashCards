@@ -14,10 +14,12 @@ function FlashcardCarousel({ cards }) {
   };
 
   return (
-    <div className="flashcard-container">
+    <div className="flashcard-carousel-container">
       <div className="flashcard-carousel">
         <button className="nav-arrow left-arrow" onClick={goToPrev}>
-          &lt;
+            <svg viewBox="0 0 24 24">
+                <path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" strokeWidth="2" />
+            </svg>
         </button>
         
         <div className="flashcard-viewport">
@@ -28,7 +30,9 @@ function FlashcardCarousel({ cards }) {
         </div>
         
         <button className="nav-arrow right-arrow" onClick={goToNext}>
-          &gt;
+            <svg  viewBox="0 0 24 24">
+                <path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2" />
+            </svg>
         </button>
       </div>
       

@@ -40,6 +40,7 @@
     padding-bottom: 1rem;
     padding-right: 2rem;
     width: 100%;
+    height: calc(100vh - 120px); 
 }
 
 .flashcard-container {
@@ -52,6 +53,8 @@
     background-color: #051537;
     margin-right: 1rem;
     padding: 1.5rem;
+    min-height: 0;
+    overflow: hidden;
 }
 
 .leaderboard {
