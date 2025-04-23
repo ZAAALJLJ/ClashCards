@@ -45,11 +45,13 @@
 .flashcard-container {
     max-width: 63rem;
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     flex: 3;
     border-radius: 1rem;
     background-color: #051537;
     margin-right: 1rem;
+    padding: 1.5rem;
 }
 
 .leaderboard {

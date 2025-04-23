@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import '../css/StudySet.css';
-import Flashcard from '../components/Flashcard';
+import FlashcardCarousel from '../components/FlashcardCarousel';
 import Leaderboard from '../components/LeaderboardCard';
+
+const cards = [
+    { front: "Question 1", back: "Answer 1" },
+    { front: "Question 2", back: "Answer 2" },
+    { front: "Question 3", back: "Answer 3" }
+  ];
 
 function StudySet (){
      const [rankItems, setRankItems] = useState([]);
@@ -29,7 +35,24 @@ function StudySet (){
             </div>
             <div className="study-content-container">
                 <div className="flashcard-container">
-                    <Flashcard front={"fro"} back={"ba"}/>
+                    {/* <div className='flashcard-carousel'>
+                        <button className="nav-arrow left-arrow" onClick={goToPrev}>&lt;</button>
+                        <div className='flashcard-viewport'>
+                            <Flashcard front={"fro"} back={"ba"}/>
+                            <Flashcard front={"fro2"} back={"ba2"}/>
+                        </div>
+                        <button className="nav-arrow right-arrow" onClick={goToNext}>&gt;</button>
+                    </div>
+                    <div className='progress-indicators'>
+                    {cards.map((_, index) => (
+                        <div 
+                            key={index}
+                            className={`indicator ${index === currentIndex ? 'active' : ''}`}
+                            onClick={() => setCurrentIndex(index)}
+                        />
+                        ))}
+                    </div> */}
+                     <FlashcardCarousel cards={cards} />
                 </div>
                 <div className='leaderboard'>
                     <Leaderboard 

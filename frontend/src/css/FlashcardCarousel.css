@@ -1,0 +1,52 @@
+  .flashcard-carousel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
+    margin-bottom: 20px;
+    min-height: 400px; 
+  }
+  
+  .flashcard-viewport {
+    width: 80%;
+    min-height: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .nav-arrow {
+    background: none;
+    border: none;
+    font-size: 4rem;
+    cursor: pointer;
+    color: #d4e5ff;
+    padding: 0 15px;
+    transition: all 0.3s ease;
+  }
+  
+  .nav-arrow:hover {
+    color: #2b4382;
+    transform: scale(1.2);
+  }
+  
+  .progress-indicators {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  .indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #2b4382;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .indicator.active {
+    background-color: #d4e5ff;
+    transform: scale(1.2);
+  }
