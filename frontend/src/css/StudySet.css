@@ -53,9 +53,10 @@
 }
 
 .leaderboard {
-    border-radius: 1rem;
-    border: 0.5px solid rgba(240, 248, 255, 0.308);
-    background-color: #11234b;
     flex: 1;
-    padding: 1rem
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 1;
+    max-width: 500px;
 }

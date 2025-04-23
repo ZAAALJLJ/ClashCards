@@ -10,8 +10,6 @@ const cards = [
   { id: 3, title: 'Card 3', description: '99 flashcards' },
   { id: 3, title: 'Card 3', description: '99 flashcards' },
   { id: 3, title: 'Card 3', description: '99 flashcards' },
-
-
 ]
 
   return (
