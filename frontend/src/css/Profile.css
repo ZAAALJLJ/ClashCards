@@ -9,6 +9,7 @@
     position: relative;
     margin-left: 100px;
     top: 0;
+    color: #ffffff;
 }
 
 .profile-nav-bar {
@@ -23,17 +24,64 @@
 }
 
 .profile-content {
-    background-color: blue;
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: row;
 }
 
-.profile-info {
-    background-color: yellowgreen;
+.profile-info-container {
+    background-color: #051537;
     width: 20%;
     height: 100%;
+    gap: 1rem;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.user-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profile-pic-container {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #051537;
+}
+
+.profile-pic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.username-display h2 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 1.2rem;
+}
+
+.user-details-container{
+    padding: 2.5rem 1rem;
+    align-items: center;
+}
+
+.user-info-container{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    padding:0.5rem 0;
+}
+
+.user-details-label{
+    color: rgba(255,255,255,0.45);
 }
 
 .profile-stats {
