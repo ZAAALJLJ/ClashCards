@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Flashcard from './Flashcard';
-import '../css/FlashcardCarousel.css'; // Create this file
+import '../css/FlashcardCarousel.css';
 
 function FlashcardCarousel({ cards }) {
   const [currentIndex, setCurrentIndex] = useState(0);
