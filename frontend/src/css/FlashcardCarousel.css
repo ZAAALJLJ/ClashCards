@@ -1,17 +1,22 @@
   .flashcard-carousel {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
     width: 100%;
+    height: 100%;
     position: relative;
     margin-bottom: 20px;
-    min-height: 400px; 
-    max-width: 60rem;
+    min-height: 0; 
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
   }
   
   .flashcard-viewport {
-    width: 80%;
+    width: 70%;
     min-height: 500px;
+    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,34 +27,77 @@
     background: none;
     border: none;
     border-radius: 50%;
-    width: 6rem;
+    width: clamp(3rem, 6vw, 6rem);
+    height: clamp(3rem, 6vw, 6rem);    
     cursor: pointer;
     color: #d4e5ff;
     padding: 0 15px;
     transition: all 0.3s ease;
+    outline: none; 
+    box-shadow: none;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;   
   }
-  
-  .nav-arrow:hover {
-    color: #2b4382;
-    transform: scale(1.2);
-  }
+
+    .nav-arrow:focus {
+      outline: none;
+      box-shadow: none;
+    }
+    
+    .nav-arrow:active {
+      outline: none;
+      box-shadow: none;
+    }
+    
+    .nav-arrow:hover {
+      color: #2b4382;
+      transform: scale(1.2);
+    }
   
   .progress-indicators {
     display: flex;
     gap: 10px;
     justify-content: center;
   }
-  
-  .indicator {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: #2b4382;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .indicator.active {
-    background-color: #d4e5ff;
-    transform: scale(1.2);
-  }
+    
+    .indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #2b4382;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+      
+      .indicator.active {
+        background-color: #d4e5ff;
+        transform: scale(1.2);
+      }
+
+
+
+      @media (max-width: 768px) {
+        .flashcard-carousel {
+          flex-direction: row; /* keep it row for arrows to stay beside card */
+          flex-wrap: nowrap;
+          max-width: 100%;
+        }
+      
+        .flashcard-viewport {
+          width: 100%;
+          min-height: 300px;
+        }
+      
+        .nav-arrow {
+          width: 2.5rem;
+          height: 2.5rem;
+          padding: 0;
+        }
+      
+        .nav-arrow svg {
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+      }
+      

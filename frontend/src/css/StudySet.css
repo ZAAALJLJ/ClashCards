@@ -42,10 +42,13 @@
     width: 100%;
     height: calc(100vh - 120px); 
     overflow: hidden;
+    flex-wrap: nowrap;
 }
 
 .flashcard-container {
-    max-width: 63rem;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -53,17 +56,111 @@
     border-radius: 1rem;
     background-color: #051537;
     margin-right: 1rem;
-    padding: 1.5rem;
     min-height: 0;
     min-width: 0;
     overflow: hidden;
+    align-items: center;
 }
+
 
 .leaderboard {
     flex: 1;
     display: flex;
     flex-direction: column;
     height: 100%;
-    min-width: 1;
+    min-width: 0;
     max-width: 500px;
+    overflow: hidden;
 }
+
+
+.large-screen-only {
+    display: flex;
+}
+.small-screen-only {
+    display: none;
+}
+  
+  @media (max-width: 768px) {
+    .large-screen-only {
+        display: none;
+    }
+  
+    .small-screen-only {
+        display: block;
+    }
+  
+    .floating-leaderboard-toggle {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 1000;
+    }
+  
+    .crown-button {
+        background-color: #203364;
+        border: none;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        padding: 0;
+        box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    .crown-icon {
+        max-width: 80%;
+        max-height: 80%;
+        width: auto;
+        height: auto;
+    }    
+  
+    .floating-leaderboard {
+        position: fixed;
+        bottom: 6rem;
+        right: 2rem;
+        background-color: #051537;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0px 0px 15px rgba(0,0,0,0.5);
+        z-index: 999;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+  }
+
+  
+
+/* 
+@media (max-width: 768px) {
+    .study-content-container {
+      flex-direction: column;
+      height: auto;
+    }
+  
+    .flashcard-container,
+    .leaderboard {
+      width: 100%;
+      max-width: 100%;
+    }
+  
+    .leaderboard {
+      order: 2;
+    }
+  
+    .flashcard-container {
+      order: 1;
+    }
+    
+    .crown-button{
+        background-color: #203364;
+        width: 60%;
+        height: auto;
+    }
+
+  }
+   */
