@@ -66,6 +66,8 @@
 }
 
 .btn-home {
+    
+    border-radius: 2rem;
     border: 0.5px solid rgba(240, 248, 255, 0.308);
     background-color: #203364;
     margin-right: 2.5rem;

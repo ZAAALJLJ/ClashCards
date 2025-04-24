@@ -9,6 +9,7 @@ function Flashcard ({front, back}){
             <div className={`flashcard ${flipped ? 'is-flipped' : ''}`}>
                 <div className="flashcard-face flashcard-front">
                     {front}
+                    {/* <span>Show Answer</span> */}
                 </div>
                 <div className="flashcard-face flashcard-back">
                     {back}
