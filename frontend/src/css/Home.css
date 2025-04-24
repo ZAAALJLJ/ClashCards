@@ -46,10 +46,49 @@
 .stats-container {
     border-radius: 1rem;
     border: 0.5px solid rgba(240, 248, 255, 0.308);
-    background-color: #11234b;
     flex: 1;
-    padding: 1rem;
+    padding: 1rem 2rem;
+    width: 100%;
+    background-color: pink;
 }
+
+.chart-container{
+    padding:1rem;
+    min-height: 200px;
+    background-color: firebrick;
+}
+
+.chart-legend-container{
+    background-color: green;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 0;
+    gap:0.5rem;
+}
+
+    .legend-details-container{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        background-color: purple;
+    }
+
+        .legend-colour{
+            flex:1;
+        }
+
+        .legend-label{
+            flex:3;
+            text-align: start;
+        }
+
+        .legend-percentage{
+            flex:1;
+        }
 
 .nav-bar {
     background-color: #11234b;
