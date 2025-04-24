@@ -30,7 +30,31 @@ const cards = [
           ))}
         </div>
         <div className="stats-container">
-          stats
+          <div className="chart-container">
+            chart
+          </div>
+          <div className="chart-legend-container">
+            <div className="legend-details-container">
+                <div className="legend-colour">-</div>
+                <div className="legend-label">Good</div>
+                <div className="legend-percentage">99%</div>
+            </div>
+            <div className="legend-details-container">
+                <div className="legend-colour">-</div>
+                <div className="legend-label">Neutral</div>
+                <div className="legend-percentage">9%</div>
+            </div>
+            <div className="legend-details-container">
+                <div className="legend-colour">-</div>
+                <div className="legend-label">Bad</div>
+                <div className="legend-percentage">99%</div>
+            </div>
+            <div className="legend-details-container">
+                <div className="legend-colour">-</div>
+                <div className="legend-label">Not Learned</div>
+                <div className="legend-percentage">32%</div>
+            </div>
+          </div>
         </div>
       </div>
       

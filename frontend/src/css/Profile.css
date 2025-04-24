@@ -124,13 +124,13 @@
 }
 
 .user-statistics-progress{
-    flex:4;
+    flex:3;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 1rem;
+    padding: rem;
     background-color: violet;
 }
 
@@ -139,18 +139,23 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap:1rem;
     width: 100%;
     background-color: rgb(170, 64, 170);
+    gap:1rem;
+    padding: 0.25rem;
 }
 
 .progress-bar-label{
     flex: 1;
+    text-align: start;
 }
 
 .progress-bar-container{
     flex:4;
+    height: 80%;
+    background-color: beige;
 }
+
 
 @media (max-width: 768px) {
     .profile-content {
