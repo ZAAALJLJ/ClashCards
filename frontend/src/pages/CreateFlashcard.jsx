@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import '../css/CreateFlashcard.css'
 import api from '../api'
+import CreatedFlashcard from '../components/CreatedFlashcard';
 
 function CreateFlashcard () {
     const [flashcards, setCards] = useState([]);
     const [flashcard, setCard] = useState({question: '', answer: ''});
-
+    const [isUpdating, setUpdate] = useState(false);
+    const [currentKey, setKey] = useState({id: ''});
+    
     // GET all cards
     const fetchCards = async () => {
         try {
@@ -39,6 +42,52 @@ function CreateFlashcard () {
         }
     };
 
+    // UPDATE cards in db
+    const updateCard = async (id, updatedData) => {
+        try {
+            await api.put(`/flashcards/${id}/`, updatedData);
+            
+            console.log("Flashcard updated");
+            fetchCards();
+
+        } catch (error) {
+            console.error('Error adding cards:', error);
+        }
+    };
+
+    // GET clicked created card
+    const createdCLicked = (cardData) => {
+        console.log("Received from child:", cardData);
+        setCard({ question: cardData.question, answer: cardData.answer});
+        setKey({id: cardData.id});
+        setUpdate(true);
+      };
+
+    // DELETE card
+    const deleteCard = async (id) => {
+        try {
+            await api.delete(`/flashcards/${id}/`);
+            console.log("Flashcard deleted");
+            fetchCards();
+            setKey({id: ''});
+            setCard({ question: '', answer: ''});
+
+        } catch (error) {
+            console.error('Error deleting cards:', error);
+        }
+    }
+
+    // CREATE button caller
+    const createCard = async () => {
+        try {
+            setKey({id: ''});
+            setCard({ question: '', answer: ''});
+            setUpdate(false);
+        } catch (error) {
+            console.error('Error create button:', error);
+        }
+    }
+
     return (
         <div className="create-page">
             <div className="create-nav-bar">
@@ -48,7 +97,7 @@ function CreateFlashcard () {
             </div>
             <div className="create-content">
                 <div className="create-flashcard-content">
-                    <form className='create-qa-container' onSubmit={handleAddCard}>
+                    <form className='create-qa-container' >
                         <div className='create-question'>
                             <label htmlFor='question' className='question-title'>
                                 Question
@@ -63,6 +112,7 @@ function CreateFlashcard () {
                                 onChange={handleInputChange}
                             />
                         </div>
+                        <hr className='horizontal-line'/>
                         <div className='create-answer'>
                             <label htmlFor='answer' className='answer-title'>
                                 Answer
@@ -77,17 +127,22 @@ function CreateFlashcard () {
                                 onChange={handleInputChange}
                             />
                         </div>
-                        <div className='save-flashcard-btn'>
-                            <button type='button' className='btn-save' onClick={handleAddCard}>Save</button>
-                            <button type='button' className='btn-save'>Delete</button>
+                        <div className='sd-flashcard-btn'>
+                            <button type='button' className='btn-sd' onClick={() => isUpdating ? updateCard(currentKey.id, flashcard): handleAddCard()}>Save</button>
+                            <button type='button' className='btn-sd' onClick={() => deleteCard(currentKey.id)}>Delete</button>
                         </div>
                     </form>                
 
                 </div>
                 <div className="created-flashcards">
-                    <button className="btn-create">
-                        Create
+                    <button className="btn-create" onClick={createCard}>
+                        + Create Flashcard
                     </button>
+                    
+                    {flashcards.map(card => (
+                        // LOOP through all flashcards and display it
+                        <CreatedFlashcard card={card} key={card.id} sendDataToParent={createdCLicked}/>
+                    ))}
                 </div>
             </div>
         </div>
