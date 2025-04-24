@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import '../css/Profile.css';
 import defaultProfilePic from '../assets/fallback-profile-image.jpg';
 import ProgressBarStatistics from '../components/ProgressBarStatistics.jsx';
+import RadarChart from '../components/RadarChart.jsx';
 
 function Profile (){
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    
+    const labels = ['WIN', 'ACC', 'CFG', 'LRN', 'CON'];
+    const fullLabels = ['Wins', 'Accuracy', 'Correct First Guess', 'Learned', 'Consistency'];
+
     useEffect(() => {
         const user = {
           username: "Legendary Sculptor",
@@ -93,28 +96,31 @@ function Profile (){
                                 <div className="skeleton-shimmer"></div>
                             </div>
                         ) : (
-                            'chart'
+                            <RadarChart
+                                userData={user.progressArr}
+                                labels={labels}
+                                fullLabels={fullLabels}
+                            />
                         )}
                     </div>
                     <div className='user-statistics-progress'>
-                        {['Wins', 'Accuracy', 'Correct First Guess', 'Learned', 'Consistency'].map((label, i) => (
+                        {fullLabels.map((label, i) => (
                             <div className='statistics-container' key={label}>
                                 <div className='progress-bar-label'>{label}:</div>
                                 <div className='progress-bar-container'>
-                                    {isLoading ? (
-                                        <div className="skeleton progress-skeleton">
-                                        <div className="skeleton-shimmer"></div>
-                                        </div>
-                                    ) : (
-                                        <ProgressBarStatistics progressPercentage={user.progressArr[i]} />
-                                    )}
+                                {isLoading ? (
+                                    <div className="skeleton progress-skeleton">
+                                    <div className="skeleton-shimmer"></div>
+                                    </div>
+                                ) : (
+                                    <ProgressBarStatistics progressPercentage={user.progressArr[i]} />
+                                )}
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
-            
         </div>
     );
 }
