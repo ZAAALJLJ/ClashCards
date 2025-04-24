@@ -117,10 +117,13 @@
 
 .user-chart-container{
     flex:5;
+    height: 100%;
     width: 100%;
+    display: flex;
     align-items: center;
     justify-content: center;
     background-color: rgba(255,255,255,0.4);
+    min-height: 200px;
 }
 
 .user-statistics-progress{
@@ -158,13 +161,15 @@
 
 
 @media (max-width: 768px) {
-    .profile-content {
+    .profile-content, .statistics-container {
       flex-direction: column;
     }
+
     .profile-info-container, 
-    .profile-stats {
+    .profile-stats{
       flex: none;
       width: 100%;
       height: auto;
     }
+
   }
