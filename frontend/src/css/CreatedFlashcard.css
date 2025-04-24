@@ -1,0 +1,37 @@
+.created-component {
+    width: calc(100% - 1rem);
+    min-width: 5rem;
+    min-height: 7rem;
+
+    border-radius: 1rem;
+    border: 1px solid #385698;
+    background-color: #0e2359;
+    color: aliceblue;
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    margin: 1rem;
+}
+
+.created-question {
+    display: flex;
+    flex: 2;
+    align-items: center;
+    font-size: small;
+}
+
+.created-answer {
+    display: flex;
+    flex: 2;
+    align-items: center;
+    font-size: small;
+}
+
+.created-divider {
+    width: 100%;
+    border: 1px solid #385698;
+}
+
