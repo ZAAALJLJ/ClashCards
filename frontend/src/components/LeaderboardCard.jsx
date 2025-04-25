@@ -1,6 +1,7 @@
 import React from 'react';
 import Skeleton from 'react-loading-skeleton'; 
-import 'react-loading-skeleton/dist/skeleton.css'; 
+import 'react-loading-skeleton/dist/skeleton.css';
+import { motion } from 'framer-motion'; 
 import crownlogo from '../assets/crown.png';
 import '../css/LeaderboardCard.css';
 
@@ -32,13 +33,22 @@ const Leaderboard = ({
                                 </div>
                             </div>
                         ))
+                    ) : rankItems.length === 0 ? (
+                        <div className="empty-message">No leaderboard data available</div>
                     ) : (
                         rankItems.map((item) => (
-                        <div className="rank-item-container" key={item.rank}>
-                            <div className="rank-number">{item.rank}</div>
-                            <div className="user-name">{item.name}</div>
-                            <div className="battle-score">{item.score}</div>
-                        </div>
+                            <motion.div
+                                key={item.rank}
+                                className="rank-item-container"
+                                initial={{ opacity: 0, y: -20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 20 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <div className="rank-number">{item.rank}</div>
+                                <div className="user-name">{item.name}</div>
+                                <div className="battle-score">{item.score}</div>
+                            </motion.div>
                         ))
                     )}
                 </div>

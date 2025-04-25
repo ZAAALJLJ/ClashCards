@@ -21,6 +21,7 @@ const RadarChart = ({ userData, labels, fullLabels }) => {
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
         tooltip: {
             enabled: true,
