@@ -180,7 +180,7 @@ useEffect(() => {
                 <Confetti
                     width={window.innerWidth}
                     height={window.innerHeight}
-                    numberOfPieces={200}
+                    numberOfPieces={300}
                     gravity={0.2}
                     recycle={false} 
                     style={{ position: 'absolute', top: 0, left: 0, zIndex: 9999 }}

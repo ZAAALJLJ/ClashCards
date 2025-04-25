@@ -80,7 +80,7 @@ function Home () {
           userStats.bad,
           userStats.notLearned
         ],
-        backgroundColor: ['#0096c7', '#41b8d5', '#6ce5e8', '#b5f5f0'],
+        backgroundColor: ['#0077b6', '#0096c7', '#41b8d5', '#6ce5e8'],
         borderWidth: 0, 
         borderRadius: 25,
         spacing: -50,
@@ -106,6 +106,14 @@ function Home () {
       plugins: [overlappingSegments], 
       tooltip: {
         enabled: true,
+        callbacks: {
+          label: function(tooltipItem) {
+            return `${tooltipItem.label}: ${tooltipItem.raw}%`;
+          },
+          backgroundColor: function(context) {
+            return context.dataset.backgroundColor[context.dataIndex];
+          }
+        }
       }
     }
   };
