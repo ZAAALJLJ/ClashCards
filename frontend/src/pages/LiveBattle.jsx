@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from "react-router-dom";
 import '../css/LiveBattle.css';
 import Leaderboard from '../components/LeaderboardCard';
 import BattleTimer from '../components/BattleTimer'; 
+import Confetti from 'react-confetti';
 
 function LiveBattle (){
     const [rankItems, setRankItems] = useState([]);
     const [message, setMessage] = useState('');
     const [isTimeUp, setIsTimeUp] = useState(false);
     const [isQuizFinished, setIsQuizFinished] = useState(false);
+    const [showLeaveModal, setShowLeaveModal] = useState(false);
     const [questions] = useState([
         "What's 9 + 10",
         "What's 15 + 5",
@@ -21,23 +24,44 @@ function LiveBattle (){
         "What's 50 / 5"
     ]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const totalTime = 180;
+    const [timeLeft, setTimeLeft] = useState(180);
+    const totalTime = 20;
     const totalQuestions = questions.length;
     const progressTrackerRef = useRef(null);
+    const [score, setScore] = useState(0);
+    const [showConfetti, setShowConfetti] = useState(false);
 
-    const handleTimeUp = () => {
-        setIsTimeUp(true);
-        console.log('Time is up!');
-      };
-
-      const handleSubmit = (e) => {
+    //timer
+    useEffect(() => {
+        if (isQuizFinished || isTimeUp) return;
+    
+        if (timeLeft > 0) {
+            const timer = setInterval(() => {
+                setTimeLeft((prevTime) => {
+                    if (prevTime > 0) {
+                        return prevTime - 1; 
+                    } else {
+                        clearInterval(timer);
+                        setIsTimeUp(true); 
+                        return 0; 
+                    }
+                });
+            }, 1000);
+    
+            return () => clearInterval(timer); 
+        }
+    
+    }, [timeLeft, isQuizFinished, isTimeUp]);
+    
+    //form submission
+    const handleSubmit = (e) => {
         e.preventDefault();
         if (!isTimeUp) {
           console.log('Message sent:', message);
           setMessage('');
           setCurrentQuestionIndex(prevIndex => prevIndex + 1); 
         }
-      }; 
+    }; 
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' && !e.shiftKey  && !isTimeUp) {
@@ -46,29 +70,82 @@ function LiveBattle (){
         }
     };
 
-    useEffect(() => {
-        return () => {
-          setIsTimeUp(false);
-        };
-      }, []);  
+    // leaderboard fetching
+// Inside useEffect for updating rankItems
+useEffect(() => {
+    const interval = setInterval(() => {
+        setRankItems(prevItems => {
+            // Update the score randomly for each user
+            const updatedItems = prevItems.map(item => ({
+                ...item,
+                score: item.score + Math.floor(Math.random() * 10) // Random score change
+            }));
+
+            // Sort the leaderboard based on updated score
+            updatedItems.sort((a, b) => b.score - a.score); // Sort by score
+
+            // Recalculate ranks based on the new sorted order
+            return updatedItems.map((item, index) => ({
+                ...item,
+                rank: index + 1 // Update the rank based on position
+            }));
+        });
+    }, 3000); // Update every 3 seconds
+
+    return () => clearInterval(interval);
+}, []);
 
 
+    // Initial setup for rank items
     useEffect(() => {
-        setTimeout(() => {
-            setRankItems([
-            { rank: 1, name: 'Just Donatello', score: 100 },
-            { rank: 2, name: 'Idunno Mann', score: 90 },
-            { rank: 3, name: 'Jackie Butter', score: 80 },
-            ]);
-        }, 1000); // data fetching simulation
+        setRankItems([
+            { rank: 1, name: 'Just Donatello', score: 0},
+            { rank: 2, name: 'Idunno Mann', score: 0 },
+            { rank: 3, name: 'Jackie Butter', score: 0 },
+        ]);
     }, []);
+
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         setRankItems([
+    //         { rank: 1, name: 'Just Donatello', score: 100 },
+    //         { rank: 2, name: 'Idunno Mann', score: 90 },
+    //         { rank: 3, name: 'Jackie Butter', score: 80 },
+    //         ]);
+    //     }, 1000); // simulated fetch delay
+    // }, []);
     
+    //confetti effect when quiz is finished
     useEffect(() => {
         if (currentQuestionIndex >= totalQuestions) {
             setIsQuizFinished(true);
+            setShowConfetti(true);
+            setTimeout(() => {
+                setShowConfetti(false);
+            }, 5000);
         }
     }, [currentQuestionIndex]);
 
+    //confetti when time runs out
+    useEffect(() => {
+        if (isTimeUp && !isQuizFinished) {
+            setShowConfetti(true);
+            setTimeout(() => {
+                setShowConfetti(false);
+            }, 5000);
+        }
+    }, [isTimeUp, isQuizFinished]); 
+    
+
+    //score fetching
+    useEffect(() => {
+        setTimeout(() => {
+            const fetchedScore = 70; 
+            setScore(fetchedScore);
+        }, 1500);
+    }, []); 
+
+    // progress trackers (questions)
     const getVisibleTrackers = () => {
         const totalDots = questions.length;
         const visibleDots = 6;
@@ -88,14 +165,39 @@ function LiveBattle (){
         return Array.from({ length: end - start }, (_, i) => i + start);
     };
     
+    useEffect(() => {
+        const handleEsc = (e) => {
+          if (e.key === "Escape") setShowLeaveModal(false);
+        };
+        window.addEventListener("keydown", handleEsc);
+        return () => window.removeEventListener("keydown", handleEsc);
+      }, []);
       
 
     return(
         <div className='live-battle-page'>
+             {showConfetti && (
+                <Confetti
+                    width={window.innerWidth}
+                    height={window.innerHeight}
+                    numberOfPieces={300}
+                    gravity={0.2}
+                    recycle={false} 
+                    style={{ position: 'absolute', top: 0, left: 0, zIndex: 9999 }}
+                />
+            )}
+
             <div className='live-nav-bar'>
                 <div className='live-title'>
                     <div className='card-set-title'>
-                        <div className='back-arrow-container'>
+                        <div 
+                            className='back-arrow-container' 
+                            onClick={() => setShowLeaveModal(true)} 
+                            role="button" 
+                            tabIndex={0}
+                            onKeyDown={(e) => e.key === 'Enter' && setShowLeaveModal(true)}
+                            aria-label="Open leave battle confirmation"
+                        >
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" className="back-arrow">
                                 <path d="M16 12.001H2.914l5.294-5.295-.707-.707L1 12.501l6.5 6.5.707-.707-5.293-5.293H16v-1z" data-name="Left"/>
                             </svg>
@@ -103,7 +205,7 @@ function LiveBattle (){
                         <span className='subject-title'>Mathematics</span>
                     </div>
                     <div className='battle-timer'>
-                        <BattleTimer totalTime={totalTime} onTimeUp={handleTimeUp} />
+                        <BattleTimer totalTime={totalTime} onTimeUp={() => setIsTimeUp(true)} />
                     </div>
                 </div>
             </div>
@@ -121,6 +223,11 @@ function LiveBattle (){
                         <div className='question-container'>
                             <span className={isQuizFinished ? 'done' : (isTimeUp ? 'time-up' : '')}>
                                 {isQuizFinished ? "Done" : (isTimeUp ? "Time is up!" : questions[currentQuestionIndex])}
+                                {(isTimeUp || isQuizFinished) && (
+                                    <div className="final-score">
+                                        Score: {score}
+                                    </div>
+                                )}
                             </span>
                         </div>
                         <div className='answer-container'>
@@ -169,6 +276,28 @@ function LiveBattle (){
                     </div>
                 </div>
             </div>
+            {showLeaveModal && (
+                <div
+                    className="modal-overlay"
+                    onClick={() => setShowLeaveModal(false)}
+                >
+                    <div
+                        className="modal-content"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <h3>Leave the Battle?</h3>
+                        <p>Your progress will be lost if you leave now. Are you sure?</p>
+                        <div className="modal-buttons">
+                            <button onClick={() => setShowLeaveModal(false)} className="modal-cancel">
+                                Continue Battle
+                            </button>
+                            <Link to="/" className="modal-leave">
+                                Leave Battle
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

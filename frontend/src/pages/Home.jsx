@@ -2,6 +2,10 @@ import StudySetCard from "../components/StudySetCard";
 import { useState, useEffect } from "react";
 import'../css/Home.css';
 import api from '../api'
+import { Doughnut } from 'react-chartjs-2';
+import { Chart, ArcElement, Tooltip, Legend, plugins } from 'chart.js';
+
+Chart.register(ArcElement, Tooltip, Legend);
 
 function Home () {
   const cards = [
@@ -12,6 +16,40 @@ function Home () {
     { id: 3, title: 'Card 3', description: '99 flashcards' },
     { id: 3, title: 'Card 3', description: '99 flashcards' },
   ]
+
+  const [userStats, setUserStats] = useState({
+    good: 0,
+    neutral: 0,
+    bad: 0,
+    notLearned: 0
+  });
+
+  useEffect(() => {
+    const dummyStats = {
+      good: 45,
+      neutral: 25,
+      bad: 15,
+      notLearned: 15
+    };
+  
+    const total = Object.values(dummyStats).reduce((acc, value) => acc + value, 0);
+  
+    if (total !== 100) {
+      const difference = 100 - total;
+      dummyStats.good += difference;
+    }
+  
+    setUserStats(dummyStats);
+  }, []);
+  
+  useEffect(() => {
+    if (userStats) {
+      const total = Object.values(userStats).reduce((acc, value) => acc + value, 0);
+      if (total !== 100) {
+        console.warn('User stats do not add up to 100%. Current total:', total);
+      }
+    }
+  }, [userStats]);  
 
   const [studysets, setSets] = useState([]);
 
@@ -31,6 +69,48 @@ function Home () {
     fetchSets();
   }, []);
 
+
+  const chartData = {
+    labels: ['Good', 'Neutral', 'Bad', 'Not Learned'],
+    datasets: [
+      {
+        data: [
+          userStats.good,
+          userStats.neutral,
+          userStats.bad,
+          userStats.notLearned
+        ],
+        backgroundColor: ['#0077b6', '#0096c7', '#41b8d5', '#6ce5e8'],
+        borderWidth: 0, 
+        borderRadius: 25,
+        spacing: -50,
+      }
+    ]
+  };
+
+  const chartOptions = {
+    cutout: '80%',  
+    maintainAspectRatio: false, 
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false, 
+      },
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          label: function(tooltipItem) {
+            return `${tooltipItem.label}: ${tooltipItem.raw}%`;
+          },
+          backgroundColor: function(context) {
+            return context.dataset.backgroundColor[context.dataIndex];
+          }
+        }
+      }
+    }
+  };
+  
+
   return (
     <div className = "home-page">
       <div className="nav-bar">
@@ -45,34 +125,24 @@ function Home () {
       <div className="content-container">
         <div className="study-card-container">
           {studysets.map(studysets => (
-            <StudySetCard props={studysets} key={studysets.id}/>
+            <StudySetCard key={studysets.id} props={studysets}/>
           ))}
         </div>
         <div className="stats-container">
           <div className="chart-container">
-            chart
+          <Doughnut data={chartData} options={chartOptions} />
+            <div className="chart-center">
+              {Object.values(userStats).reduce((a, b) => a + b)}%
+            </div>
           </div>
           <div className="chart-legend-container">
-            <div className="legend-details-container">
-                <div className="legend-colour">-</div>
-                <div className="legend-label">Good</div>
-                <div className="legend-percentage">99%</div>
-            </div>
-            <div className="legend-details-container">
-                <div className="legend-colour">-</div>
-                <div className="legend-label">Neutral</div>
-                <div className="legend-percentage">9%</div>
-            </div>
-            <div className="legend-details-container">
-                <div className="legend-colour">-</div>
-                <div className="legend-label">Bad</div>
-                <div className="legend-percentage">99%</div>
-            </div>
-            <div className="legend-details-container">
-                <div className="legend-colour">-</div>
-                <div className="legend-label">Not Learned</div>
-                <div className="legend-percentage">32%</div>
-            </div>
+            {Object.keys(userStats).map((stat, index) => (
+              <div className="legend-details-container" key={stat}>
+                <div className="legend-colour" style={{ backgroundColor: chartData.datasets[0].backgroundColor[index] }}></div>
+                <div className="legend-label">{stat.charAt(0).toUpperCase() + stat.slice(1)}</div>
+                <div className="legend-percentage">{userStats[stat]}%</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
