@@ -1,0 +1,21 @@
+.total-statistics-container {
+    width: 100%;
+    height: 100%;
+    padding: 0.2rem 0;
+  }
+  
+  .total-progress-track {
+    width: 100%;
+    height: 0.75rem;
+    background-color: #6ce5e8;
+    border-radius: 2rem;
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  }
+  
+  .statistics-progress {
+    height: 100%;
+    background-color: #41b8d5;
+    transition: width 0.4s ease-in-out;
+  }
+  
