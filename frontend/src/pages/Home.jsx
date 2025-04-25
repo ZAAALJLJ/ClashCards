@@ -88,13 +88,6 @@ function Home () {
     ]
   };
 
-  const overlappingSegments = {
-    id: 'overlappingSegments', 
-    afterDatasetsDraw(chart, args, plugins){
-
-    }
-  }
-
   const chartOptions = {
     cutout: '80%',  
     maintainAspectRatio: false, 
@@ -103,7 +96,6 @@ function Home () {
       legend: {
         display: false, 
       },
-      plugins: [overlappingSegments], 
       tooltip: {
         enabled: true,
         callbacks: {
