@@ -119,6 +119,7 @@
     max-width: 300px;
     height: 300px;
     margin: auto;
+    padding: 2rem;
   }
   
   .chart-center {
@@ -145,6 +146,10 @@
     
       .stats-container {
         flex-shrink: 0;
+      }
+
+      .chart-container{
+        padding: 0;
       }
 
   }

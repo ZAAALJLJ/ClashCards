@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import'../css/Home.css';
 import api from '../api'
 import { Doughnut } from 'react-chartjs-2';
-import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
+import { Chart, ArcElement, Tooltip, Legend, plugins } from 'chart.js';
 
 Chart.register(ArcElement, Tooltip, Legend);
 
@@ -83,9 +83,17 @@ function Home () {
         backgroundColor: ['#0096c7', '#41b8d5', '#6ce5e8', '#b5f5f0'],
         borderWidth: 0, 
         borderRadius: 25,
+        spacing: -50,
       }
     ]
   };
+
+  const overlappingSegments = {
+    id: 'overlappingSegments', 
+    afterDatasetsDraw(chart, args, plugins){
+
+    }
+  }
 
   const chartOptions = {
     cutout: '80%',  
@@ -95,6 +103,7 @@ function Home () {
       legend: {
         display: false, 
       },
+      plugins: [overlappingSegments], 
       tooltip: {
         enabled: true,
       }
