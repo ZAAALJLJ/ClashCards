@@ -28,3 +28,4 @@ async def update_card(id: str, card: Flashcard):
 @router.delete("/flashcards/{id}")
 async def delete_card(id: str):
     flashcard_collection.find_one_and_delete({"_id": ObjectId(id)})
+    

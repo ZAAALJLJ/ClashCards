@@ -4,7 +4,7 @@ import '../css/FlashcardCarousel.css';
 
 function FlashcardCarousel({ cards }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-
+  
   const goToPrev = () => {
     setCurrentIndex(prev => (prev === 0 ? cards.length - 1 : prev - 1));
   };
@@ -24,8 +24,8 @@ function FlashcardCarousel({ cards }) {
         
         <div className="flashcard-viewport">
           <Flashcard 
-            front={cards[currentIndex].front} 
-            back={cards[currentIndex].back} 
+            front={cards[currentIndex].question} 
+            back={cards[currentIndex].answer} 
           />
         </div>
         

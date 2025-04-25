@@ -3,6 +3,7 @@ import '../css/CreateFlashcard.css'
 import api from '../api'
 import CreatedFlashcard from '../components/CreatedFlashcard';
 
+
 function CreateFlashcard () {
     const [flashcards, setCards] = useState([]);
     const [flashcard, setCard] = useState({question: '', answer: ''});

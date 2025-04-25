@@ -1,16 +1,40 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import '../css/StudySet.css';
 import FlashcardCarousel from '../components/FlashcardCarousel';
 import Leaderboard from '../components/LeaderboardCard';
 import crownLogo from '../assets/crown.png';
+import api from '../api';
 
-const cards = [
-    { front: "Question 1", back: "Answer 1" },
-    { front: "Question 2", back: "Answer 2" },
-    { front: "Question 3", back: "Answer 3" }
-  ];
+
 
 function StudySet (){
+    const { id } = useParams();
+    const [flashcards, setCards] = useState([]);
+    const [title, setTitle] = useState('');
+    const navigate = useNavigate();
+    
+    // GET all cards
+    const fetchCards = async () => {
+        try {
+            const response = await api.get(`/flashcards/`);
+            console.log('Fetched cards:', response.data);
+            setCards(response.data);
+        } catch(error) {
+            console.error('Error fetching cards:', error);            
+        }
+    };
+
+    // SET cards
+    useEffect(() => {
+        fetchCards();
+    }, []);
+
+    // Go to CREATEFLASHCARD
+    const goCreateFC = async () => {
+        navigate("/createflashcard");
+    }
+
      const [rankItems, setRankItems] = useState([]);
      const [showLeaderboard, setShowLeaderboard] = useState(false);
      const leaderboardRef = useRef(null);
@@ -51,14 +75,18 @@ function StudySet (){
                     Mathematics
                 </div>
                 <div className="home-buttons">
-                    <button className="btn-home">+ Create Flashcard</button>
+                    <button className="btn-home" onClick={goCreateFC}>+ Create Flashcard</button>
                     <button className="btn-home">Battle</button>
                     <button className="btn-home">Solo Review Mode</button>
                 </div>
             </div>
             <div className="study-content-container">
                 <div className="flashcard-container">
-                     <FlashcardCarousel cards={cards} />
+                    {flashcards.length > 0 ? (
+                        <FlashcardCarousel cards={flashcards} />
+                    ) : (
+                        <p>Loading</p>
+                    )}
                 </div>
                 <div className='leaderboard large-screen-only'>
                     <Leaderboard 

@@ -1,16 +1,35 @@
 import StudySetCard from "../components/StudySetCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import'../css/Home.css';
+import api from '../api'
 
 function Home () {
-const cards = [
-  { id: 1, title: 'Card 1', description: '99 flashcards' },
-  { id: 2, title: 'Card 2', description: '99 flashcards' },
-  { id: 3, title: 'Card 3', description: '99 flashcards' },
-  { id: 3, title: 'Card 3', description: '99 flashcards' },
-  { id: 3, title: 'Card 3', description: '99 flashcards' },
-  { id: 3, title: 'Card 3', description: '99 flashcards' },
-]
+  const cards = [
+    { id: 1, title: 'Card 1', description: '99 flashcards' },
+    { id: 2, title: 'Card 2', description: '99 flashcards' },
+    { id: 3, title: 'Card 3', description: '99 flashcards' },
+    { id: 3, title: 'Card 3', description: '99 flashcards' },
+    { id: 3, title: 'Card 3', description: '99 flashcards' },
+    { id: 3, title: 'Card 3', description: '99 flashcards' },
+  ]
+
+  const [studysets, setSets] = useState([]);
+
+  // GET studysets
+  const fetchSets = async () => {
+    try {
+      const response = await api.get('/studysets/');
+      console.log('Fetched cards:', response.data);
+      setSets(response.data);
+    } catch(error) {
+      console.error('Error fetching cards:', error);
+    }
+  }
+
+  // SET cards
+  useEffect(() => {
+    fetchSets();
+  }, []);
 
   return (
     <div className = "home-page">
@@ -25,8 +44,8 @@ const cards = [
       </div>
       <div className="content-container">
         <div className="study-card-container">
-          {cards.map(cards => (
-            <StudySetCard props={cards} key={cards.id}/>
+          {studysets.map(studysets => (
+            <StudySetCard props={studysets} key={studysets.id}/>
           ))}
         </div>
         <div className="stats-container">
