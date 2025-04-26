@@ -63,6 +63,9 @@ function Home () {
     try {
       const response = await api.get('/studysets/');
       console.log('Fetched cards:', response.data);
+
+      // flashcardCount: ..... { id: 2, title: "Study Set 2", flashcardCount: 35 }
+
       setSets(response.data);
     } catch(error) {
       console.error('Error fetching cards:', error);
