@@ -1,9 +1,9 @@
-.flashcard-scene {
-    width: 200px;
-    height: 120px;
-    perspective: 1000px;
-    cursor: pointer;
-  }
+.flashcard-scene { 
+  height: 60vh;
+  width: 50vw;
+  perspective: 1000px;
+  cursor: pointer;
+}
   
   .flashcard {
     width: 100%;
@@ -11,6 +11,8 @@
     position: relative;
     transition: transform 0.6s;
     transform-style: preserve-3d;
+    border-radius: 1rem;
+    border: 0.5px solid #385698;
   }
   
   .flashcard.is-flipped {
@@ -34,7 +36,7 @@
   }
   
   .flashcard-front {
-    background-color: #a07f7f;
+    background-color: #0e2359;
   }
   
   .flashcard-back {

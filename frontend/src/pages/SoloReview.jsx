@@ -1,11 +1,17 @@
+import { useEffect, useState } from 'react'
 import '../css/SoloReview.css'
+import getStudysetTitle from '../services/getStudysetTitle';
+import { useParams } from 'react-router-dom';
 
 function SoloReview (){
+    const { studyset_id } = useParams();
+    const title = getStudysetTitle(studyset_id);
+
     return(
         <div className='solo-review-page'>
             <div className='solo-nav-bar'>
                 <div className='solo-title'>
-                    Mathematics
+                    {title}
                 </div>
             </div>
             <div className='solo-content-container'>
@@ -17,6 +23,7 @@ function SoloReview (){
                 </div>
             </div>
         </div>
+
     )
 }
 

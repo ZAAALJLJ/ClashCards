@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes.route import router
+from routes.studyset_route import studyset_router
 
 app = FastAPI()
 
@@ -18,3 +19,4 @@ app.add_middleware(
 )
 
 app.include_router(router)
+app.include_router(studyset_router)
