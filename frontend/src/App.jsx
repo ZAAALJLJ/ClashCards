@@ -26,7 +26,7 @@ function App() {
           <Route path='/soloreview' element={<SoloReview/>}/>
           <Route path='/livebattle' element={<LiveBattle/>}/>
           <Route path='/battleresult' element={<BattleResult/>}/>
-          <Route path='/createflashcard' element={<CreateFlashcard/>}/>
+          <Route path='/createflashcard/:studyset_id' element={<CreateFlashcard/>}/>
         </Routes>
       </main>
     </div>

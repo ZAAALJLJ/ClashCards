@@ -2,18 +2,21 @@ import { useEffect, useState } from 'react';
 import '../css/CreateFlashcard.css'
 import api from '../api'
 import CreatedFlashcard from '../components/CreatedFlashcard';
+import { useParams } from 'react-router-dom';
 
 
 function CreateFlashcard () {
+    const { studyset_id } = useParams();
     const [flashcards, setCards] = useState([]);
-    const [flashcard, setCard] = useState({question: '', answer: ''});
+    const [flashcard, setCard] = useState({question: '', answer: '', studyset_id: studyset_id});
     const [isUpdating, setUpdate] = useState(false);
     const [currentKey, setKey] = useState({id: ''});
-    
+    const [title, setTitle] = useState('');
+
     // GET all cards
     const fetchCards = async () => {
         try {
-            const response = await api.get('/flashcards/');
+            const response = await api.get(`/flashcards/${studyset_id}`);
             console.log('Fetched cards:', response.data);
             setCards(response.data);
         } catch(error) {
@@ -21,9 +24,21 @@ function CreateFlashcard () {
         }
     };
 
-    // SET cards
+    // GET title
+    const fetchTitle = async () => {
+        try { 
+            const response = await api.get(`/studysets/${studyset_id}`);
+            setTitle(response.data.title);
+            console.log(response.data);
+        } catch (error){
+            console.error('Error title studyset:', error);            
+        }
+    };
+
+    // SET after rendering
     useEffect(() => {
         fetchCards();
+        fetchTitle();
     }, []);
 
     // SET single card
@@ -93,7 +108,7 @@ function CreateFlashcard () {
         <div className="create-page">
             <div className="create-nav-bar">
                 <div className="create-title">
-                    Mathematics
+                    {title}
                 </div>
             </div>
             <div className="create-content">

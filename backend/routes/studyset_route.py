@@ -1,15 +1,21 @@
 from fastapi import APIRouter
 from models.studyset import StudySet
 from config.database import studyset_collection
-from schema.schemas import list_studyset
+from schema.schemas import list_studyset, individual_studyset
 from bson import ObjectId
 
 studyset_router = APIRouter()
 
-@studyset_router.get("/studysets")
+@studyset_router.get("/studysets/")
 async def get_studysets():
     studyset = list_studyset(studyset_collection.find())
     return studyset
+
+
+@studyset_router.get("/studysets/{id}")
+async def get_studysets(id: str):
+    studyset = studyset_collection.find_one({"_id": ObjectId(id)})
+    return individual_studyset(studyset)
 
 @studyset_router.post("/studysets")
 async def create_studyset(studyset: StudySet):

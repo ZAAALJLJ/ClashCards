@@ -1,8 +1,10 @@
+
 def individual_flashcard(flashcard) -> dict: # flashcard serializer
     return {
         "id": str(flashcard["_id"]),
         "question": flashcard["question"],
-        "answer": flashcard["answer"]
+        "answer": flashcard["answer"],
+        "studyset_id": str(flashcard["studyset_id"]),
     }
     
 def list_flashcard(flashcards) -> list:

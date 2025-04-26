@@ -17,7 +17,7 @@ function StudySet (){
     // GET all cards
     const fetchCards = async () => {
         try {
-            const response = await api.get(`/flashcards/`);
+            const response = await api.get(`/flashcards/${id}`);
             console.log('Fetched cards:', response.data);
             setCards(response.data);
         } catch(error) {
@@ -25,14 +25,26 @@ function StudySet (){
         }
     };
 
+    // GET title
+    const fetchTitle = async () => {
+        try { 
+            const response = await api.get(`/studysets/${id}`);
+            setTitle(response.data.title);
+            console.log(response.data);
+        } catch (error){
+            console.error('Error title studyset:', error);            
+        }
+    };
+
     // SET cards
     useEffect(() => {
         fetchCards();
+        fetchTitle();
     }, []);
 
     // Go to CREATEFLASHCARD
     const goCreateFC = async () => {
-        navigate("/createflashcard");
+        navigate(`/createflashcard/${id}`);
     }
 
      const [rankItems, setRankItems] = useState([]);
@@ -72,7 +84,7 @@ function StudySet (){
         <div className="study-set">
             <div className="study-set-nav-bar">
                 <div className="studyset-title">
-                    Mathematics
+                    {title}
                 </div>
                 <div className="home-buttons">
                     <button className="btn-home" onClick={goCreateFC}>+ Create Flashcard</button>
