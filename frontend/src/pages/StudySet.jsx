@@ -52,6 +52,12 @@ function StudySet (){
         navigate(`/soloreview/${id}`);
     }
 
+    // Go to LIVEBATTLE
+    const goBattle = async () => {
+        navigate(`/livebattle/${id}`);
+    }
+
+
      const [rankItems, setRankItems] = useState([]);
      const [showLeaderboard, setShowLeaderboard] = useState(false);
      const leaderboardRef = useRef(null);
@@ -93,7 +99,7 @@ function StudySet (){
                 </div>
                 <div className="home-buttons">
                     <button className="btn-home" onClick={goCreateFC}>+ Create Flashcard</button>
-                    <button className="btn-home">Battle</button>
+                    <button className="btn-home" onClick={goBattle}>Battle</button>
                     <button className="btn-home" onClick={goSoloReview}>Solo Review Mode</button>
                 </div>
             </div>

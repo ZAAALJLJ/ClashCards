@@ -1,32 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import '../css/LiveBattle.css';
 import Leaderboard from '../components/LeaderboardCard';
 import BattleTimer from '../components/BattleTimer'; 
 import Confetti from 'react-confetti';
+import getStudysetTitle from '../services/getStudysetTitle';
+import api from '../api';
 
 function LiveBattle (){
+    
+    const { livebattle_id } = useParams('');
+    const title = getStudysetTitle(livebattle_id);
     const [rankItems, setRankItems] = useState([]);
     const [message, setMessage] = useState('');
     const [isTimeUp, setIsTimeUp] = useState(false);
     const [isQuizFinished, setIsQuizFinished] = useState(false);
     const [showLeaveModal, setShowLeaveModal] = useState(false);
-    const [questions] = useState([
-        "What's 9 + 10",
-        "What's 15 + 5",
-        "What's 12 * 2",
-        "What's 25 / 5",
-        "What's 8 * 3",
-        "What's 18 - 9",
-        "What's 7 * 7",
-        "What's 10 * 10",
-        "What's 20 + 25",
-        "What's 50 / 5"
-    ]);
+    const [questions, setQuestion] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [timeLeft, setTimeLeft] = useState(180);
     const totalTime = 20;
     const totalQuestions = questions.length;
+    console.log("total questiom", totalQuestions)
     const progressTrackerRef = useRef(null);
     const [score, setScore] = useState(0);
     const [showConfetti, setShowConfetti] = useState(false);
@@ -59,7 +54,8 @@ function LiveBattle (){
         if (!isTimeUp) {
           console.log('Message sent:', message);
           setMessage('');
-          setCurrentQuestionIndex(prevIndex => prevIndex + 1); 
+          console.log("current index:", currentQuestionIndex);
+          setCurrentQuestionIndex(prevIndex => Math.min(prevIndex + 1, questions.length)); 
         }
     }; 
 
@@ -103,6 +99,7 @@ useEffect(() => {
             { rank: 2, name: 'Idunno Mann', score: 0 },
             { rank: 3, name: 'Jackie Butter', score: 0 },
         ]);
+        fetchCards();
     }, []);
 
     // useEffect(() => {
@@ -117,7 +114,7 @@ useEffect(() => {
     
     //confetti effect when quiz is finished
     useEffect(() => {
-        if (currentQuestionIndex >= totalQuestions) {
+        if ((currentQuestionIndex >= totalQuestions) && (totalQuestions > 0)) {
             setIsQuizFinished(true);
             setShowConfetti(true);
             setTimeout(() => {
@@ -148,6 +145,7 @@ useEffect(() => {
     // progress trackers (questions)
     const getVisibleTrackers = () => {
         const totalDots = questions.length;
+        console.log("totaldots", totalDots);
         const visibleDots = 6;
         const halfVisible = Math.floor(visibleDots / 2);
     
@@ -173,6 +171,21 @@ useEffect(() => {
         return () => window.removeEventListener("keydown", handleEsc);
       }, []);
       
+    // GET all cards
+    const fetchCards = async () => {
+        try {
+            const response = await api.get(`/flashcards/${livebattle_id}`);
+            console.log('Fetched cards:', response.data);
+            setQuestion(response.data);
+            console.log("total question", questions.length);
+        } catch(error) {
+            console.error('Error fetching cards:', error);            
+        }
+    };
+
+    if (questions.length === 0) {
+        return <div>Loading questions...</div>;
+    }
 
     return(
         <div className='live-battle-page'>
@@ -202,7 +215,7 @@ useEffect(() => {
                                 <path d="M16 12.001H2.914l5.294-5.295-.707-.707L1 12.501l6.5 6.5.707-.707-5.293-5.293H16v-1z" data-name="Left"/>
                             </svg>
                         </div>
-                        <span className='subject-title'>Mathematics</span>
+                        <span className='subject-title'>{title}</span>
                     </div>
                     <div className='battle-timer'>
                         <BattleTimer totalTime={totalTime} onTimeUp={() => setIsTimeUp(true)} />
@@ -222,7 +235,7 @@ useEffect(() => {
                     <div className='battle-flashcard-container'>
                         <div className='question-container'>
                             <span className={isQuizFinished ? 'done' : (isTimeUp ? 'time-up' : '')}>
-                                {isQuizFinished ? "Done" : (isTimeUp ? "Time is up!" : questions[currentQuestionIndex])}
+                                {isQuizFinished ? "Done" : (isTimeUp ? "Time is up!" :((currentQuestionIndex > (questions.length - 1)) ? setIsQuizFinished(true) : questions[currentQuestionIndex].question))}
                                 {(isTimeUp || isQuizFinished) && (
                                     <div className="final-score">
                                         Score: {score}
