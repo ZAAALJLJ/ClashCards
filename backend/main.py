@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes.route import router
+from routes.websocket import websocket_router
 from routes.studyset_route import studyset_router
 
 app = FastAPI()
@@ -18,5 +19,6 @@ app.add_middleware(
     allow_headers=['*'],
 )
 
+app.include_router(websocket_router)
 app.include_router(router)
 app.include_router(studyset_router)

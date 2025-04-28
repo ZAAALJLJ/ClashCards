@@ -9,11 +9,12 @@ import SoloReview from './pages/SoloReview'
 import LiveBattle from './pages/LiveBattle'
 import BattleResult from './pages/BattleResult'
 import CreateFlashcard from './pages/CreateFlashcard'
+import Test from './pages/Test'
 
 
 function App() {
   const location = useLocation();
-  const hideSidebarRoutes = ['/livebattle', '/battleresult', '/soloreview'];
+  const hideSidebarRoutes = ['/livebattle', '/battleresult', '/soloreview', '/test'];
   const shouldHideSidebar = hideSidebarRoutes.includes(location.pathname.toLowerCase());
   return (
     <div>
@@ -27,6 +28,7 @@ function App() {
           <Route path='/livebattle/:livebattle_id' element={<LiveBattle/>}/>
           <Route path='/battleresult' element={<BattleResult/>}/>
           <Route path='/createflashcard/:studyset_id' element={<CreateFlashcard/>}/>
+          <Route path='/test' element={<Test/>}/>
         </Routes>
       </main>
     </div>

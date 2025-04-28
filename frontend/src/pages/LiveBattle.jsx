@@ -9,6 +9,9 @@ import api from '../api';
 
 function LiveBattle (){
     
+    // DELETE once authentication is made
+    const client_id = Date.now() + Math.random();
+
     const { livebattle_id } = useParams('');
     const title = getStudysetTitle(livebattle_id);
     const [rankItems, setRankItems] = useState([]);
@@ -21,10 +24,15 @@ function LiveBattle (){
     const [timeLeft, setTimeLeft] = useState(180);
     const totalTime = 20;
     const totalQuestions = questions.length;
-    console.log("total questiom", totalQuestions)
     const progressTrackerRef = useRef(null);
     const [score, setScore] = useState(0);
     const [showConfetti, setShowConfetti] = useState(false);
+
+    // player set score
+    const [player_score, setPlayerScore] = useState(0);
+
+    // websocket
+    const [ws, setWs] = useState(null);
 
     //timer
     useEffect(() => {
@@ -52,13 +60,20 @@ function LiveBattle (){
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!isTimeUp) {
-          console.log('Message sent:', message);
           setMessage('');
-          console.log("current index:", currentQuestionIndex);
+          if (questions[currentQuestionIndex].answer == message){
+            setScore(score + 10);
+            sendToServer(score);
+          }
           setCurrentQuestionIndex(prevIndex => Math.min(prevIndex + 1, questions.length)); 
         }
     }; 
 
+    const sendToServer = (event) => {
+        if (ws && score) {
+            ws.send(score);
+        }
+    }
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' && !e.shiftKey  && !isTimeUp) {
             e.preventDefault();
@@ -68,38 +83,92 @@ function LiveBattle (){
 
     // leaderboard fetching
 // Inside useEffect for updating rankItems
-useEffect(() => {
-    const interval = setInterval(() => {
-        setRankItems(prevItems => {
-            // Update the score randomly for each user
-            const updatedItems = prevItems.map(item => ({
-                ...item,
-                score: item.score + Math.floor(Math.random() * 10) // Random score change
-            }));
+// useEffect(() => {
+//     const interval = setInterval(() => {
+//         setRankItems(prevItems => {
+//             // Update the score randomly for each user
+//             const updatedItems = prevItems.map(item => ({
+//                 ...item,
+//                 score: item.score + Math.floor(Math.random() * 10) // Random score change
+//             }));
 
-            // Sort the leaderboard based on updated score
-            updatedItems.sort((a, b) => b.score - a.score); // Sort by score
+//             //
 
-            // Recalculate ranks based on the new sorted order
-            return updatedItems.map((item, index) => ({
-                ...item,
-                rank: index + 1 // Update the rank based on position
-            }));
-        });
-    }, 3000); // Update every 3 seconds
+//             // Sort the leaderboard based on updated score
+//             updatedItems.sort((a, b) => b.score - a.score); // Sort by score
 
-    return () => clearInterval(interval);
-}, []);
+//             // Recalculate ranks based on the new sorted order
+//             return updatedItems.map((item, index) => ({
+//                 ...item,
+//                 rank: index + 1 // Update the rank based on position
+//             }));
+//         });
+//     }, 3000); // Update every 3 seconds
+
+//     return () => clearInterval(interval);
+// }, []);
 
 
     // Initial setup for rank items
     useEffect(() => {
         setRankItems([
+            { rank: 4, name: client_id, score: player_score},
             { rank: 1, name: 'Just Donatello', score: 0},
             { rank: 2, name: 'Idunno Mann', score: 0 },
             { rank: 3, name: 'Jackie Butter', score: 0 },
         ]);
         fetchCards();
+    }, []);
+
+    // websocket connection
+    useEffect(() => {
+        const socket = new WebSocket(`ws://localhost:8001/ws/${client_id}`); // creates the socket for this specific client
+        // socketRef.current = socket;
+        
+        socket.onmessage = (event) => {
+            try {
+                console.log(`${event.data}`)
+                setRankItems(prevItems => {
+                    // Update the score randomly for each user
+                    const updatedItems = prevItems.map(item => ({
+                        ...item,
+                        score: item.score + Math.floor(Math.random() * 10) // Random score change
+                    }));
+        
+                    //
+        
+                    // Sort the leaderboard based on updated score
+                    updatedItems.sort((a, b) => b.score - a.score); // Sort by score
+        
+                    // Recalculate ranks based on the new sorted order
+                    return updatedItems.map((item, index) => ({
+                        ...item,
+                        rank: index + 1 // Update the rank based on position
+                    }));
+                });
+            } catch (error) {
+                console.error('Error fetching cards:', error);     
+            }
+            
+        };
+
+        socket.onopen = () => {
+        console.log("WebSocket Connected!");
+        };
+
+        socket.onerror = (err) => {
+        console.error("WebSocket Error", err);
+        };
+
+        socket.onclose = () => {
+        console.log("WebSocket Disconnected!");
+        };
+
+        setWs(socket); 
+
+        return () => {
+            socket.close();
+        };
     }, []);
 
     // useEffect(() => {
@@ -137,15 +206,12 @@ useEffect(() => {
     //score fetching
     useEffect(() => {
         setTimeout(() => {
-            const fetchedScore = 70; 
-            setScore(fetchedScore);
         }, 1500);
     }, []); 
 
     // progress trackers (questions)
     const getVisibleTrackers = () => {
         const totalDots = questions.length;
-        console.log("totaldots", totalDots);
         const visibleDots = 6;
         const halfVisible = Math.floor(visibleDots / 2);
     
@@ -246,6 +312,7 @@ useEffect(() => {
                         <div className='answer-container'>
                             <form onSubmit={handleSubmit} className="message-form">
                                 <div className="input-group">
+                                    
                                     <textarea
                                         value={message}
                                         onChange={(e) => !isTimeUp && !isQuizFinished && setMessage(e.target.value)}
@@ -255,6 +322,7 @@ useEffect(() => {
                                         rows={1}
                                         disabled={isTimeUp || isQuizFinished}
                                     />
+
                                     <button 
                                         type="submit" 
                                         className={`send-button ${isTimeUp || isQuizFinished ? 'disabled' : ''}`}  
@@ -262,6 +330,7 @@ useEffect(() => {
                                         aria-disabled={isTimeUp || isQuizFinished}
                                         aria-label={isTimeUp || isQuizFinished ? "Quiz Over" : "Send answer"}
                                     >
+
                                         <svg viewBox="0 -0.5 21 21" xmlns="http://www.w3.org/2000/svg" className="paper-plane-icon-sm">
                                             <path d="M2.61258 9L0.05132 1.31623C-0.22718 0.48074 0.63218 -0.28074 1.42809 0.09626L20.4281 9.0963C21.1906 9.4575 21.1906 10.5425 20.4281 10.9037L1.42809 19.9037C0.63218 20.2807 -0.22718 19.5193 0.05132 18.6838L2.61258 11H8.9873C9.5396 11 9.9873 10.5523 9.9873 10C9.9873 9.4477 9.5396 9 8.9873 9H2.61258z"  fill={isTimeUp ? "#cccccc" : "currentColor"}/>
                                         </svg> 
@@ -289,6 +358,7 @@ useEffect(() => {
                     </div>
                 </div>
             </div>
+            
             {showLeaveModal && (
                 <div
                     className="modal-overlay"

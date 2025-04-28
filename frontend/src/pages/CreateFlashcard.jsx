@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 function CreateFlashcard () {
     const { studyset_id } = useParams();
     const [flashcards, setCards] = useState([]);
-    const [flashcard, setCard] = useState({question: '', answer: '', studyset_id: studyset_id});
+    const [flashcard, setCard] = useState({studyset_id: studyset_id, question: '', answer: ''});
     const [isUpdating, setUpdate] = useState(false);
     const [currentKey, setKey] = useState({id: ''});
     const [title, setTitle] = useState('');
@@ -52,7 +52,7 @@ function CreateFlashcard () {
         try {
             await api.post('/flashcards/', flashcard);
             setCards([...flashcards, flashcard]);
-            setCard({ question: '', answer: ''});
+            setCard({studyset_id: studyset_id, question: '', answer: ''});
         } catch (error) {
             console.error('Error adding cards:', error);
         }
@@ -74,7 +74,7 @@ function CreateFlashcard () {
     // GET clicked created card
     const createdCLicked = (cardData) => {
         console.log("Received from child:", cardData);
-        setCard({ question: cardData.question, answer: cardData.answer});
+        setCard({studyset_id: studyset_id, question: cardData.question, answer: cardData.answer});
         setKey({id: cardData.id});
         setUpdate(true);
       };
@@ -97,7 +97,7 @@ function CreateFlashcard () {
     const createCard = async () => {
         try {
             setKey({id: ''});
-            setCard({ question: '', answer: ''});
+            setCard({studyset_id: studyset_id, question: '', answer: ''});
             setUpdate(false);
         } catch (error) {
             console.error('Error create button:', error);
