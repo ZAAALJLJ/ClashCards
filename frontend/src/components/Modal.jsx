@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from "react-router-dom";
 import '../css/Modal.css';
 
 const Modal = ({ 
@@ -29,10 +30,16 @@ const Modal = ({
     if (!show) return null;
 
     return (
-        <div className="modal-overlay" onClick={() => onClose()}>
+        <div 
+            className="modal-overlay" 
+            onClick={() => type !== 'confirm' && onClose()} 
+        >
+
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <h3>{title}</h3>
-                {bodyText && <p>{bodyText}</p>}
+                {bodyText && bodyText.split('\n').map((line, idx) => (
+                    <p key={idx}>{line}</p>
+                ))}
                 {inputField && (
                 <form onSubmit={handleSubmit}>
                     <input
@@ -50,11 +57,20 @@ const Modal = ({
                             <button className="modal-continue" onClick={onSubmit}>
                                 Continue Battle
                             </button>
-                            <button className="modal-leave" onClick={onClose}>
+                            <Link to="/" className="modal-leave">
                                 Leave Battle
-                            </button>
+                            </Link>
                         </>
-                    ) : (
+                    ) : type === 'confirm' ? (
+                        <>
+                            <Link to="/" className="modal-leave">
+                                Leave
+                            </Link>
+                          <button className="modal-submit" onClick={onSubmit}>
+                            {submitText || 'Start'}
+                          </button>
+                        </>
+                      ) :  (
                         <>
                             <button className="modal-cancel" onClick={onClose}>
                                 {cancelText || 'Cancel'}
@@ -69,33 +85,5 @@ const Modal = ({
         </div>
     );
 };
-
-// const [showLeaveModal, setShowLeaveModal] = useState(false);
-
-// const handleLeaveBattle = () => {
-//   console.log('User is leaving the battle...');
-//   setShowLeaveModal(false); 
-// };
-
-// return (
-//     <div>
-//       <button onClick={() => setShowLeaveModal(true)}>Leave Battle</button>
-
-            // <Modal
-            //     show={showLeaveModal}
-            //     onClose={() => setShowLeaveModal(false)}
-            //     onSubmit={handleLeaveBattle}
-            //     title="Leave the Battle?"
-            //     bodyText="Your progress will be lost if you leave now. Are you sure?"
-            //     cancelText="Continue Battle"
-            //     submitText="Leave Battle"
-            //     type="leave" 
-            // />
-
-//     </div>
-//   );
-// }
-
-//livebattle modal 
 
 export default Modal;
