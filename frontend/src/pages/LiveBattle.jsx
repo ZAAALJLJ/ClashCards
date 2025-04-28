@@ -100,6 +100,14 @@ function LiveBattle (){
             ws.send(score);
         }
     }
+
+    // websocket set button READY
+    const sendReady = (event) => {
+        if (ws) {
+            ws.send("ready");
+        }
+    }
+
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' && !e.shiftKey  && !isTimeUp) {
             e.preventDefault();
@@ -124,6 +132,16 @@ function LiveBattle (){
         // socketRef.current = socket;
         
         socket.onmessage = (event) => {
+
+            if (event.data === "All players ready") {
+                console.log("ONMESSAGE WORKED");
+                setHasGameStarted(true);
+                setShowStartModal(false);
+                setTimeLeft(totalTime); 
+                // You can even return early if you don't want to run the score update
+                return;
+            }
+
             try {
                 console.log(`${event.data}`)
                 setRankItems(prevItems => {
@@ -372,14 +390,13 @@ const handleLeaveBattle = () => {
                 show={showStartModal}
                 onClose={() => {}} 
                 onSubmit={() => {
-                    setHasGameStarted(true);
-                    setShowStartModal(false);
-                    setTimeLeft(totalTime); 
+                    // wait until all players are ready
+                    sendReady();
                 }}
                 title="Waiting for Players..."
                 bodyText={`${playerCount} player${playerCount !== 1 ? 's' : ''} in lobby.\n You will have limited time to answer all questions.  Ready to start?`}
                 cancelText="Cancel"
-                submitText="Start Battle"
+                submitText="Ready"
                 type="confirm"
             />
 
