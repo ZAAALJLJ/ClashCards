@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import '../css/LiveBattle.css';
+import Modal from '../components/Modal.jsx';
 import Leaderboard from '../components/LeaderboardCard';
 import BattleTimer from '../components/BattleTimer'; 
 import Confetti from 'react-confetti';
@@ -27,12 +28,23 @@ function LiveBattle (){
     const progressTrackerRef = useRef(null);
     const [score, setScore] = useState(0);
     const [showConfetti, setShowConfetti] = useState(false);
+    const [hasGameStarted, setHasGameStarted] = useState(false);
+    const [showStartModal, setShowStartModal] = useState(true);
+    const [playerCount, setPlayerCount] = useState(1); 
+
+
 
     // player set score
     const [player_score, setPlayerScore] = useState(0);
 
     // websocket
     const [ws, setWs] = useState(null);
+
+    //start modal 
+    useEffect(() => {
+        setShowStartModal(true);
+    }, []);
+    
 
     //timer
     useEffect(() => {
@@ -59,15 +71,27 @@ function LiveBattle (){
     //form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!isTimeUp) {
+        if (!isTimeUp && hasGameStarted) {
           setMessage('');
-          if (questions[currentQuestionIndex].answer == message){
-            setScore(score + 10);
-            sendToServer(score);
+          if (questions[currentQuestionIndex]?.answer === message.trim()) {
+            const newScore = score + 10;
+            setScore(newScore);
+            sendToServer(newScore);
           }
-          setCurrentQuestionIndex(prevIndex => Math.min(prevIndex + 1, questions.length)); 
+      
+          const nextIndex = currentQuestionIndex + 1;
+          if (nextIndex >= questions.length) {
+            setIsQuizFinished(true);
+            setShowConfetti(true);
+            setTimeout(() => {
+              setShowConfetti(false);
+            }, 5000);
+          } else {
+            setCurrentQuestionIndex(nextIndex);
+          }
         }
-    }; 
+      };
+      
 
     const sendToServer = (event) => {
         if (ws && score) {
@@ -80,34 +104,6 @@ function LiveBattle (){
             handleSubmit(e);
         }
     };
-
-    // leaderboard fetching
-// Inside useEffect for updating rankItems
-// useEffect(() => {
-//     const interval = setInterval(() => {
-//         setRankItems(prevItems => {
-//             // Update the score randomly for each user
-//             const updatedItems = prevItems.map(item => ({
-//                 ...item,
-//                 score: item.score + Math.floor(Math.random() * 10) // Random score change
-//             }));
-
-//             //
-
-//             // Sort the leaderboard based on updated score
-//             updatedItems.sort((a, b) => b.score - a.score); // Sort by score
-
-//             // Recalculate ranks based on the new sorted order
-//             return updatedItems.map((item, index) => ({
-//                 ...item,
-//                 rank: index + 1 // Update the rank based on position
-//             }));
-//         });
-//     }, 3000); // Update every 3 seconds
-
-//     return () => clearInterval(interval);
-// }, []);
-
 
     // Initial setup for rank items
     useEffect(() => {
@@ -122,7 +118,7 @@ function LiveBattle (){
 
     // websocket connection
     useEffect(() => {
-        const socket = new WebSocket(`ws://localhost:8001/ws/${client_id}`); // creates the socket for this specific client
+        const socket = new WebSocket(`ws://localhost:8000/ws/${client_id}`); // creates the socket for this specific client
         // socketRef.current = socket;
         
         socket.onmessage = (event) => {
@@ -171,15 +167,11 @@ function LiveBattle (){
         };
     }, []);
 
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //         setRankItems([
-    //         { rank: 1, name: 'Just Donatello', score: 100 },
-    //         { rank: 2, name: 'Idunno Mann', score: 90 },
-    //         { rank: 3, name: 'Jackie Butter', score: 80 },
-    //         ]);
-    //     }, 1000); // simulated fetch delay
-    // }, []);
+
+const handleLeaveBattle = () => {
+  console.log('User is leaving the battle...');
+  setShowLeaveModal(false); 
+};
     
     //confetti effect when quiz is finished
     useEffect(() => {
@@ -283,9 +275,11 @@ function LiveBattle (){
                         </div>
                         <span className='subject-title'>{title}</span>
                     </div>
-                    <div className='battle-timer'>
-                        <BattleTimer totalTime={totalTime} onTimeUp={() => setIsTimeUp(true)} />
-                    </div>
+                    {hasGameStarted && (
+                        <div className='battle-timer'>
+                            <BattleTimer totalTime={totalTime} onTimeUp={() => setIsTimeUp(true)} />
+                        </div>
+                    )}
                 </div>
             </div>
             <div className='live-content'>
@@ -300,14 +294,20 @@ function LiveBattle (){
                 <div className='live-flashcard-container'>
                     <div className='battle-flashcard-container'>
                         <div className='question-container'>
-                            <span className={isQuizFinished ? 'done' : (isTimeUp ? 'time-up' : '')}>
-                                {isQuizFinished ? "Done" : (isTimeUp ? "Time is up!" :((currentQuestionIndex > (questions.length - 1)) ? setIsQuizFinished(true) : questions[currentQuestionIndex].question))}
-                                {(isTimeUp || isQuizFinished) && (
-                                    <div className="final-score">
-                                        Score: {score}
-                                    </div>
-                                )}
-                            </span>
+                        <span className={isQuizFinished ? 'done' : (isTimeUp ? 'time-up' : '')}>
+                            {!hasGameStarted
+                                ? "Waiting to start..."
+                                : isQuizFinished
+                                ? "Done"
+                                : isTimeUp
+                                    ? "Time is up!"
+                                    : questions[currentQuestionIndex]?.question || ""}
+                            {(isTimeUp || isQuizFinished) && (
+                                <div className="final-score">
+                                Score: {score}
+                                </div>
+                            )}
+                        </span>
                         </div>
                         <div className='answer-container'>
                             <form onSubmit={handleSubmit} className="message-form">
@@ -315,12 +315,18 @@ function LiveBattle (){
                                     
                                     <textarea
                                         value={message}
-                                        onChange={(e) => !isTimeUp && !isQuizFinished && setMessage(e.target.value)}
+                                        onChange={(e) => !isTimeUp && !isQuizFinished && hasGameStarted && setMessage(e.target.value)}
                                         onKeyDown={handleKeyDown}
-                                        placeholder={isTimeUp || isQuizFinished ? 'Quiz Over!' : 'Type your answer here...'}
+                                        placeholder={
+                                            !hasGameStarted
+                                              ? 'Waiting to start...'
+                                              : isTimeUp || isQuizFinished
+                                                ? 'Quiz Over!'
+                                                : 'Type your answer here...'
+                                          }
                                         className="message-input"
                                         rows={1}
-                                        disabled={isTimeUp || isQuizFinished}
+                                        disabled={!hasGameStarted || isTimeUp || isQuizFinished}
                                     />
 
                                     <button 
@@ -359,28 +365,33 @@ function LiveBattle (){
                 </div>
             </div>
             
-            {showLeaveModal && (
-                <div
-                    className="modal-overlay"
-                    onClick={() => setShowLeaveModal(false)}
-                >
-                    <div
-                        className="modal-content"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <h3>Leave the Battle?</h3>
-                        <p>Your progress will be lost if you leave now. Are you sure?</p>
-                        <div className="modal-buttons">
-                            <button onClick={() => setShowLeaveModal(false)} className="modal-cancel">
-                                Continue Battle
-                            </button>
-                            <Link to="/" className="modal-leave">
-                                Leave Battle
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <div>
+            <Modal
+                show={showStartModal}
+                onClose={() => {}} 
+                onSubmit={() => {
+                    setHasGameStarted(true);
+                    setShowStartModal(false);
+                    setTimeLeft(totalTime); 
+                }}
+                title="Waiting for Players..."
+                bodyText={`${playerCount} player${playerCount !== 1 ? 's' : ''} in lobby.\n You will have limited time to answer all questions.  Ready to start?`}
+                cancelText="Cancel"
+                submitText="Start Battle"
+                type="confirm"
+            />
+
+                <Modal
+                    show={showLeaveModal}
+                    onClose={() => setShowLeaveModal(false)}
+                    onSubmit={handleLeaveBattle}
+                    title="Leave the Battle?"
+                    bodyText="Your progress will be lost if you leave now. Are you sure?"
+                    cancelText="Continue Battle"
+                    submitText="Leave Battle"
+                    type="leave" 
+                />
+            </div>
         </div>
     )
 }
