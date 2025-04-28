@@ -5,6 +5,7 @@ import FlashcardCarousel from '../components/FlashcardCarousel';
 import Leaderboard from '../components/LeaderboardCard';
 import crownLogo from '../assets/crown.png';
 import api from '../api';
+import Modal from '../components/Modal';
 
 
 
@@ -13,6 +14,9 @@ function StudySet (){
     const [flashcards, setCards] = useState([]);
     const [title, setTitle] = useState('');
     const navigate = useNavigate();
+
+    // MODAL stuff
+    const [showModal, setShowModal] = useState(false);
     
     // GET all cards
     const fetchCards = async () => {
@@ -53,8 +57,8 @@ function StudySet (){
     }
 
     // Go to LIVEBATTLE
-    const goBattle = async () => {
-        navigate(`/livebattle/${id}`);
+    const goBattle = async (battle_id) => {
+        navigate(`/livebattle/${battle_id}/${id}`);
     }
 
 
@@ -99,7 +103,7 @@ function StudySet (){
                 </div>
                 <div className="home-buttons">
                     <button className="btn-home" onClick={goCreateFC}>+ Create Flashcard</button>
-                    <button className="btn-home" onClick={goBattle}>Battle</button>
+                    <button className="btn-home" onClick={() => setShowModal(true)}>Battle</button>
                     <button className="btn-home" onClick={goSoloReview}>Solo Review Mode</button>
                 </div>
             </div>
@@ -141,6 +145,17 @@ function StudySet (){
                     )}
                 </div>
             </div>
+            <Modal
+                show={showModal}
+                onClose={() => setShowModal(false)}
+                onSubmit={goBattle}
+                title="Lobby Code"
+                bodyText="Enter a Lobby Code to create or join a lobby"
+                inputField={true}
+                cancelText="Cancel"
+                submitText="Enter"
+                placeholder="Enter Lobby code"
+            />
         </div>
     );
 }
