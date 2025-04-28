@@ -1,43 +1,265 @@
 .profile-page {
-    background-color: rgb(26, 26, 26);
+    background-color: #11234b;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: center;
     height: 100vh;
     width: calc(100vw - 100px);
     position: relative;
     margin-left: 100px;
-    top: 0;
+    color: #ffffff;
 }
 
 .profile-nav-bar {
-    background-color: palegoldenrod;
     width: 100%;
-    top: 0;
+    padding: 1rem;
+    padding-bottom: 0;
 }
 
 .profile-title {
-    top: 0;
-    left: 0px;
+    font-weight: 700;
+    font-size: 2.5rem;
+    text-align: start;
 }
 
 .profile-content {
-    background-color: blue;
-    width: 100%;
-    height: 100%;
+    width: 95%;
+    height: 95%;
     display: flex;
     flex-direction: row;
+    gap: 1rem;
+    padding: 1rem 0;
+    box-sizing: border-box;
 }
 
-.profile-info {
-    background-color: yellowgreen;
-    width: 20%;
+.profile-info-container {
+    flex:1;
     height: 100%;
+    gap: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    min-width: 250px;
+}
+
+.user-profile-container{
+    background-color: #051537;
+    width: 100%;
+    height: 100%;
+    padding: 2rem;
+    border-radius: 1rem;
+}
+
+.user-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profile-pic-container {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #051537;
+}
+
+.profile-pic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.username-display h2 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 1.2rem;
+}
+
+.user-details-container{
+    padding: 2.5rem 1rem;
+    align-items: center;
+}
+
+.user-info-container{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    padding:0.5rem 0;
+}
+
+.user-details-label{
+    color: rgba(255,255,255,0.45);
+    font-size: smaller;
+
 }
 
 .profile-stats {
-    background-color: violet;
-    width: 70%;
+    flex:4;
+    height: 100%;
+    box-sizing: border-box;
+    border-radius:1rem;
+    border: 1px solid #d4e5ff;
+    padding:1rem;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.profile-stats-label{
+    flex:1;
+    align-self: start;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.user-chart-container{
+    flex:5;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+}
+
+.user-statistics-progress{
+    flex:3;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    gap: 1rem; 
+}
+
+.statistics-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap:1rem;
+}
+
+.progress-bar-label{
+    flex: 1;
+    text-align: start;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    padding-left: 1rem;
+    font-size: 1rem;
+}
+
+.progress-bar-container{
+    flex:3;
+    height: 20px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.skeleton {
+    background: #0a1a3a; 
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.skeleton-shimmer {
+    background: linear-gradient(90deg, 
+        rgba(108, 229, 232, 0.1) 25%, 
+        rgba(65, 184, 213, 0.3) 50%, 
+        rgba(108, 229, 232, 0.1) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite linear;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
 }
+
+.progress-skeleton {
+    height: 20px;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.label-skeleton {
+    height: 16px;
+    width: 80px;
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .profile-page {
+        height: 100%;
+    }
+
+    .user-profile{
+        padding-bottom: 2rem;
+    }
+
+    .user-details-container{
+        padding: 0rem 2rem;
+    }
+
+    .profile-stats {
+        flex: 1;
+        padding: 0.5rem;
+    }
+
+    .user-chart-container {
+        min-height: 300px;
+        padding: 1rem; 
+    }
+
+    .user-statistics-progress {
+        padding: 2rem;
+    }
+
+    .profile-content {
+        flex-direction: column;
+        padding: 0.5rem;
+    }
+
+    .statistics-container{
+        flex-direction: column;
+        padding: 0;
+    }
+
+    .profile-stats-label{
+        padding: 1rem;
+    }
+
+    .profile-info-container, 
+    .profile-stats{
+        flex: none;
+        width: 100%;
+        height: auto;
+    }
+
+    .progress-bar-container {
+        height: 12px;
+    }
+
+    .progress-bar-label{
+        font-size: larger;
+    }
+
+  }

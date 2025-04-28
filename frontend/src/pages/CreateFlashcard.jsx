@@ -2,17 +2,21 @@ import { useEffect, useState } from 'react';
 import '../css/CreateFlashcard.css'
 import api from '../api'
 import CreatedFlashcard from '../components/CreatedFlashcard';
+import { useParams } from 'react-router-dom';
+
 
 function CreateFlashcard () {
+    const { studyset_id } = useParams();
     const [flashcards, setCards] = useState([]);
-    const [flashcard, setCard] = useState({question: '', answer: ''});
+    const [flashcard, setCard] = useState({studyset_id: studyset_id, question: '', answer: ''});
     const [isUpdating, setUpdate] = useState(false);
     const [currentKey, setKey] = useState({id: ''});
-    
+    const [title, setTitle] = useState('');
+
     // GET all cards
     const fetchCards = async () => {
         try {
-            const response = await api.get('/flashcards/');
+            const response = await api.get(`/flashcards/${studyset_id}`);
             console.log('Fetched cards:', response.data);
             setCards(response.data);
         } catch(error) {
@@ -20,9 +24,21 @@ function CreateFlashcard () {
         }
     };
 
-    // SET cards
+    // GET title
+    const fetchTitle = async () => {
+        try { 
+            const response = await api.get(`/studysets/${studyset_id}`);
+            setTitle(response.data.title);
+            console.log(response.data);
+        } catch (error){
+            console.error('Error title studyset:', error);            
+        }
+    };
+
+    // SET after rendering
     useEffect(() => {
         fetchCards();
+        fetchTitle();
     }, []);
 
     // SET single card
@@ -36,7 +52,7 @@ function CreateFlashcard () {
         try {
             await api.post('/flashcards/', flashcard);
             setCards([...flashcards, flashcard]);
-            setCard({ question: '', answer: ''});
+            setCard({studyset_id: studyset_id, question: '', answer: ''});
         } catch (error) {
             console.error('Error adding cards:', error);
         }
@@ -58,7 +74,7 @@ function CreateFlashcard () {
     // GET clicked created card
     const createdCLicked = (cardData) => {
         console.log("Received from child:", cardData);
-        setCard({ question: cardData.question, answer: cardData.answer});
+        setCard({studyset_id: studyset_id, question: cardData.question, answer: cardData.answer});
         setKey({id: cardData.id});
         setUpdate(true);
       };
@@ -81,7 +97,7 @@ function CreateFlashcard () {
     const createCard = async () => {
         try {
             setKey({id: ''});
-            setCard({ question: '', answer: ''});
+            setCard({studyset_id: studyset_id, question: '', answer: ''});
             setUpdate(false);
         } catch (error) {
             console.error('Error create button:', error);
@@ -92,7 +108,7 @@ function CreateFlashcard () {
         <div className="create-page">
             <div className="create-nav-bar">
                 <div className="create-title">
-                    Mathematics
+                    {title}
                 </div>
             </div>
             <div className="create-content">

@@ -4,126 +4,131 @@
 .battleresult-page{
     background-color: #11234b;
     font-family: "Inter", sans-serif;
-}
-
-.result-parent-container{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    padding:2rem;
 }
 
-    .result-container {
-        background-color: #051537;
+.battleresult-page .result-parent-container{
+    width: 30vw;
+    display:flex;
+    flex-direction: column;
+    min-width: 300px;
+    max-height: 85vh;
+    flex-grow: 1;
+}
+
+
+    .battleresult-page .result-container {
+        background-color: #051537 !important;
         display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        height: 80vh;
-        width: 30vw;
-        min-width: 300px;
-        position: relative;
-        top: 0;
+        flex-direction: column; 
+        width: 100%;
         border-radius: 1rem;
         border: 0.5px solid rgba(240, 248, 255, 0.308);
         padding: 1rem;
-    }
-        
-        .result-title{
-            display: flex;
-            align-items: center;
-            flex-direction: column;
-            margin-bottom: 0.5em;
-        }
-
-            .crown{
-                width: 80px;
-                height: auto;
-            }
-
-        .rank-list{
-            width: 100%;
-            padding:1rem;
-            box-sizing: border-box;
-            max-height: 60vh;
-            overflow-y: auto;
-        }
-
-            .rank-list::-webkit-scrollbar {
-                width: 8px;
-            }
-            
-            .rank-list::-webkit-scrollbar-thumb {
-                background-color: rgba(255, 255, 255, 0.3); 
-                border-radius: 4px;
-            }
-            
-            .rank-list::-webkit-scrollbar-track {
-                background-color: rgba(0, 0, 0, 0.2);
-            }
-
-            .rank-item-container {
-                display: flex;
-                flex: center;
-                border: 1px solid #203364; 
-                border-radius: 30px;
-                width: 100%;
-                margin-bottom:0.5rem;
-                padding: 0.5rem 1rem;
-                background-color: #203364;
-                box-sizing: border-box;
-                position: relative;
-            }
-
-                .rank-number{
-                    width: 2rem;
-                    text-align: center;
-                    flex-shrink: 0;
-                }
-
-                .user-name{
-                    text-align: left;
-                    flex-grow: 1;
-                }
-
-                .battle-score{
-                    flex-shrink:0;
-                    text-align: right;
-                }
-                    
-    .skeleton {
-        background: #ccc;
-        position: relative;
-        overflow: hidden;
-        border-radius: 5px;
-    }
-    
-    @keyframes shimmer {
-        0% {
-        background-position: -1000px 0;
-        }
-        100% {
-        background-position: 1000px 0;
-        }
+        overflow: auto;
+        flex-grow: 1;
     }
 
-    .skeleton-shimmer {
-        background: linear-gradient(90deg, #003366 25%, #336699 50%, #003366 75%); /* Blue shades */
-        background-size: 200% 100%;
-        animation: shimmer 20s infinite linear;
+ /*       
+    .result-title{
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        margin-bottom: 0.5em;
     }
 
-    .skeleton {
+        .crown{
+            width: 80px;
+            height: auto;
+        }
+
+    .rank-list{
         width: 100%;
-        height: 30px; 
+        padding:1rem;
+        box-sizing: border-box;
+        max-height: 60vh;
+        overflow-y: auto;
     }
-    
-    .skeleton-circle {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-    }
-    
 
+        .rank-list::-webkit-scrollbar {
+            width: 8px;
+        }
         
+        .rank-list::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.3); 
+            border-radius: 4px;
+        }
+        
+        .rank-list::-webkit-scrollbar-track {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .rank-item-container {
+            display: flex;
+            flex: center;
+            border: 1px solid #203364; 
+            border-radius: 30px;
+            width: 100%;
+            margin-bottom:0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #203364;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+            .rank-number{
+                width: 2rem;
+                text-align: center;
+                flex-shrink: 0;
+            }
+
+            .user-name{
+                text-align: left;
+                flex-grow: 1;
+            }
+
+            .battle-score{
+                flex-shrink:0;
+                text-align: right;
+            }
+                
+.skeleton {
+    background: #ccc;
+    position: relative;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+@keyframes shimmer {
+    0% {
+    background-position: -1000px 0;
+    }
+    100% {
+    background-position: 1000px 0;
+    }
+}
+
+.skeleton-shimmer {
+    background: linear-gradient(90deg, #003366 25%, #336699 50%, #003366 75%);
+    background-size: 200% 100%;
+    animation: shimmer 20s infinite linear;
+}
+
+.skeleton {
+    width: 100%;
+    height: 30px; 
+}
+
+.skeleton-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+ */
+
+    

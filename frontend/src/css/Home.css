@@ -46,10 +46,51 @@
 .stats-container {
     border-radius: 1rem;
     border: 0.5px solid rgba(240, 248, 255, 0.308);
-    background-color: #11234b;
     flex: 1;
-    padding: 1rem;
+    padding: 1rem 2rem;
+    width: 100%;
 }
+
+.chart-container{
+    padding:1rem;
+    min-height: 200px;
+}
+
+.chart-legend-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 0;
+    gap:0.5rem;
+}
+
+    .legend-details-container{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+        .legend-colour{
+            width: 10px;
+            height: 10px;
+            border-radius: 0;
+            border: none;
+            margin-right: 8px;
+            display: inline-block;
+            margin: 0 1rem;
+        }
+
+        .legend-label{
+            flex:3;
+            text-align: start;
+        }
+
+        .legend-percentage{
+            flex:1;
+        }
 
 .nav-bar {
     background-color: #11234b;
@@ -66,7 +107,49 @@
 }
 
 .btn-home {
+    border-radius: 2rem;
     border: 0.5px solid rgba(240, 248, 255, 0.308);
     background-color: #203364;
     margin-right: 2.5rem;
 }
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    height: 300px;
+    margin: auto;
+    padding: 2rem;
+  }
+  
+  .chart-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  
+
+@media (max-width: 768px) {
+    .content-container {
+      flex-direction: column; 
+      gap:1rem;
+    }
+
+    .study-card-container {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto; 
+      }
+    
+      .stats-container {
+        flex-shrink: 0;
+      }
+
+      .chart-container{
+        padding: 0;
+      }
+
+  }
