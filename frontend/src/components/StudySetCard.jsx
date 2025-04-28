@@ -4,6 +4,7 @@ import { MdDelete } from "react-icons/md";
 
 function StudySetCard({props}) {
     const navigate = useNavigate();
+    const { title, flashcardCount } = props; 
 
     function onEditClick() {
         alert("Edit Clicked");
@@ -22,7 +23,9 @@ function StudySetCard({props}) {
                 </button>
             </div>
             <div className='card-title'>
-                <h3>{props.title}</h3>
+                <h3>{title}</h3>
+                <div className="title-line"></div>
+                <p className="flashcard-count">{flashcardCount} Flashcards</p>
             </div>
         </div>
     );

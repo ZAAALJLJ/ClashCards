@@ -2,8 +2,9 @@ import StudySetCard from "../components/StudySetCard";
 import { useState, useEffect } from "react";
 import'../css/Home.css';
 import api from '../api'
+import Modal from '../components/Modal.jsx';
 import { Doughnut } from 'react-chartjs-2';
-import { Chart, ArcElement, Tooltip, Legend, plugins } from 'chart.js';
+import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 
 Chart.register(ArcElement, Tooltip, Legend);
 
@@ -24,6 +25,7 @@ function Home () {
     notLearned: 0
   });
 
+  //fetch data for doughnut chart
   useEffect(() => {
     const dummyStats = {
       good: 45,
@@ -32,6 +34,7 @@ function Home () {
       notLearned: 15
     };
   
+    //doughnut chart percentage
     const total = Object.values(dummyStats).reduce((acc, value) => acc + value, 0);
   
     if (total !== 100) {
@@ -42,6 +45,7 @@ function Home () {
     setUserStats(dummyStats);
   }, []);
   
+  // percentage validation
   useEffect(() => {
     if (userStats) {
       const total = Object.values(userStats).reduce((acc, value) => acc + value, 0);
@@ -51,6 +55,7 @@ function Home () {
     }
   }, [userStats]);  
 
+  const [showModal, setShowModal] = useState(false);
   const [studysets, setSets] = useState([]);
 
   // GET studysets
@@ -58,6 +63,9 @@ function Home () {
     try {
       const response = await api.get('/studysets/');
       console.log('Fetched cards:', response.data);
+
+      // flashcardCount: ..... { id: 2, title: "Study Set 2", flashcardCount: 35 }
+
       setSets(response.data);
     } catch(error) {
       console.error('Error fetching cards:', error);
@@ -69,7 +77,16 @@ function Home () {
     fetchSets();
   }, []);
 
+  //api call for study set creation
+  const handleCreateStudySet = (name) => {
+    console.log("Creating study set with name:", name); 
+    setTimeout(() => {
+      console.log("Study set created successfully: ", { name });
+      setShowModal(false);
+    }, 1000); 
+  };
 
+  //doughnut chart labels
   const chartData = {
     labels: ['Good', 'Neutral', 'Bad', 'Not Learned'],
     datasets: [
@@ -119,7 +136,7 @@ function Home () {
         </div>
         <div className="home-buttons">
           <button className="btn-home">Battle</button>
-          <button className="btn-home">+ Flashcard Set</button>
+          <button className="btn-home" onClick={() => setShowModal(true)}>+ Flashcard Set</button>
         </div>
       </div>
       <div className="content-container">
@@ -146,7 +163,17 @@ function Home () {
           </div>
         </div>
       </div>
-      
+      <Modal
+          show={showModal}
+          onClose={() => setShowModal(false)}
+          onSubmit={handleCreateStudySet}
+          title="Create a New Study Set"
+          bodyText="Please enter the name for your new study set."
+          inputField={true}
+          cancelText="Cancel"
+          submitText="Create Study Set"
+          placeholder="Enter Study Set Name"
+      />
     </div>
   );
 }
