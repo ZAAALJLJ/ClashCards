@@ -1,4 +1,4 @@
-.login-page {
+.signup-page {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,7 +8,7 @@
     padding: 0;
   }
 
-  .login-container{
+  .signup-container{
     width: 100%;
     height: 100%;
     justify-content: flex-start;
@@ -16,7 +16,7 @@
     align-items: center;
   }
   
-  .login-content {
+  .signup-content {
     display: flex;
     flex-direction: column;
     width: 45%;  
@@ -30,21 +30,21 @@
     justify-content: center;
   }
     
-    .login-header {
+    .signup-header {
         text-align: center;
         margin-bottom: 1rem;
         padding: 1rem;
     }
     
-    .login-header h2 {
+    .signup-header h2 {
         font-size: 3rem;
     }
     
-    .login-header p {
+    .signup-header p {
         font-size: 1rem;
     }
     
-    .login-form-container {
+    .signup-form-container {
         display: flex;
         flex-direction: column;
         /* flex-grow: 1; */
@@ -109,7 +109,7 @@
         font-size: 1rem;
     }
     
-    .signup-link {
+    .login-link {
         text-align: center;
         font-size: 0.9rem;
         color: #cbdbf4;
@@ -117,27 +117,27 @@
         text-align: start;
     }
     
-    .signup-link a {
+    .login-link a {
         color: #ffffff;
         font-weight: 700;
     }
 
     @media (max-width: 768px) {
-        .login-page {
+        .signup-page {
             align-items: flex-start;
             padding: 20px; 
             height: 100vh;
             box-sizing: border-box;
         }
     
-        .login-container {
+        .signup-container {
             width: 100%;
             height: 100%;
             display: flex;
             padding: 0;
         }
     
-        .login-content {
+        .signup-content {
             width: 100%;
             height: 100%; 
             max-height: none;
@@ -149,7 +149,7 @@
             flex-direction: column;
         }
     
-        .login-form-container {
+        .signup-form-container {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
