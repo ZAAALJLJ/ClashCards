@@ -9,6 +9,11 @@ import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 Chart.register(ArcElement, Tooltip, Legend);
 
 function Home () {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   const cards = [
     { id: 1, title: 'Card 1', description: '99 flashcards' },
     { id: 2, title: 'Card 2', description: '99 flashcards' },
@@ -134,9 +139,17 @@ function Home () {
         <div className = "page-title">
           Library
         </div>
-        <div className="home-buttons">
+        <div className={`home-buttons ${isMenuOpen ? "show" : ""}`}>
           <button className="btn-home">Battle</button>
-          <button className="btn-home" onClick={() => setShowModal(true)}>+ Flashcard Set</button>
+          <button className="btn-home" onClick={() => setShowModal(true)}>
+            + Flashcard Set
+          </button>
+        </div>
+
+        <div className="hamburger-icon" onClick={toggleMenu}>
+          <span className="hamburger-bar"></span>
+          <span className="hamburger-bar"></span>
+          <span className="hamburger-bar"></span>
         </div>
       </div>
       <div className="content-container">
@@ -156,7 +169,7 @@ function Home () {
             {Object.keys(userStats).map((stat, index) => (
               <div className="legend-details-container" key={stat}>
                 <div className="legend-colour" style={{ backgroundColor: chartData.datasets[0].backgroundColor[index] }}></div>
-                <div className="legend-label">{stat.charAt(0).toUpperCase() + stat.slice(1)}</div>
+                <div className="legend-label"> {stat.split(/(?=[A-Z])/).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</div>
                 <div className="legend-percentage">{userStats[stat]}%</div>
               </div>
             ))}
