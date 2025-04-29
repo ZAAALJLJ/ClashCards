@@ -1,7 +1,7 @@
-
 import { Route, Routes, useLocation } from 'react-router-dom'
 import './App.css'
 import Home from './pages/Home'
+import Login from './pages/Login'
 import Profile from './pages/Profile'
 import StudySet from './pages/StudySet'
 import Sidebar from './components/Sidebar'
@@ -14,7 +14,7 @@ import Test from './pages/Test'
 
 function App() {
   const location = useLocation();
-  const hideSidebarRoutes = ['/livebattle', '/battleresult', '/soloreview', '/test'];
+  const hideSidebarRoutes = ['/login', '/livebattle', '/battleresult', '/soloreview', '/test'];
   const shouldHideSidebar = hideSidebarRoutes.includes(location.pathname.toLowerCase());
   return (
     <div>
@@ -22,6 +22,7 @@ function App() {
       <main className='main-content'>
         <Routes>
           <Route path='/' element={<Home/>}/>
+          <Route path="/login" element={<Login/>} />
           <Route path='/profile' element={<Profile/>}/>
           <Route path='/studyset/:id' element={<StudySet/>}/>
           <Route path='/soloreview/:studyset_id' element={<SoloReview/>}/>
