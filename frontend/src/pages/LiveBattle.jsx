@@ -162,25 +162,7 @@ function LiveBattle (){
                     updateScore(data.name, data.updated_score)
                     updatePlayerRanks();
                 }
-                // console.log(`${event.data}`)
-                // setRankItems(prevItems => {
-                //     // Update the score randomly for each user
-                //     const updatedItems = prevItems.map(item => ({
-                //         ...item,
-                //         score: item.score + Math.floor(Math.random() * 10) // Random score change
-                //     }));
-        
-                //     //
-        
-                //     // Sort the leaderboard based on updated score
-                //     updatedItems.sort((a, b) => b.score - a.score); // Sort by score
-        
-                //     // Recalculate ranks based on the new sorted order
-                //     return updatedItems.map((item, index) => ({
-                //         ...item,
-                //         rank: index + 1 // Update the rank based on position
-                //     }));
-                // });
+
             } catch (error) {
                 console.error('Error:', error);     
             }
