@@ -97,7 +97,7 @@ function LiveBattle (){
 
     const sendToServer = (event) => {
         if (ws && score) {
-            ws.send(score);
+            ws.send((score));
         }
     }
 
@@ -117,12 +117,12 @@ function LiveBattle (){
 
     // Initial setup for rank items
     useEffect(() => {
-        setRankItems([
-            { rank: 4, name: client_id, score: player_score},
-            { rank: 1, name: 'Just Donatello', score: 0},
-            { rank: 2, name: 'Idunno Mann', score: 0 },
-            { rank: 3, name: 'Jackie Butter', score: 0 },
-        ]);
+        // setRankItems([
+        //     { name: 'client_id', score: 0},
+        //     { name: 'Just Donatello', score: 0},
+        //     { name: 'Idunno Mann', score: 0 },
+        //     { name: 'Jackie Butter', score: 0 },
+        // ]);
         fetchCards();
     }, []);
 
@@ -138,32 +138,51 @@ function LiveBattle (){
                 setHasGameStarted(true);
                 setShowStartModal(false);
                 setTimeLeft(totalTime); 
-                // You can even return early if you don't want to run the score update
                 return;
             }
 
             try {
-                console.log(`${event.data}`)
-                setRankItems(prevItems => {
-                    // Update the score randomly for each user
-                    const updatedItems = prevItems.map(item => ({
-                        ...item,
-                        score: item.score + Math.floor(Math.random() * 10) // Random score change
+                const data = JSON.parse(event.data);
+
+                if ('ready_clients' in data) {
+                    const clients_ready = data.ready_clients;
+                    console.log("Ready clients:", clients_ready);
+                    const formattedRankItems = clients_ready.map((clientId, index) => ({
+                        rank: index + 1, // 1, 2, 3, ...
+                        name: clientId,  // the client ID as name
+                        score: 0         // start score at 0
                     }));
+                
+                    setRankItems(formattedRankItems);
+                }
+
+                if ('updated_score' in data) {
+                    console.log("SCORE IS UPDATINGGGG")
+                    console.log(data)
+                    updateScore(data.name, data.updated_score)
+                    updatePlayerRanks();
+                }
+                // console.log(`${event.data}`)
+                // setRankItems(prevItems => {
+                //     // Update the score randomly for each user
+                //     const updatedItems = prevItems.map(item => ({
+                //         ...item,
+                //         score: item.score + Math.floor(Math.random() * 10) // Random score change
+                //     }));
         
-                    //
+                //     //
         
-                    // Sort the leaderboard based on updated score
-                    updatedItems.sort((a, b) => b.score - a.score); // Sort by score
+                //     // Sort the leaderboard based on updated score
+                //     updatedItems.sort((a, b) => b.score - a.score); // Sort by score
         
-                    // Recalculate ranks based on the new sorted order
-                    return updatedItems.map((item, index) => ({
-                        ...item,
-                        rank: index + 1 // Update the rank based on position
-                    }));
-                });
+                //     // Recalculate ranks based on the new sorted order
+                //     return updatedItems.map((item, index) => ({
+                //         ...item,
+                //         rank: index + 1 // Update the rank based on position
+                //     }));
+                // });
             } catch (error) {
-                console.error('Error fetching cards:', error);     
+                console.error('Error:', error);     
             }
             
         };
@@ -187,6 +206,26 @@ function LiveBattle (){
         };
     }, []);
 
+    const updateScore = (nameToUpdate, newScore) => {
+        setRankItems(prevPlayers => 
+            prevPlayers.map(player =>
+                player.name === nameToUpdate
+                ? {...player, score: newScore}
+                : player
+            )
+        );    
+    }
+
+    const updatePlayerRanks = () => {
+        setRankItems(prevPlayers => {
+            const sortedPlayers = [...prevPlayers].sort((a,b) => b.score - a.score);
+            
+            return sortedPlayers.map((player, index) => ({
+                ...player,
+                rank: index + 1
+            }));
+        });
+    };
 
 const handleLeaveBattle = () => {
   console.log('User is leaving the battle...');
@@ -304,6 +343,7 @@ const handleLeaveBattle = () => {
             </div>
             <div className='live-content'>
                 <div className='live-ranking'>
+
                     <Leaderboard 
                             title = "Live Ranking"
                             showCrown = {true} 

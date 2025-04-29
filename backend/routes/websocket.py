@@ -1,5 +1,6 @@
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from collections import defaultdict
+import json
 
 
 websocket_router = APIRouter()
@@ -26,13 +27,23 @@ class ConnectionManager:
     async def send_personal_message(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
         
-    async def broadcast(self, message: str, battle_id: str): # broadcast to all
+    async def broadcast(self, message, battle_id: str): # broadcast to all
         for connections in self.active_connections_dict[battle_id]:
-            await connections.send_text(f"Message from battle: {message}")
+            print('broadcast', message)
+            await connections.send_text(message)
     
     async def broadcast_players_ready(self, message: str, battle_id: str): # broadcast to all
         for connections in self.active_connections_dict[battle_id]:
             await connections.send_text(f"{message}")
+        
+    async def broadcast_players_ready(self, message: str, battle_id: str): # broadcast to all
+        for connections in self.active_connections_dict[battle_id]:
+            await connections.send_text(f"{message}")
+            
+    async def broad_cast_clients(self, message, battle_id: str):
+        for connections in self.active_connections_dict[battle_id]:
+            print("WORKINGGGGGGGGGGGGGGGGGGGGGGGGGG")
+            await connections.send_text(message)
             
     async def mark_player_ready(self, battle_id: str, client_id: str):
         print("I want cheese")
@@ -47,8 +58,18 @@ class ConnectionManager:
     async def broadcast_all_players_ready(self, battle_id: str):
         print(self.players_ready_dict[battle_id])
         message = "All players ready"
+        
+        client_ids = [
+            client_id for client_id, ready in self.players_ready_dict[battle_id].items() if ready
+        ]
+        client_id_message = {
+            'ready_clients': client_ids
+        }
         await self.broadcast_players_ready(message, battle_id)
 
+        json_message = json.dumps(client_id_message)
+        await self.broad_cast_clients(json_message, battle_id)
+        
 manager = ConnectionManager() # needed to use the functions
 
 @websocket_router.websocket("/ws/{battle_id}/{client_id}")
@@ -66,9 +87,13 @@ async def websocket_endpoint(websocket: WebSocket, battle_id: str, client_id: st
                 await manager.mark_player_ready(battle_id, client_id)
             #     await manager.send_personal_message(f"Youre now ready!", websocket)
             
+            client_score = {
+                'name': client_id,
+                'updated_score': data
+            }
             
-            await manager.send_personal_message(f"You wrote {data}", websocket)
-            await manager.broadcast(f"Client {client_id}: {data} in {battle_id}", battle_id)
+            json_client_score = json.dumps(client_score)
+            await manager.broadcast(json_client_score, battle_id)
     except WebSocketDisconnect:
         manager.disconnect(websocket, battle_id)
         await manager.broadcast(f"Client {client_id} has left", battle_id)
