@@ -14,6 +14,8 @@ function LiveBattle (){
     const client_id = Date.now() + Math.random();
 
     const { livebattle_id } = useParams('');
+    const { battle_id } = useParams('');
+
     const title = getStudysetTitle(livebattle_id);
     const [rankItems, setRankItems] = useState([]);
     const [message, setMessage] = useState('');
@@ -95,9 +97,17 @@ function LiveBattle (){
 
     const sendToServer = (event) => {
         if (ws && score) {
-            ws.send(score);
+            ws.send((score));
         }
     }
+
+    // websocket set button READY
+    const sendReady = (event) => {
+        if (ws) {
+            ws.send("ready");
+        }
+    }
+
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' && !e.shiftKey  && !isTimeUp) {
             e.preventDefault();
@@ -107,43 +117,54 @@ function LiveBattle (){
 
     // Initial setup for rank items
     useEffect(() => {
-        setRankItems([
-            { rank: 4, name: client_id, score: player_score},
-            { rank: 1, name: 'Just Donatello', score: 0},
-            { rank: 2, name: 'Idunno Mann', score: 0 },
-            { rank: 3, name: 'Jackie Butter', score: 0 },
-        ]);
+        // setRankItems([
+        //     { name: 'client_id', score: 0},
+        //     { name: 'Just Donatello', score: 0},
+        //     { name: 'Idunno Mann', score: 0 },
+        //     { name: 'Jackie Butter', score: 0 },
+        // ]);
         fetchCards();
     }, []);
 
     // websocket connection
     useEffect(() => {
-        const socket = new WebSocket(`ws://localhost:8001/ws/${client_id}`); // creates the socket for this specific client
+        const socket = new WebSocket(`ws://localhost:8001/ws/${battle_id}/${client_id}`); // creates the socket for this specific client
         // socketRef.current = socket;
         
         socket.onmessage = (event) => {
+
+            if (event.data === "All players ready") {
+                console.log("ONMESSAGE WORKED");
+                setHasGameStarted(true);
+                setShowStartModal(false);
+                setTimeLeft(totalTime); 
+                return;
+            }
+
             try {
-                console.log(`${event.data}`)
-                setRankItems(prevItems => {
-                    // Update the score randomly for each user
-                    const updatedItems = prevItems.map(item => ({
-                        ...item,
-                        score: item.score + Math.floor(Math.random() * 10) // Random score change
+                const data = JSON.parse(event.data);
+
+                if ('ready_clients' in data) {
+                    const clients_ready = data.ready_clients;
+                    console.log("Ready clients:", clients_ready);
+                    const formattedRankItems = clients_ready.map((clientId, index) => ({
+                        rank: index + 1, // 1, 2, 3, ...
+                        name: clientId,  // the client ID as name
+                        score: 0         // start score at 0
                     }));
-        
-                    //
-        
-                    // Sort the leaderboard based on updated score
-                    updatedItems.sort((a, b) => b.score - a.score); // Sort by score
-        
-                    // Recalculate ranks based on the new sorted order
-                    return updatedItems.map((item, index) => ({
-                        ...item,
-                        rank: index + 1 // Update the rank based on position
-                    }));
-                });
+                
+                    setRankItems(formattedRankItems);
+                }
+
+                if ('updated_score' in data) {
+                    console.log("SCORE IS UPDATINGGGG")
+                    console.log(data)
+                    updateScore(data.name, data.updated_score)
+                    updatePlayerRanks();
+                }
+
             } catch (error) {
-                console.error('Error fetching cards:', error);     
+                console.error('Error:', error);     
             }
             
         };
@@ -167,6 +188,26 @@ function LiveBattle (){
         };
     }, []);
 
+    const updateScore = (nameToUpdate, newScore) => {
+        setRankItems(prevPlayers => 
+            prevPlayers.map(player =>
+                player.name === nameToUpdate
+                ? {...player, score: newScore}
+                : player
+            )
+        );    
+    }
+
+    const updatePlayerRanks = () => {
+        setRankItems(prevPlayers => {
+            const sortedPlayers = [...prevPlayers].sort((a,b) => b.score - a.score);
+            
+            return sortedPlayers.map((player, index) => ({
+                ...player,
+                rank: index + 1
+            }));
+        });
+    };
 
 const handleLeaveBattle = () => {
   console.log('User is leaving the battle...');
@@ -284,6 +325,7 @@ const handleLeaveBattle = () => {
             </div>
             <div className='live-content'>
                 <div className='live-ranking'>
+
                     <Leaderboard 
                             title = "Live Ranking"
                             showCrown = {true} 
@@ -370,14 +412,13 @@ const handleLeaveBattle = () => {
                 show={showStartModal}
                 onClose={() => {}} 
                 onSubmit={() => {
-                    setHasGameStarted(true);
-                    setShowStartModal(false);
-                    setTimeLeft(totalTime); 
+                    // wait until all players are ready
+                    sendReady();
                 }}
                 title="Waiting for Players..."
                 bodyText={`${playerCount} player${playerCount !== 1 ? 's' : ''} in lobby.\n You will have limited time to answer all questions.  Ready to start?`}
                 cancelText="Cancel"
-                submitText="Start Battle"
+                submitText="Ready"
                 type="confirm"
             />
 
