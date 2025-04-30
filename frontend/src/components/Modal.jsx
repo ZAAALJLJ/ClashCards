@@ -12,7 +12,8 @@ const Modal = ({
   cancelText, 
   submitText, 
   placeholder, 
-  type
+  type,
+  onChange
 }) => {
     if (!show) return null;
     const [inputValue, setInputValue] = useState('');
@@ -46,7 +47,10 @@ const Modal = ({
                         type="text"
                         placeholder="Enter study set name"
                         value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
+                        onChange={(e) => {
+                            setInputValue(e.target.value);
+                            if (onChange) onChange(e.target.value); // Notify parent
+                        }}                        
                         required
                     />
                 </form>

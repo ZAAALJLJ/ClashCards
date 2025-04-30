@@ -17,4 +17,4 @@ async def login_user(data: User):
     if not pwd_context.verify(data.password, user["password"]):
         raise HTTPException(status_code=400, detail="Invalid username or password")
     
-    return {"message": "Login successful", "username": user["username"]}
+    return {"message": "Login successful", "username": user["username"], "_id": str(user["_id"])}

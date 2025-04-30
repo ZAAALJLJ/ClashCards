@@ -5,23 +5,17 @@ import api from '../api'
 import Modal from '../components/Modal.jsx';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
+import { useParams } from "react-router-dom";
 
 Chart.register(ArcElement, Tooltip, Legend);
 
 function Home () {
+  const { user_id } = useParams('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [studyset_to_add, setStudyset] = useState({owner_ids: [user_id], title: ''});
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-
-  const cards = [
-    { id: 1, title: 'Card 1', description: '99 flashcards' },
-    { id: 2, title: 'Card 2', description: '99 flashcards' },
-    { id: 3, title: 'Card 3', description: '99 flashcards' },
-    { id: 3, title: 'Card 3', description: '99 flashcards' },
-    { id: 3, title: 'Card 3', description: '99 flashcards' },
-    { id: 3, title: 'Card 3', description: '99 flashcards' },
-  ]
 
   const [userStats, setUserStats] = useState({
     good: 0,
@@ -66,8 +60,8 @@ function Home () {
   // GET studysets
   const fetchSets = async () => {
     try {
-      const response = await api.get('/studysets/');
-      console.log('Fetched cards:', response.data);
+      const response = await api.get(`/all_studysets/${user_id}`);
+      console.log('Fetched sets:', response.data);
 
       // flashcardCount: ..... { id: 2, title: "Study Set 2", flashcardCount: 35 }
 
@@ -77,16 +71,37 @@ function Home () {
     }
   }
 
+  // SET
+  const handleInputChange = (value) => {
+    setStudyset(prevState => ({
+      ...prevState,
+      title: value, // Update the title property of studyset_to_add
+    }));
+  }
+
+  // CREATE studysets
+  const createStudySet = async () => {
+    try {
+        console.log('This the problem: ', studyset_to_add);
+        await api.post('/studysets/', studyset_to_add);
+        setStudyset({owner_ids: [user_id], title: ''});
+    } catch (error) {
+        console.error('Error adding studyset:', error);
+    }
+  };
+
   // SET cards
   useEffect(() => {
     fetchSets();
   }, []);
 
   //api call for study set creation
-  const handleCreateStudySet = (name) => {
-    console.log("Creating study set with name:", name); 
+  const handleCreateStudySet = async (name) => {
+    createStudySet();
+    fetchSets();
     setTimeout(() => {
       console.log("Study set created successfully: ", { name });
+      console.log("Creating study set with name:", studyset_to_add.title); 
       setShowModal(false);
     }, 1000); 
   };
@@ -186,6 +201,7 @@ function Home () {
           cancelText="Cancel"
           submitText="Create Study Set"
           placeholder="Enter Study Set Name"
+          onChange={handleInputChange}
       />
     </div>
   );

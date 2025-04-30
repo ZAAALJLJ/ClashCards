@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import '../css/Login.css'; 
 import api from '../api';
+import { useNavigate } from 'react-router-dom';
 // import { GoogleLogin } from '@react-oauth/google'; 
 
 function Login (){
+  const navigate = useNavigate();
   const [user, setUser] = useState({username: '', password: ''});
 
   const handleInputChange = (e) => {
@@ -14,8 +16,10 @@ function Login (){
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        await api.post('/login/', user);
+        const response = await api.post('/login/', user);
         console.log("Login successful", user);
+        console.log("Loglog id:", response.data);
+        navigate(`/${response.data._id}`);
     } catch (error){
         console.error("Login error: ", error);
     }

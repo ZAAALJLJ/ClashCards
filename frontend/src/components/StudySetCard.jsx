@@ -44,7 +44,7 @@ function StudySetCard({props}) {
                 <div className='card-title'>
                     <h3>{title}</h3>
                     <div className="title-line"></div>
-                    <p className="flashcard-count">{flashcardCount} Flashcards</p>
+                    <p className="flashcard-count">{props.id}</p>
                 </div>
             </div>
             <Modal 
