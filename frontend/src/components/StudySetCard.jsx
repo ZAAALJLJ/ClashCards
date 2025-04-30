@@ -11,11 +11,6 @@ function StudySetCard({props}) {
     
     const [showModal, setShowModal] = useState(false);
 
-    function onEditClick(e) {
-        e.stopPropagation();
-        alert("Edit Clicked");
-    }
-
     console.log("studyset", props.id);
 
     
