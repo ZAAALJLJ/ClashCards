@@ -21,6 +21,18 @@
 
 .card-btn {
     background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.card-btn:focus {
+    outline: none;
+}
+
+.card-btn:active {
+    outline: none;
+    border: none;
 }
 
 .card-title {

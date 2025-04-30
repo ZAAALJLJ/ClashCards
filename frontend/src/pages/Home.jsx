@@ -160,7 +160,7 @@ function Home () {
         </div>
         <div className="stats-container">
           <div className="chart-container">
-          <Doughnut data={chartData} options={chartOptions} />
+            <Doughnut data={chartData} options={chartOptions} />
             <div className="chart-center">
               {Object.values(userStats).reduce((a, b) => a + b)}%
             </div>

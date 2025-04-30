@@ -14,6 +14,12 @@ function StudySet (){
     const [flashcards, setCards] = useState([]);
     const [title, setTitle] = useState('');
     const navigate = useNavigate();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    //nav bar toggle
+    const toggleMenu = () => {
+        setIsMenuOpen(!isMenuOpen);
+    };
 
     // MODAL stuff
     const [showModal, setShowModal] = useState(false);
@@ -101,10 +107,15 @@ function StudySet (){
                 <div className="studyset-title">
                     {title}
                 </div>
-                <div className="home-buttons">
+                <div className={`home-buttons ${isMenuOpen ? "show" : ""}`}>
                     <button className="btn-home" onClick={goCreateFC}>+ Create Flashcard</button>
                     <button className="btn-home" onClick={() => setShowModal(true)}>Battle</button>
                     <button className="btn-home" onClick={goSoloReview}>Solo Review Mode</button>
+                </div>
+                <div className="hamburger-icon" onClick={toggleMenu}>
+                    <span className="hamburger-bar"></span>
+                    <span className="hamburger-bar"></span>
+                    <span className="hamburger-bar"></span>
                 </div>
             </div>
             <div className="study-content-container">

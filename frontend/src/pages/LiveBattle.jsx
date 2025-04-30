@@ -9,6 +9,7 @@ import getStudysetTitle from '../services/getStudysetTitle';
 import getCards from '../services/getCards.js';
 import { updateRanking } from '../services/updateRanking.js';
 import { getUpdatedScoreList } from '../services/getUpdatedScoreList.js';
+import { getVisibleIndices } from '../utils/progressHelpers';
 
 function LiveBattle (){
     
@@ -119,21 +120,22 @@ function LiveBattle (){
 
     // websocket connection
     useEffect(() => {
-        const socket = new WebSocket(`ws://localhost:8001/ws/${battle_id}/${client_id}`); // creates the socket for this specific client
+        const socket = new WebSocket(`ws://localhost:8000/ws/${battle_id}/${client_id}`); // creates the socket for this specific client
         // socketRef.current = socket;
         
         socket.onmessage = (event) => {
 
-            if (event.data === "All players ready") {
-                console.log("ONMESSAGE WORKED");
-                setHasGameStarted(true);
-                setShowStartModal(false);
-                setTimeLeft(totalTime); 
-                return;
-            }
 
             try {
                 const data = JSON.parse(event.data);
+
+                if (data.message === "All players ready") {
+                    console.log("ONMESSAGE WORKED");
+                    setHasGameStarted(true);
+                    setShowStartModal(false);
+                    setTimeLeft(totalTime); 
+                    return;
+                }
 
                 if ('ready_clients' in data) {
                     const clients_ready = data.ready_clients;
@@ -155,7 +157,18 @@ function LiveBattle (){
                 }
 
             } catch (error) {
-                console.error('Error:', error);     
+
+                
+            if (event.data === "All players ready") {
+                console.log("ONMESSAGE WORKED");
+                setHasGameStarted(true);
+                setShowStartModal(false);
+                setTimeLeft(totalTime); 
+                return;
+            }else{
+                console.error('Error:', error);  
+            }
+                   
             }
             
         };
@@ -223,25 +236,9 @@ const handleLeaveBattle = () => {
         }, 1500);
     }, []); 
 
-    // progress trackers (flashcards)
-    const getVisibleTrackers = () => {
-        const totalDots = flashcards.length;
-        const visibleDots = 6;
-        const halfVisible = Math.floor(visibleDots / 2);
-    
-        let start = 0;
-    
-        if (currentQuestionIndex >= halfVisible && currentQuestionIndex < totalDots - halfVisible) {
-            start = currentQuestionIndex - halfVisible;
-        } else if (currentQuestionIndex >= totalDots - halfVisible) {
-            start = totalDots - visibleDots;
-        }
-    
-        start = Math.max(0, start);
-        const end = Math.min(start + visibleDots, totalDots);
-    
-        return Array.from({ length: end - start }, (_, i) => i + start);
-    };
+
+    const getVisibleTrackers = () => getVisibleIndices(flashcards.length, currentQuestionIndex, 6);
+
     
     useEffect(() => {
         const handleEsc = (e) => {
