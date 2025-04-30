@@ -37,23 +37,26 @@ const Leaderboard = ({
                     ) : rankItems.length === 0 ? (
                         <div className="empty-message">No leaderboard data available</div>
                     ) : (
-                        rankItems.map((item) => (
-                            <motion.div
-                                key={item.rank}
-                                className={`rank-item-container ${item.name === highlightName ? 'highlight' : ''}`}
-                                initial={{ opacity: 0, y: -20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: 20 }}
-                                transition={{ duration: 0.3 }}
-                            >
-                                <div className="rank-number">{item.rank}</div>
-                                <div className={`user-name ${item.name === highlightName ? 'highlight' : ''}`}>
-                                    {item.name}
-                                </div>
-                                <div className="battle-score">{item.score}</div>
-                            </motion.div>
-                            
-                        ))
+                        rankItems.map((item) => {
+                            const isHighlighted = item.name.toLowerCase() === highlightName.toLowerCase();
+                            console.log("Rank Item:", item.name, "Highlight Name:", highlightName, "Is Highlighted:", isHighlighted);
+                            return (
+                                <motion.div
+                                    key={item.rank}
+                                    className={`rank-item-container ${isHighlighted ? 'highlight' : ''}`}
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: 20 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <div className="rank-number">{item.rank}</div>
+                                    <div className={`user-name ${isHighlighted ? 'highlight' : ''}`}>
+                                        {item.name}
+                                    </div>
+                                    <div className="battle-score">{item.score}</div>
+                                </motion.div>
+                            );
+                        })
                     )}
                 </div>
             </div>
