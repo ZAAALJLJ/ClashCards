@@ -22,7 +22,7 @@ function App() {
       {!shouldHideSidebar && <Sidebar/>} 
       <main className='main-content'>
         <Routes>
-          <Route path='/' element={<Home/>}/>
+          <Route path='/:user_id' element={<Home/>}/>
           <Route path='/login' element={<Login/>} />
           <Route path='/signup' element={<SignUp/>} />
           <Route path='/profile' element={<Profile/>}/>

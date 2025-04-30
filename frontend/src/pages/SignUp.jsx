@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import '../css/SignUp.css'; 
 import api from '../api';
+import { useNavigate } from 'react-router-dom';
 
 function SignUp (){
+    const navigate = useNavigate();
     const [allUser, setAllUser] = useState([]);
     const [user, setUser] = useState({username: '', password: ''});
 
@@ -17,6 +19,7 @@ function SignUp (){
         await api.post('/signup/', user);
         setAllUser([...allUser, user]);
         setUser({username: '', password: ''})
+        navigate(`/login/`);
     } catch (error) {
         console.error('Error adding user:', error);
     }
