@@ -6,7 +6,9 @@ import Leaderboard from '../components/LeaderboardCard';
 import BattleTimer from '../components/BattleTimer'; 
 import Confetti from 'react-confetti';
 import getStudysetTitle from '../services/getStudysetTitle';
-import api from '../api';
+import getCards from '../services/getCards.js';
+import { updateRanking } from '../services/updateRanking.js';
+import { getUpdatedScoreList } from '../services/getUpdatedScoreList.js';
 
 function LiveBattle (){
     
@@ -17,16 +19,16 @@ function LiveBattle (){
     const { battle_id } = useParams('');
 
     const title = getStudysetTitle(livebattle_id);
+    const flashcards = getCards(livebattle_id);
     const [rankItems, setRankItems] = useState([]);
     const [message, setMessage] = useState('');
     const [isTimeUp, setIsTimeUp] = useState(false);
     const [isQuizFinished, setIsQuizFinished] = useState(false);
     const [showLeaveModal, setShowLeaveModal] = useState(false);
-    const [questions, setQuestion] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [timeLeft, setTimeLeft] = useState(180);
     const totalTime = 20;
-    const totalQuestions = questions.length;
+    const totalflashcards = flashcards.length;
     const progressTrackerRef = useRef(null);
     const [score, setScore] = useState(0);
     const [showConfetti, setShowConfetti] = useState(false);
@@ -75,14 +77,14 @@ function LiveBattle (){
         e.preventDefault();
         if (!isTimeUp && hasGameStarted) {
           setMessage('');
-          if (questions[currentQuestionIndex]?.answer === message.trim()) {
+          if (flashcards[currentQuestionIndex]?.answer === message.trim()) {
             const newScore = score + 10;
             setScore(newScore);
             sendToServer(newScore);
           }
       
           const nextIndex = currentQuestionIndex + 1;
-          if (nextIndex >= questions.length) {
+          if (nextIndex >= flashcards.length) {
             setIsQuizFinished(true);
             setShowConfetti(true);
             setTimeout(() => {
@@ -114,17 +116,6 @@ function LiveBattle (){
             handleSubmit(e);
         }
     };
-
-    // Initial setup for rank items
-    useEffect(() => {
-        // setRankItems([
-        //     { name: 'client_id', score: 0},
-        //     { name: 'Just Donatello', score: 0},
-        //     { name: 'Idunno Mann', score: 0 },
-        //     { name: 'Jackie Butter', score: 0 },
-        // ]);
-        fetchCards();
-    }, []);
 
     // websocket connection
     useEffect(() => {
@@ -188,25 +179,15 @@ function LiveBattle (){
         };
     }, []);
 
+    // REFACTOR
     const updateScore = (nameToUpdate, newScore) => {
         setRankItems(prevPlayers => 
-            prevPlayers.map(player =>
-                player.name === nameToUpdate
-                ? {...player, score: newScore}
-                : player
-            )
+            getUpdatedScoreList(prevPlayers, nameToUpdate, newScore)
         );    
     }
 
     const updatePlayerRanks = () => {
-        setRankItems(prevPlayers => {
-            const sortedPlayers = [...prevPlayers].sort((a,b) => b.score - a.score);
-            
-            return sortedPlayers.map((player, index) => ({
-                ...player,
-                rank: index + 1
-            }));
-        });
+        setRankItems(prevPlayers => updateRanking(prevPlayers));
     };
 
 const handleLeaveBattle = () => {
@@ -216,7 +197,7 @@ const handleLeaveBattle = () => {
     
     //confetti effect when quiz is finished
     useEffect(() => {
-        if ((currentQuestionIndex >= totalQuestions) && (totalQuestions > 0)) {
+        if ((currentQuestionIndex >= totalflashcards) && (totalflashcards > 0)) {
             setIsQuizFinished(true);
             setShowConfetti(true);
             setTimeout(() => {
@@ -242,9 +223,9 @@ const handleLeaveBattle = () => {
         }, 1500);
     }, []); 
 
-    // progress trackers (questions)
+    // progress trackers (flashcards)
     const getVisibleTrackers = () => {
-        const totalDots = questions.length;
+        const totalDots = flashcards.length;
         const visibleDots = 6;
         const halfVisible = Math.floor(visibleDots / 2);
     
@@ -269,21 +250,9 @@ const handleLeaveBattle = () => {
         window.addEventListener("keydown", handleEsc);
         return () => window.removeEventListener("keydown", handleEsc);
       }, []);
-      
-    // GET all cards
-    const fetchCards = async () => {
-        try {
-            const response = await api.get(`/flashcards/${livebattle_id}`);
-            console.log('Fetched cards:', response.data);
-            setQuestion(response.data);
-            console.log("total question", questions.length);
-        } catch(error) {
-            console.error('Error fetching cards:', error);            
-        }
-    };
 
-    if (questions.length === 0) {
-        return <div>Loading questions...</div>;
+    if (flashcards.length === 0) {
+        return <div>Loading flashcards...</div>;
     }
 
     return(
@@ -343,7 +312,7 @@ const handleLeaveBattle = () => {
                                 ? "Done"
                                 : isTimeUp
                                     ? "Time is up!"
-                                    : questions[currentQuestionIndex]?.question || ""}
+                                    : flashcards[currentQuestionIndex]?.question || ""}
                             {(isTimeUp || isQuizFinished) && (
                                 <div className="final-score">
                                 Score: {score}
@@ -416,7 +385,7 @@ const handleLeaveBattle = () => {
                     sendReady();
                 }}
                 title="Waiting for Players..."
-                bodyText={`${playerCount} player${playerCount !== 1 ? 's' : ''} in lobby.\n You will have limited time to answer all questions.  Ready to start?`}
+                bodyText={`${playerCount} player${playerCount !== 1 ? 's' : ''} in lobby.\n You will have limited time to answer all flashcards.  Ready to start?`}
                 cancelText="Cancel"
                 submitText="Ready"
                 type="confirm"

@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
 import '../css/Login.css'; 
+import api from '../api';
 // import { GoogleLogin } from '@react-oauth/google'; 
 
 function Login (){
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [user, setUser] = useState({username: '', password: ''});
 
-  const handleSubmit = (e) => {
+  const handleInputChange = (e) => {
+      const { name, value } = e.target;
+      setUser({ ...user, [name]: value});
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+        await api.post('/login/', user);
+        console.log("Login successful", user);
+    } catch (error){
+        console.error("Login error: ", error);
+    }
     console.log('Login submitted', { username, password });
   };
 
@@ -35,10 +46,11 @@ function Login (){
                             <div className="form-group">
                                 <label htmlFor="username">User Name</label>
                                 <input 
-                                    type="username" 
-                                    id="username" 
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)} 
+                                    type="text" 
+                                    id="username"
+                                    name="username" 
+                                    value={user.username}
+                                    onChange={handleInputChange} 
                                     required 
                                 />
                             </div>
@@ -48,8 +60,9 @@ function Login (){
                                 <input 
                                     type="password" 
                                     id="password" 
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)} 
+                                    name="password" 
+                                    value={user.password}
+                                    onChange={handleInputChange} 
                                     required 
                                 />
                             </div>
