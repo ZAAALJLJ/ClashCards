@@ -134,33 +134,3 @@
   }
 
   
-
-/* 
-@media (max-width: 768px) {
-    .study-content-container {
-      flex-direction: column;
-      height: auto;
-    }
-  
-    .flashcard-container,
-    .leaderboard {
-      width: 100%;
-      max-width: 100%;
-    }
-  
-    .leaderboard {
-      order: 2;
-    }
-  
-    .flashcard-container {
-      order: 1;
-    }
-    
-    .crown-button{
-        background-color: #203364;
-        width: 60%;
-        height: auto;
-    }
-
-  }
-   */

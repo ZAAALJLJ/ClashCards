@@ -119,21 +119,22 @@ function LiveBattle (){
 
     // websocket connection
     useEffect(() => {
-        const socket = new WebSocket(`ws://localhost:8001/ws/${battle_id}/${client_id}`); // creates the socket for this specific client
+        const socket = new WebSocket(`ws://localhost:8000/ws/${battle_id}/${client_id}`); // creates the socket for this specific client
         // socketRef.current = socket;
         
         socket.onmessage = (event) => {
 
-            if (event.data === "All players ready") {
-                console.log("ONMESSAGE WORKED");
-                setHasGameStarted(true);
-                setShowStartModal(false);
-                setTimeLeft(totalTime); 
-                return;
-            }
 
             try {
                 const data = JSON.parse(event.data);
+
+                if (data.message === "All players ready") {
+                    console.log("ONMESSAGE WORKED");
+                    setHasGameStarted(true);
+                    setShowStartModal(false);
+                    setTimeLeft(totalTime); 
+                    return;
+                }
 
                 if ('ready_clients' in data) {
                     const clients_ready = data.ready_clients;
@@ -155,7 +156,18 @@ function LiveBattle (){
                 }
 
             } catch (error) {
-                console.error('Error:', error);     
+
+                
+            if (event.data === "All players ready") {
+                console.log("ONMESSAGE WORKED");
+                setHasGameStarted(true);
+                setShowStartModal(false);
+                setTimeLeft(totalTime); 
+                return;
+            }else{
+                console.error('Error:', error);  
+            }
+                   
             }
             
         };
