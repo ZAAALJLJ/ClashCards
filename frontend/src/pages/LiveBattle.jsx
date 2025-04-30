@@ -77,25 +77,29 @@ function LiveBattle (){
     //form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!isTimeUp && hasGameStarted) {
-          setMessage('');
-          if (flashcards[currentQuestionIndex]?.answer === message.trim()) {
-            const newScore = score + 10;
-            setScore(newScore);
-            sendToServer(newScore);
-          }
-      
-          const nextIndex = currentQuestionIndex + 1;
-          if (nextIndex >= flashcards.length) {
-            setIsQuizFinished(true);
-            setShowConfetti(true);
-            setTimeout(() => {
-              setShowConfetti(false);
-            }, 5000);
-          } else {
-            setCurrentQuestionIndex(nextIndex);
-          }
+
+        if (!hasGameStarted || isTimeUp || isQuizFinished) {
+            return; 
         }
+        
+        setMessage('');
+        if (flashcards[currentQuestionIndex]?.answer === message.trim()) {
+        const newScore = score + 10;
+        setScore(newScore);
+        sendToServer(newScore);
+        }
+    
+        const nextIndex = currentQuestionIndex + 1;
+        if (nextIndex >= flashcards.length) {
+        setIsQuizFinished(true);
+        setShowConfetti(true);
+        setTimeout(() => {
+            setShowConfetti(false);
+        }, 5000);
+        } else {
+        setCurrentQuestionIndex(nextIndex);
+        }
+        
       };
       
 
@@ -254,18 +258,18 @@ const handleLeaveBattle = () => {
     }
 
 
-    const sampleData = {
-        score: 85, 
-        totalQuestions: 10, 
-        client_id: 'You', 
-        players: [
-          { name: 'Just Donatello', score: 100 },
-          { name: 'Idunno Mann', score: 90 },
-          { name: 'Jackie Butter', score: 80 },
-          { name: 'You', score: 85 },
-          { name: 'Mister X', score: 60 },
-        ]
-      };
+    // const sampleData = {
+    //     score: 85, 
+    //     totalQuestions: 10, 
+    //     client_id: 'You', 
+    //     players: [
+    //       { name: 'Just Donatello', score: 100 },
+    //       { name: 'Idunno Mann', score: 90 },
+    //       { name: 'Jackie Butter', score: 80 },
+    //       { name: 'You', score: 85 },
+    //       { name: 'Mister X', score: 60 },
+    //     ]
+    //   };
 
     // useEffect(() => {
     //     if ((isQuizFinished || isTimeUp) && hasGameStarted) {
