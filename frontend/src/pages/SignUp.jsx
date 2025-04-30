@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
 import '../css/SignUp.css'; 
+import api from '../api';
 
 function SignUp (){
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+    const [allUser, setAllUser] = useState([]);
+    const [user, setUser] = useState({username: '', password: ''});
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Sign up submitted', { username, password });
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setUser({ ...user, [name]: value});
+    }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+        await api.post('/signup/', user);
+        setAllUser([...allUser, user]);
+        setUser({username: '', password: ''})
+    } catch (error) {
+        console.error('Error adding user:', error);
+    }
+    console.log('Sign up submitted', { user });
   };
-
-
 
   return (
     <div className='signup-page'>
@@ -26,10 +37,11 @@ function SignUp (){
                             <div className="form-group">
                                 <label htmlFor="username">User Name</label>
                                 <input 
-                                    type="username" 
+                                    type="text" 
                                     id="username" 
-                                    value={username}
-                                    onChange={(e) => setUsername(e.target.value)} 
+                                    name="username"
+                                    value={user.username}
+                                    onChange={handleInputChange} 
                                     required 
                                 />
                             </div>
@@ -37,10 +49,11 @@ function SignUp (){
                             <div className="form-group">
                                 <label htmlFor="password">Password</label>
                                 <input 
-                                    type="password" 
-                                    id="password" 
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)} 
+                                    type="text" 
+                                    id="password"
+                                    name="password" 
+                                    value={user.password}
+                                    onChange={handleInputChange} 
                                     required 
                                 />
                             </div>

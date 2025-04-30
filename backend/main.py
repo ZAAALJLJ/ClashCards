@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes.route import router
+from routes.signup_route import signup_router
 from routes.websocket import websocket_router
 from routes.studyset_route import studyset_router
+from routes.login_route import login_router
 
 app = FastAPI()
 
@@ -22,3 +24,5 @@ app.add_middleware(
 app.include_router(websocket_router)
 app.include_router(router)
 app.include_router(studyset_router)
+app.include_router(signup_router)
+app.include_router(login_router)

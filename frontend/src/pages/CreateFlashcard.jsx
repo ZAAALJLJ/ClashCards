@@ -47,6 +47,7 @@ function CreateFlashcard () {
         setCard({ ...flashcard, [name]: value});
     }
 
+    
     // ADD cards to db
     const handleAddCard = async () => {
         try {
