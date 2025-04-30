@@ -1,7 +1,7 @@
   .flashcard-carousel {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     flex-wrap: nowrap;
     width: 100%;
     height: 100%;
@@ -37,6 +37,7 @@
     box-shadow: none;
     display: flex;
     justify-content: center;
+    align-items: center;
     flex-shrink: 0;   
   }
 
@@ -79,7 +80,7 @@
 
       @media (max-width: 768px) {
         .flashcard-carousel {
-          flex-direction: row; /* keep it row for arrows to stay beside card */
+          flex-direction: row; 
           flex-wrap: nowrap;
           max-width: 100%;
         }
@@ -93,6 +94,7 @@
           width: 2.5rem;
           height: 2.5rem;
           padding: 0;
+          margin: 0;
         }
       
         .nav-arrow svg {

@@ -39,17 +39,6 @@ function FlashcardCarousel({ cards }) {
             </svg>
         </button>
       </div>
-      {/* <div className='progress-container'>
-        <div className="progress-indicators">
-          {cards.map((_, index) => (
-            <div 
-              key={index}
-              className={`indicator ${index === currentIndex ? 'active' : ''}`}
-              onClick={() => setCurrentIndex(index)}
-            />
-          ))}
-        </div>
-      </div> */}
       <div className='progress-container'>
         <div className="progress-indicators">
           {visibleIndices.map(index => (
