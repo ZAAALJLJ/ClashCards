@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Flashcard from './Flashcard';
+import { getVisibleIndices } from '../utils/progressHelpers';
 import '../css/FlashcardCarousel.css';
 
 function FlashcardCarousel({ cards }) {
@@ -12,6 +13,9 @@ function FlashcardCarousel({ cards }) {
   const goToNext = () => {
     setCurrentIndex(prev => (prev === cards.length - 1 ? 0 : prev + 1));
   };
+
+  //visible trackers
+  const visibleIndices = getVisibleIndices(cards.length, currentIndex, 6);
 
   return (
     <div className="flashcard-carousel-container">
@@ -35,15 +39,27 @@ function FlashcardCarousel({ cards }) {
             </svg>
         </button>
       </div>
-      
-      <div className="progress-indicators">
-        {cards.map((_, index) => (
-          <div 
-            key={index}
-            className={`indicator ${index === currentIndex ? 'active' : ''}`}
-            onClick={() => setCurrentIndex(index)}
-          />
-        ))}
+      {/* <div className='progress-container'>
+        <div className="progress-indicators">
+          {cards.map((_, index) => (
+            <div 
+              key={index}
+              className={`indicator ${index === currentIndex ? 'active' : ''}`}
+              onClick={() => setCurrentIndex(index)}
+            />
+          ))}
+        </div>
+      </div> */}
+      <div className='progress-container'>
+        <div className="progress-indicators">
+          {visibleIndices.map(index => (
+            <div
+              key={index}
+              className={`indicator ${index === currentIndex ? 'active' : ''}`}
+              onClick={() => setCurrentIndex(index)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

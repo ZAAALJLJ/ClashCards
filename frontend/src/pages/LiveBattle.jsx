@@ -9,6 +9,7 @@ import getStudysetTitle from '../services/getStudysetTitle';
 import getCards from '../services/getCards.js';
 import { updateRanking } from '../services/updateRanking.js';
 import { getUpdatedScoreList } from '../services/getUpdatedScoreList.js';
+import { getVisibleIndices } from '../utils/progressHelpers';
 
 function LiveBattle (){
     
@@ -235,25 +236,9 @@ const handleLeaveBattle = () => {
         }, 1500);
     }, []); 
 
-    // progress trackers (flashcards)
-    const getVisibleTrackers = () => {
-        const totalDots = flashcards.length;
-        const visibleDots = 6;
-        const halfVisible = Math.floor(visibleDots / 2);
-    
-        let start = 0;
-    
-        if (currentQuestionIndex >= halfVisible && currentQuestionIndex < totalDots - halfVisible) {
-            start = currentQuestionIndex - halfVisible;
-        } else if (currentQuestionIndex >= totalDots - halfVisible) {
-            start = totalDots - visibleDots;
-        }
-    
-        start = Math.max(0, start);
-        const end = Math.min(start + visibleDots, totalDots);
-    
-        return Array.from({ length: end - start }, (_, i) => i + start);
-    };
+
+    const getVisibleTrackers = () => getVisibleIndices(flashcards.length, currentQuestionIndex, 6);
+
     
     useEffect(() => {
         const handleEsc = (e) => {
