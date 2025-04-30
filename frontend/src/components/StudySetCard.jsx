@@ -60,6 +60,7 @@ function StudySetCard({props}) {
                 bodyText={`Are you sure you want to delete "${title}"? This action cannot be undone.`}
                 cancelText="Cancel"
                 submitText="Delete"
+                type="delete"
             />
         </div>
     );
