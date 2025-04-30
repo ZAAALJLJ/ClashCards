@@ -61,6 +61,15 @@ const Modal = ({
                                 Leave Battle
                             </Link>
                         </>
+                    ) : type === 'delete' ? (
+                        <>
+                           <button className="modal-continue" onClick={onClose}>
+                                {cancelText || 'Cancel'}
+                            </button>
+                          <button className="modal-delete" onClick={onSubmit}>
+                            {submitText || 'Delete'}
+                          </button>
+                        </>
                     ) : type === 'confirm' ? (
                         <>
                             <Link to="/" className="modal-leave">
@@ -70,7 +79,7 @@ const Modal = ({
                             {submitText || 'Start'}
                           </button>
                         </>
-                      ) :  (
+                    ) :  (
                         <>
                             <button className="modal-cancel" onClick={onClose}>
                                 {cancelText || 'Cancel'}
