@@ -15,6 +15,13 @@ function StudySet (){
     const [title, setTitle] = useState('');
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [currentUser, setCurrentUser] = useState(null); 
+
+    // get user for leaderboard highlight
+    useEffect(() => {
+        setCurrentUser("Jackie Butter"); 
+        console.log("Current User:", currentUser); 
+    }, [currentUser]);
 
     //nav bar toggle
     const toggleMenu = () => {
@@ -96,7 +103,7 @@ function StudySet (){
             if (showLeaderboard) {
                 document.addEventListener("click", handleClickOutside);
             }
-    
+
             return () => document.removeEventListener("click", handleClickOutside);
         }, [showLeaderboard]);
 
@@ -147,10 +154,12 @@ function StudySet (){
 
                     {showLeaderboard && (
                         <div className="floating-leaderboard" ref={leaderboardRef}>
-                            <Leaderboard title="Leaderboard" 
+                            <Leaderboard 
+                                title="Leaderboard" 
                                 showCrown={false} 
                                 rankItems={rankItems} 
                                 isLoading={false} 
+                                highlightName={currentUser}
                             />
                         </div>
                     )}

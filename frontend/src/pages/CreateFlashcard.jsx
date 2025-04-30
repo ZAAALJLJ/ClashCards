@@ -107,59 +107,61 @@ function CreateFlashcard () {
 
     return (
         <div className="create-page">
-            <div className="create-nav-bar">
-                <div className="create-title">
-                    {title}
+            <div className='create-page-container'>
+                <div className="create-nav-bar">
+                    <div className="create-title">
+                        {title}
+                    </div>
                 </div>
-            </div>
-            <div className="create-content">
-                <div className="create-flashcard-content">
-                    <form className='create-qa-container' >
-                        <div className='create-question'>
-                            <label htmlFor='question' className='question-title'>
-                                Question
-                            </label>
-                            <input 
-                                className='question' 
-                                type='text' 
-                                id='question'
-                                name='question'
-                                placeholder='Type question here'
-                                value={flashcard.question}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                        <hr className='horizontal-line'/>
-                        <div className='create-answer'>
-                            <label htmlFor='answer' className='answer-title'>
-                                Answer
-                            </label>
-                            <input 
-                                className='answer' 
-                                type='text' 
-                                id='answer'
-                                name='answer'
-                                placeholder='Type answer here'
-                                value={flashcard.answer}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-                        <div className='sd-flashcard-btn'>
-                            <button type='button' className='btn-sd' onClick={() => isUpdating ? updateCard(currentKey.id, flashcard): handleAddCard()}>Save</button>
-                            <button type='button' className='btn-sd' onClick={() => deleteCard(currentKey.id)}>Delete</button>
-                        </div>
-                    </form>                
+                <div className="create-content">
+                    <div className="create-flashcard-content">
+                        <form className='create-qa-container' >
+                            <div className='create-question'>
+                                <label htmlFor='question' className='question-title'>
+                                    Question
+                                </label>
+                                <input 
+                                    className='question' 
+                                    type='text' 
+                                    id='question'
+                                    name='question'
+                                    placeholder='Type question here'
+                                    value={flashcard.question}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                            <hr className='horizontal-line'/>
+                            <div className='create-answer'>
+                                <label htmlFor='answer' className='answer-title'>
+                                    Answer
+                                </label>
+                                <input 
+                                    className='answer' 
+                                    type='text' 
+                                    id='answer'
+                                    name='answer'
+                                    placeholder='Type answer here'
+                                    value={flashcard.answer}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                            <div className='sd-flashcard-btn'>
+                                <button type='button' className='btn-sd' onClick={() => isUpdating ? updateCard(currentKey.id, flashcard): handleAddCard()}>Save</button>
+                                <button type='button' className='btn-sd' onClick={() => deleteCard(currentKey.id)}>Delete</button>
+                            </div>
+                        </form>                
 
-                </div>
-                <div className="created-flashcards">
-                    <button className="btn-create" onClick={createCard}>
-                        + Create Flashcard
-                    </button>
-                    
-                    {flashcards.map(card => (
-                        // LOOP through all flashcards and display it
-                        <CreatedFlashcard card={card} key={card.id} sendDataToParent={createdCLicked}/>
-                    ))}
+                    </div>
+                    <div className="created-flashcards">
+                        <button className="btn-create" onClick={createCard}>
+                            + Create Flashcard
+                        </button>
+                        
+                        {flashcards.map(card => (
+                            // LOOP through all flashcards and display it
+                            <CreatedFlashcard card={card} key={card.id} sendDataToParent={createdCLicked}/>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
