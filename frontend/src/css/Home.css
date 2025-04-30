@@ -165,6 +165,16 @@
   
 
 @media (max-width: 768px) {
+    .home-page{
+      height: calc(100% - 70px);
+      margin:0;
+      width: 100%;
+      top: 0;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 70px;
+    }
+
     .content-container {
       flex-direction: column; 
       gap:1rem;

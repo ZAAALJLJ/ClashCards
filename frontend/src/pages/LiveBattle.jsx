@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import '../css/LiveBattle.css';
 import Modal from '../components/Modal.jsx';
 import Leaderboard from '../components/LeaderboardCard';
@@ -36,6 +36,7 @@ function LiveBattle (){
     const [hasGameStarted, setHasGameStarted] = useState(false);
     const [showStartModal, setShowStartModal] = useState(true);
     const [playerCount, setPlayerCount] = useState(1); 
+    const navigate = useNavigate();
 
 
 
@@ -76,25 +77,29 @@ function LiveBattle (){
     //form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!isTimeUp && hasGameStarted) {
-          setMessage('');
-          if (flashcards[currentQuestionIndex]?.answer === message.trim()) {
-            const newScore = score + 10;
-            setScore(newScore);
-            sendToServer(newScore);
-          }
-      
-          const nextIndex = currentQuestionIndex + 1;
-          if (nextIndex >= flashcards.length) {
-            setIsQuizFinished(true);
-            setShowConfetti(true);
-            setTimeout(() => {
-              setShowConfetti(false);
-            }, 5000);
-          } else {
-            setCurrentQuestionIndex(nextIndex);
-          }
+
+        if (!hasGameStarted || isTimeUp || isQuizFinished) {
+            return; 
         }
+        
+        setMessage('');
+        if (flashcards[currentQuestionIndex]?.answer === message.trim()) {
+        const newScore = score + 10;
+        setScore(newScore);
+        sendToServer(newScore);
+        }
+    
+        const nextIndex = currentQuestionIndex + 1;
+        if (nextIndex >= flashcards.length) {
+        setIsQuizFinished(true);
+        setShowConfetti(true);
+        setTimeout(() => {
+            setShowConfetti(false);
+        }, 5000);
+        } else {
+        setCurrentQuestionIndex(nextIndex);
+        }
+        
       };
       
 
@@ -252,6 +257,38 @@ const handleLeaveBattle = () => {
         return <div>Loading flashcards...</div>;
     }
 
+
+    // const sampleData = {
+    //     score: 85, 
+    //     totalQuestions: 10, 
+    //     client_id: 'You', 
+    //     players: [
+    //       { name: 'Just Donatello', score: 100 },
+    //       { name: 'Idunno Mann', score: 90 },
+    //       { name: 'Jackie Butter', score: 80 },
+    //       { name: 'You', score: 85 },
+    //       { name: 'Mister X', score: 60 },
+    //     ]
+    //   };
+
+    // useEffect(() => {
+    //     if ((isQuizFinished || isTimeUp) && hasGameStarted) {
+    //       const timeout = setTimeout(() => {
+    //         navigate(`/battleresult`, {
+    //           state: {
+    //             score,
+    //             totalQuestions: flashcards.length, 
+    //             client_id: client_id, 
+    //             players: rankItems
+    //           }
+    //         });
+    //       }, 5000);
+      
+    //       return () => clearTimeout(timeout);
+    //     }
+    //   }, [isQuizFinished, isTimeUp, hasGameStarted, navigate, battle_id, score, flashcards.length]);
+      
+    
     return(
         <div className='live-battle-page'>
              {showConfetti && (
@@ -345,9 +382,11 @@ const handleLeaveBattle = () => {
                                         aria-label={isTimeUp || isQuizFinished ? "Quiz Over" : "Send answer"}
                                     >
 
-                                        <svg viewBox="0 -0.5 21 21" xmlns="http://www.w3.org/2000/svg" className="paper-plane-icon-sm">
-                                            <path d="M2.61258 9L0.05132 1.31623C-0.22718 0.48074 0.63218 -0.28074 1.42809 0.09626L20.4281 9.0963C21.1906 9.4575 21.1906 10.5425 20.4281 10.9037L1.42809 19.9037C0.63218 20.2807 -0.22718 19.5193 0.05132 18.6838L2.61258 11H8.9873C9.5396 11 9.9873 10.5523 9.9873 10C9.9873 9.4477 9.5396 9 8.9873 9H2.61258z"  fill={isTimeUp ? "#cccccc" : "currentColor"}/>
-                                        </svg> 
+                                        {!(isTimeUp || isQuizFinished) && (
+                                            <svg viewBox="0 -0.5 21 21" xmlns="http://www.w3.org/2000/svg" className="paper-plane-icon-sm">
+                                            <path d="M2.61258 9L0.05132 1.31623C-0.22718 0.48074 0.63218 -0.28074 1.42809 0.09626L20.4281 9.0963C21.1906 9.4575 21.1906 10.5425 20.4281 10.9037L1.42809 19.9037C0.63218 20.2807 -0.22718 19.5193 0.05132 18.6838L2.61258 11H8.9873C9.5396 11 9.9873 10.5523 9.9873 10C9.9873 9.4477 9.5396 9 8.9873 9H2.61258z" fill="currentColor"/>
+                                            </svg>
+                                        )}
                                         {isTimeUp || isQuizFinished ? "Quiz Over" : "Send"}
                                         {/* <a href="https://iconscout.com/icons/send" class="text-underline font-size-sm" target="_blank">Send</a> by <a href="https://iconscout.com/contributors/google-inc" class="text-underline font-size-sm">Google Inc.</a> on <a href="https://iconscout.com" class="text-underline font-size-sm">IconScout</a> */}
                                     </button>

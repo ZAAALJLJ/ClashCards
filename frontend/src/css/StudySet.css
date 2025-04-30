@@ -33,6 +33,11 @@
     font-weight: bold;
 }
 
+.btn-home{
+  white-space: nowrap;    
+  width: fit-content;          
+  max-width: 100%; 
+}
 
 .hamburger-icon {
     display: none;

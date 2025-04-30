@@ -4,21 +4,6 @@
     padding: 0;
     box-sizing: border-box;
   }
-/* 
-.result-parent-container{
-    margin: 0;
-    padding: 0;
-    line-height: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    align-items: center;
-    min-height: 100vh;
-    width: 100%;
-    box-sizing: border-box;
-} */
 
     .result-container {
         flex: 1;
@@ -116,6 +101,17 @@
         font-size: 1rem;
         padding: 20px;
     }
+
+    
+    .highlight {
+        font-weight: bold;
+        background-color: #385698;
+    }
+    
+    .rank-item-container.highlight {
+        border: 1px solid #182849; 
+    }
+  
                     
     .skeleton {
         background: #ccc;
