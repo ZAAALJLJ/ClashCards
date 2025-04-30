@@ -9,7 +9,8 @@ const Leaderboard = ({
     title = "Leaderboard", 
     showCrown = true,   
     rankItems = [], 
-    isLoading = false 
+    isLoading = false, 
+    highlightName = "You",
   }) => {
     return (
         // <div className="result-parent-container">
@@ -39,16 +40,19 @@ const Leaderboard = ({
                         rankItems.map((item) => (
                             <motion.div
                                 key={item.rank}
-                                className="rank-item-container"
+                                className={`rank-item-container ${item.name === highlightName ? 'highlight' : ''}`}
                                 initial={{ opacity: 0, y: -20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: 20 }}
                                 transition={{ duration: 0.3 }}
                             >
                                 <div className="rank-number">{item.rank}</div>
-                                <div className="user-name">{item.name}</div>
+                                <div className={`user-name ${item.name === highlightName ? 'highlight' : ''}`}>
+                                    {item.name}
+                                </div>
                                 <div className="battle-score">{item.score}</div>
                             </motion.div>
+                            
                         ))
                     )}
                 </div>

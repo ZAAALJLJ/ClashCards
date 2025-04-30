@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import '../css/LiveBattle.css';
 import Modal from '../components/Modal.jsx';
 import Leaderboard from '../components/LeaderboardCard';
@@ -36,6 +36,7 @@ function LiveBattle (){
     const [hasGameStarted, setHasGameStarted] = useState(false);
     const [showStartModal, setShowStartModal] = useState(true);
     const [playerCount, setPlayerCount] = useState(1); 
+    const navigate = useNavigate();
 
 
 
@@ -252,6 +253,38 @@ const handleLeaveBattle = () => {
         return <div>Loading flashcards...</div>;
     }
 
+
+    const sampleData = {
+        score: 85, 
+        totalQuestions: 10, 
+        client_id: 'You', 
+        players: [
+          { name: 'Just Donatello', score: 100 },
+          { name: 'Idunno Mann', score: 90 },
+          { name: 'Jackie Butter', score: 80 },
+          { name: 'You', score: 85 },
+          { name: 'Mister X', score: 60 },
+        ]
+      };
+
+    // useEffect(() => {
+    //     if ((isQuizFinished || isTimeUp) && hasGameStarted) {
+    //       const timeout = setTimeout(() => {
+    //         navigate(`/battleresult`, {
+    //           state: {
+    //             score,
+    //             totalQuestions: flashcards.length, 
+    //             client_id: client_id, 
+    //             players: rankItems
+    //           }
+    //         });
+    //       }, 5000);
+      
+    //       return () => clearTimeout(timeout);
+    //     }
+    //   }, [isQuizFinished, isTimeUp, hasGameStarted, navigate, battle_id, score, flashcards.length]);
+      
+    
     return(
         <div className='live-battle-page'>
              {showConfetti && (
