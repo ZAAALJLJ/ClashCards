@@ -456,6 +456,7 @@ const handleLeaveBattle = () => {
                     cancelText="Continue Battle"
                     submitText="Leave Battle"
                     type="leave" 
+                    client_id={client_id} 
                 />
             </div>
         </div>
