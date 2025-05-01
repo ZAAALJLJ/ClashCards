@@ -81,7 +81,6 @@ function LiveBattle (){
         if (!hasGameStarted || isTimeUp || isQuizFinished) {
             return; 
         }
-        
         setMessage('');
         if (flashcards[currentQuestionIndex]?.answer === message.trim()) {
         const newScore = score + 10;
