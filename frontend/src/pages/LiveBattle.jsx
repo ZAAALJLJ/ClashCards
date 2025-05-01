@@ -13,10 +13,8 @@ import { getVisibleIndices } from '../utils/progressHelpers';
 
 function LiveBattle (){
     
-    // DELETE once authentication is made
-    const client_id = Date.now() + Math.random();
-
-    const { livebattle_id } = useParams('');
+    const { user_id, livebattle_id } = useParams('');
+    const client_id = user_id;
     const { battle_id } = useParams('');
 
     const title = getStudysetTitle(livebattle_id);
@@ -63,7 +61,7 @@ function LiveBattle (){
                         return prevTime - 1; 
                     } else {
                         clearInterval(timer);
-                        setIsTimeUp(true); 
+                        setIsTimeUp(true);
                         return 0; 
                     }
                 });
@@ -73,6 +71,30 @@ function LiveBattle (){
         }
     
     }, [timeLeft, isQuizFinished, isTimeUp]);
+
+    // TO BATTLERESULT
+    const goBattleResult = async () => {
+        navigate("/battleresult", { state: {
+            score: 85,
+            totalQuestions: 10,
+            client_id: user_id,
+            players: rankItems.map(({ name, score }) => ({ name, score })),
+            studyset_id: livebattle_id
+          }
+        });
+    }
+
+    useEffect(() => {
+        if (isTimeUp) {
+            setTimeout(() => {
+                if (!livebattle_id) {
+                console.warn('livebattle_id is undefined!');
+                return; // or fallback/handle error
+                }
+                goBattleResult();
+            }, 2000);
+        }
+    }, [isTimeUp, navigate]);
     
     //form submission
     const handleSubmit = (e) => {
@@ -124,7 +146,7 @@ function LiveBattle (){
 
     // websocket connection
     useEffect(() => {
-        const socket = new WebSocket(`ws://localhost:8000/ws/${battle_id}/${client_id}`); // creates the socket for this specific client
+        const socket = new WebSocket(`ws://localhost:8001/ws/${battle_id}/${client_id}`); // creates the socket for this specific client
         // socketRef.current = socket;
         
         socket.onmessage = (event) => {
@@ -196,7 +218,6 @@ function LiveBattle (){
         };
     }, []);
 
-    // REFACTOR
     const updateScore = (nameToUpdate, newScore) => {
         setRankItems(prevPlayers => 
             getUpdatedScoreList(prevPlayers, nameToUpdate, newScore)

@@ -5,7 +5,7 @@ import { MdDelete } from "react-icons/md";
 import { useState } from 'react';
 import Modal from './Modal'; 
 
-function StudySetCard({props}) {
+function StudySetCard({userID, props}) {
     const navigate = useNavigate();
     const { title, flashcardCount } = props;
     
@@ -30,7 +30,7 @@ function StudySetCard({props}) {
 
     // GO to STUDYSET
     const goStudySet = async () => {
-        navigate(`/studyset/${props.id}`);
+        navigate(`/studyset/${userID}/${props.id}`);
     }
 
     return (
@@ -44,7 +44,7 @@ function StudySetCard({props}) {
                 <div className='card-title'>
                     <h3>{title}</h3>
                     <div className="title-line"></div>
-                    <p className="flashcard-count">{flashcardCount} Flashcards</p>
+                    <p className="flashcard-count">{props.id}</p>
                 </div>
             </div>
             <Modal 

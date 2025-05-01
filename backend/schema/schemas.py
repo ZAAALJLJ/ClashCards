@@ -15,6 +15,14 @@ def individual_studyset(studyset) -> dict: # serializer for frontend to understa
     return {
         "id": str(studyset["_id"]),
         "title": studyset["title"],
+        "owner_ids": [str(oid) for oid in studyset.get("owner_ids", [])],
+        "winners": [
+            {
+                "name": winner["name"],
+                "wins": str(winner["wins"])
+            }
+            for winner in studyset.get("winners", [])
+        ]
     }
     
 def list_studyset(studysets) -> list:

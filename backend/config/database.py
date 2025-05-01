@@ -6,3 +6,4 @@ db = client.flashcard_db
 flashcard_collection = db["flashcards"]
 studyset_collection = db["studyset"]
 user_collection = db["users"]
+
