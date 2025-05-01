@@ -26,11 +26,11 @@ function App() {
           <Route path='/login' element={<Login/>} />
           <Route path='/signup' element={<SignUp/>} />
           <Route path='/profile' element={<Profile/>}/>
-          <Route path='/studyset/:id' element={<StudySet/>}/>
+          <Route path='/studyset/:user_id/:id' element={<StudySet/>}/>
           <Route path='/soloreview/:studyset_id' element={<SoloReview/>}/>
-          <Route path='/livebattle/:battle_id/:livebattle_id' element={<LiveBattle/>}/>
+          <Route path='/livebattle/:user_id/:battle_id/:livebattle_id' element={<LiveBattle/>}/>
           <Route path='/battleresult' element={<BattleResult/>}/>
-          <Route path='/createflashcard/:studyset_id' element={<CreateFlashcard/>}/>
+          <Route path='/createflashcard/:user_id/:studyset_id' element={<CreateFlashcard/>}/>
           <Route path='/test' element={<Test/>}/>
         </Routes>
       </main>

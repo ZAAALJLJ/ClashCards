@@ -56,6 +56,8 @@ function Home () {
 
   const [showModal, setShowModal] = useState(false);
   const [studysets, setSets] = useState([]);
+  const [showModalAdd, setShowModalAdd] = useState(false);
+  const [owner_add, setAddOwner] = useState('');
 
   // GET studysets
   const fetchSets = async () => {
@@ -79,6 +81,10 @@ function Home () {
     }));
   }
 
+  const handleInputChangeAdd = (value) => {
+    setAddOwner(value);
+  }
+
   // CREATE studysets
   const createStudySet = async () => {
     try {
@@ -90,10 +96,26 @@ function Home () {
     }
   };
 
+  // CREATE studysets
+  const addStudySet = async (id) => {
+    try {
+        await api.put(`/studysets/${owner_add}?user_id=${user_id}`);
+        setStudyset({owner_ids: [user_id], title: ''});
+        fetchSets();
+    } catch (error) {
+        console.error('Error adding studyset:', error);
+    }
+  };
+
   // SET cards
   useEffect(() => {
     fetchSets();
   }, []);
+
+  const handleAddStudySet = async () => {
+    addStudySet();
+    setShowModalAdd(false);
+  }
 
   //api call for study set creation
   const handleCreateStudySet = async (name) => {
@@ -155,7 +177,7 @@ function Home () {
           Library
         </div>
         <div className={`home-buttons ${isMenuOpen ? "show" : ""}`}>
-          <button className="btn-home">Battle</button>
+          <button className="btn-home" onClick={() => setShowModalAdd(true)}>+ Add Existing</button>
           <button className="btn-home" onClick={() => setShowModal(true)}>
             + Flashcard Set
           </button>
@@ -170,7 +192,7 @@ function Home () {
       <div className="content-container">
         <div className="study-card-container">
           {studysets.map(studysets => (
-            <StudySetCard key={studysets.id} props={studysets}/>
+            <StudySetCard key={studysets.id} userID={user_id} props={studysets}/>
           ))}
         </div>
         <div className="stats-container">
@@ -202,6 +224,18 @@ function Home () {
           submitText="Create Study Set"
           placeholder="Enter Study Set Name"
           onChange={handleInputChange}
+      />
+      <Modal
+          show={showModalAdd}
+          onClose={() => setShowModalAdd(false)}
+          onSubmit={handleAddStudySet}
+          title="Create a New Study Set"
+          bodyText="Please enter the name for your new study set."
+          inputField={true}
+          cancelText="Cancel"
+          submitText="Create Study Set"
+          placeholder="Enter Study Set Name"
+          onChange={handleInputChangeAdd}
       />
     </div>
   );

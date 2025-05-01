@@ -12,16 +12,10 @@ function BattleResult (){
   const [rankItems, setRankItems] = useState([]);
 
   const { score, totalQuestions, client_id, players } = location.state || {
-    score: 85, 
-    totalQuestions: 10, 
-    client_id: 'Jackie Butter', 
-    players: [
-      { name: 'Just Donatello', score: 100 },
-      { name: 'Idunno Mann', score: 90 },
-      { name: 'Jackie Butter', score: 80 },
-      { name: 'You', score: 85 },
-      { name: 'Mister X', score: 60 },
-    ]
+    score: 0, 
+    totalQuestions: 0, 
+    client_id: '', 
+    players: []
   };
 
   useEffect(() => {
