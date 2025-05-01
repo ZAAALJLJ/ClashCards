@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { FaDownload } from 'react-icons/fa';
 import '../css/Profile.css';
 import defaultProfilePic from '../assets/fallback-profile-image.jpg';
 import ProgressBarStatistics from '../components/ProgressBarStatistics.jsx';
@@ -9,6 +12,25 @@ function Profile (){
     const [isLoading, setIsLoading] = useState(true);
     const labels = ['WIN', 'ACC', 'CFG', 'LRN', 'CON'];
     const fullLabels = ['Wins', 'Accuracy', 'Correct First Guess', 'Learned', 'Consistency'];
+    const statsRef = useRef(null);
+
+    const downloadPDF = () => {
+        const input = statsRef.current;
+        const originalBackground = input.style.backgroundColor;
+
+        input.style.backgroundColor = '#11234b';
+
+        html2canvas(input, { scale: 2 }).then((canvas) => {
+          const imgData = canvas.toDataURL('image/png');
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+          pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+          pdf.save('profile-stats.pdf');
+
+          input.style.backgroundColor = originalBackground;
+        });
+      };
 
     useEffect(() => {
         const user = {
@@ -88,8 +110,14 @@ function Profile (){
                         </div>
                     </div>
                 </div>
-                <div className="profile-stats">
-                    <span className='profile-stats-label'>Performance Statistics</span>
+                <div className="profile-stats"  ref={statsRef}>
+                    <div className='stats-label-container'>
+                        <span className='profile-stats-label'>Performance Statistics</span>
+                        <button onClick={downloadPDF} className="download-btn" aria-label="Download PDF">
+                            <FaDownload size={20} />
+                        </button>
+                    </div>
+                    
                     <div className='user-chart-container'>
                         {isLoading ? (
                             <div className="skeleton" style={{ height: '200px', width: '200px' }}>
