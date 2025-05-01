@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
 import './App.css'
 import Home from './pages/Home'
@@ -15,8 +16,16 @@ import Test from './pages/Test'
 
 function App() {
   const location = useLocation();
+  const [showContent, setShowContent] = useState(false);
   const hideSidebarRoutes = ['/login', '/signup', '/livebattle', '/battleresult', '/soloreview', '/test'];
   const shouldHideSidebar = hideSidebarRoutes.includes(location.pathname.toLowerCase());
+
+  useEffect(() => {
+    setShowContent(true);
+  }, [location]);
+
+  if (!showContent) return null; 
+
   return (
     <div>
       {!shouldHideSidebar && <Sidebar/>} 

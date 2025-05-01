@@ -242,7 +242,7 @@ function Home () {
           bodyText="Please enter the name for your new study set."
           inputField={true}
           cancelText="Cancel"
-          submitText="Create Study Set"
+          submitText="Create"
           placeholder="Enter Study Set Name"
           onChange={handleInputChange}
       />
@@ -254,7 +254,7 @@ function Home () {
           bodyText="Please enter the name for your new study set."
           inputField={true}
           cancelText="Cancel"
-          submitText="Create Study Set"
+          submitText="Add"
           placeholder="Enter Study Set Name"
           onChange={handleInputChangeAdd}
       />
