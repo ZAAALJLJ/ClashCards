@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import 'react-loading-skeleton/dist/skeleton.css'; 
 import '../css/BattleResult.css'
 import Leaderboard from '../components/LeaderboardCard';
+import api from '../api';
 
 
 function BattleResult (){
@@ -10,12 +11,14 @@ function BattleResult (){
   const navigate = useNavigate();
   // const { score, totalQuestions, client_id, players } = location.state || {};
   const [rankItems, setRankItems] = useState([]);
+  const [rankOne, setRankOne] = useState(null);
 
-  const { score, totalQuestions, client_id, players } = location.state || {
+  const { score, totalQuestions, client_id, players, studyset_id } = location.state || {
     score: 0, 
     totalQuestions: 0, 
     client_id: '', 
-    players: []
+    players: [],
+    studyset_id: ''
   };
 
   useEffect(() => {
@@ -35,10 +38,23 @@ function BattleResult (){
         highlight: item.name === client_id, 
       }));
 
+      console.log('Rnk1:', updatedList[0].name);
+      setRankOne(updatedList[0].name);
+
     setTimeout(() => {
       setRankItems(updatedList);
+      // setRankOne(updatedList[0].name);
+      // console.log('Rnk1:', rankOne);
     }, 1000);
   }, [score, client_id, players]);
+
+  useEffect(() => {
+    if (rankOne) {
+      console.log('Rank 1:', rankOne);
+      console.log('Studyset ID:', studyset_id);
+      updateWinner();
+    }
+  }, [rankOne]);
 
   if (score === undefined || totalQuestions === undefined) {
     return (
@@ -50,6 +66,18 @@ function BattleResult (){
       </div>
     );
   }
+
+  // UPDATE WINNER
+  const updateWinner = async () => {
+    if (rankOne == client_id) {
+      try {
+        await api.put(`/studysets/${studyset_id}/add-winner?name=${rankOne}`);
+        setRankOne(null);
+      } catch (error) {
+          console.error('Error adding winner:', error);
+      }      
+    }
+  };
 
   return(
       <div className='battleresult-page'>

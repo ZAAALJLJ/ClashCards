@@ -78,7 +78,8 @@ function LiveBattle (){
             score: 85,
             totalQuestions: 10,
             client_id: user_id,
-            players: rankItems.map(({ name, score }) => ({ name, score }))
+            players: rankItems.map(({ name, score }) => ({ name, score })),
+            studyset_id: livebattle_id
           }
         });
     }
@@ -86,6 +87,10 @@ function LiveBattle (){
     useEffect(() => {
         if (isTimeUp) {
             setTimeout(() => {
+                if (!livebattle_id) {
+                console.warn('livebattle_id is undefined!');
+                return; // or fallback/handle error
+                }
                 goBattleResult();
             }, 2000);
         }
