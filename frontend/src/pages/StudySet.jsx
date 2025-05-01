@@ -10,7 +10,7 @@ import Modal from '../components/Modal';
 
 
 function StudySet (){
-    const { id } = useParams();
+    const { user_id, id } = useParams();
     const [flashcards, setCards] = useState([]);
     const [title, setTitle] = useState('');
     const navigate = useNavigate();
@@ -61,7 +61,7 @@ function StudySet (){
 
     // Go to CREATEFLASHCARD
     const goCreateFC = async () => {
-        navigate(`/createflashcard/${id}`);
+        navigate(`/createflashcard/${user_id}/${id}`);
     }
 
     // Go to SOLOREVIEW
@@ -71,7 +71,7 @@ function StudySet (){
 
     // Go to LIVEBATTLE
     const goBattle = async (battle_id) => {
-        navigate(`/livebattle/${battle_id}/${id}`);
+        navigate(`/livebattle/${user_id}/${battle_id}/${id}`);
     }
 
 

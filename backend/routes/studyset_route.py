@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from models.studyset import StudySet
 from config.database import studyset_collection
 from schema.schemas import list_studyset, individual_studyset
@@ -19,12 +19,12 @@ async def get_studysets(id: str):
 
 @studyset_router.post("/studysets/")
 async def create_studyset(studyset: StudySet):
-    studyset_collection.insert_one(dict(studyset))
+    studyset_collection.insert_one(studyset.dict())
     
 @studyset_router.delete("/studysets/{id}")
 async def delete_studyset(id: str):
     studyset_collection.find_one_and_delete({"_id": ObjectId(id)})
     
 @studyset_router.put("/studysets/{id}")
-async def add_owner(id: str):
-    studyset_collection.find_one_and_update({"_id": ObjectId(id)})
+async def add_owner(id: str, user_id: str = Query(...)):
+    studyset_collection.find_one_and_update({"_id": ObjectId(id)}, {"$addToSet": {"owner_ids": user_id}})
