@@ -19,7 +19,7 @@ async def get_studysets(id: str):
 
 @studyset_router.post("/studysets/")
 async def create_studyset(studyset: StudySet):
-    studyset_collection.insert_one(dict(studyset))
+    studyset_collection.insert_one(studyset.dict())
     
 @studyset_router.delete("/studysets/{id}")
 async def delete_studyset(id: str):

@@ -62,7 +62,7 @@ function BattleResult (){
                   highlightName={client_id}
               />
 
-              <button className='battle-home-btn' onClick={() => navigate('/')}>Return Home</button>
+              <button className='battle-home-btn' onClick={() => navigate(`/${client_id}`)}>Return Home</button>
 
           </div>
       </div>
