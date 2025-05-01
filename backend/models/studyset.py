@@ -3,7 +3,7 @@ from typing import List
 
 class Winner(BaseModel):
     name: str
-    wins: str
+    wins: int
     
 class StudySet(BaseModel):
     owner_ids: List[str]

@@ -28,3 +28,15 @@ async def delete_studyset(id: str):
 @studyset_router.put("/studysets/{id}")
 async def add_owner(id: str, user_id: str = Query(...)):
     studyset_collection.find_one_and_update({"_id": ObjectId(id)}, {"$addToSet": {"owner_ids": user_id}})
+    
+@studyset_router.put("/studysets/{id}/add-winner")
+async def add_winner(id: str, name: str = Query(...)):
+    result = studyset_collection.find_one_and_update(
+        {"_id": ObjectId(id), "winners.name": name}, 
+        {"$inc": {"winners.$.wins": 1}}
+    )
+    if not result:
+        result = studyset_collection.update_one(
+            {"_id": ObjectId(id)},
+            {"$push": {"winners": {"name": name, "wins": 1}}}
+    )

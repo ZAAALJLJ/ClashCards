@@ -12,7 +12,7 @@ Chart.register(ArcElement, Tooltip, Legend);
 function Home () {
   const { user_id } = useParams('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [studyset_to_add, setStudyset] = useState({owner_ids: [user_id], title: ''});
+  const [studyset_to_add, setStudyset] = useState({owner_ids: [user_id], title: '', winners: []});
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -90,7 +90,7 @@ function Home () {
     try {
         console.log('This the problem: ', studyset_to_add);
         await api.post('/studysets/', studyset_to_add);
-        setStudyset({owner_ids: [user_id], title: ''});
+        setStudyset({owner_ids: [user_id], title: '', winners: []});
     } catch (error) {
         console.error('Error adding studyset:', error);
     }
@@ -100,7 +100,7 @@ function Home () {
   const addStudySet = async (id) => {
     try {
         await api.put(`/studysets/${owner_add}?user_id=${user_id}`);
-        setStudyset({owner_ids: [user_id], title: ''});
+        setStudyset({owner_ids: [user_id], title: '', winners: []});
         fetchSets();
     } catch (error) {
         console.error('Error adding studyset:', error);
