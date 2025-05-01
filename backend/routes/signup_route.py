@@ -28,7 +28,9 @@ async def create_user(user: User):
     
     user_data = {
          "username": user.username,
-         "password": hashed_password
+         "password": hashed_password,
+         "wins": user.wins,
+         "lose": user.lose
     }
     user_collection.insert_one(user_data)
     
