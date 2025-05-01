@@ -73,6 +73,32 @@
         background-color: white;
         color: black;
     }
+
+    .input-with-icon {
+        position: relative;
+      }
+      
+      .input-with-icon input {
+        width: 100%;
+        padding-right: 30px;
+        height: 40px; 
+        box-sizing: border-box;
+      }
+      
+      .eye-icon {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #555;
+        font-size: 18px;
+      }
+
+      .eye-icon:hover {
+        color: #000;
+      }
+      
     
     button {
         width: 100%;
