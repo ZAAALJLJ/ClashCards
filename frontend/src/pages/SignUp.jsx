@@ -39,7 +39,7 @@ function SignUp (){
         await api.post('/signup/', user);
         setAllUser([...allUser, user]);
         setUser({username: '', password: ''})
-        navigate(`/login/`);
+        navigate(`/login`);
     } catch (error) {
         console.error('Error adding user:', error);
     }
