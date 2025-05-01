@@ -1,39 +1,41 @@
 import React, { useState } from 'react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import '../css/Login.css'; 
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
 // import { GoogleLogin } from '@react-oauth/google'; 
 
 function Login (){
-  const navigate = useNavigate();
-  const [user, setUser] = useState({username: '', password: ''});
+    const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
+    const [user, setUser] = useState({username: '', password: ''});
 
-  const handleInputChange = (e) => {
+    const handleInputChange = (e) => {
       const { name, value } = e.target;
       setUser({ ...user, [name]: value});
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-        const response = await api.post('/login/', user);
-        console.log("Login successful", user);
-        console.log("Loglog id:", response.data);
-        navigate(`/${response.data._id}`);
-    } catch (error){
-        console.error("Login error: ", error);
     }
-    console.log('Login submitted', { username, password });
-  };
 
-  const handleGoogleLoginSuccess = (response) => {
-    console.log('Google login successful', response);
-    // handle token here
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await api.post('/login/', user);
+            console.log("Login successful", user);
+            console.log("Loglog id:", response.data);
+            navigate(`/${response.data._id}`);
+        } catch (error){
+            console.error("Login error: ", error);
+        }
+        console.log('Login submitted', { username, password });
+    };
 
-  const handleGoogleLoginError = (error) => {
-    console.log('Google login failed', error);
-  };
+    const handleGoogleLoginSuccess = (response) => {
+        console.log('Google login successful', response);
+        // handle token here
+    };
+
+    const handleGoogleLoginError = (error) => {
+        console.log('Google login failed', error);
+    };
 
 
   return (
@@ -61,14 +63,23 @@ function Login (){
 
                             <div className="form-group">
                                 <label htmlFor="password">Password</label>
-                                <input 
-                                    type="password" 
-                                    id="password" 
-                                    name="password" 
-                                    value={user.password}
-                                    onChange={handleInputChange} 
-                                    required 
-                                />
+                                <div className='input-with-icon'>
+                                     <input 
+                                        type={showPassword ? "text" : "password"}
+                                        id="password" 
+                                        name="password" 
+                                        value={user.password}
+                                        onChange={handleInputChange} 
+                                        required 
+                                    />
+                                    <span
+                                        className="eye-icon"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                    </span>
+                                </div>
+                               
                             </div>
 
                             <button type="submit">Login</button>
