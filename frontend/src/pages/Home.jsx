@@ -1,5 +1,5 @@
 import StudySetCard from "../components/StudySetCard";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import'../css/Home.css';
 import api from '../api'
 import Modal from '../components/Modal.jsx';
@@ -13,36 +13,55 @@ function Home () {
   const { user_id } = useParams('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [studyset_to_add, setStudyset] = useState({owner_ids: [user_id], title: '', winners: []});
+  const [chartWinrate, setChartData] = useState();
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const [userStats, setUserStats] = useState({
-    good: 0,
-    neutral: 0,
-    bad: 0,
-    notLearned: 0
+    wins: 0,
+    lose: 0,
   });
+
+  const [realStats, setRealStats] = useState({
+    wins: 0,
+    lose: 0,
+  });
+
+  const fetchWinrate = async () => {
+    try {
+      const response = await api.get(`/users/${user_id}`);
+      setChartData(response.data);
+      console.log('Fetched WINRATE: ', response.data);
+    } catch (error) {
+      console.error('Error fetching WINRATE: ', error);
+    }
+  };
+
+    // SET cards
+    useEffect(() => {
+      fetchSets();
+    }, []);
 
   //fetch data for doughnut chart
   useEffect(() => {
-    const dummyStats = {
-      good: 45,
-      neutral: 25,
-      bad: 15,
-      notLearned: 15
-    };
-  
+    fetchWinrate();
+
+    if (!chartWinrate) return;
+    
     //doughnut chart percentage
-    const total = Object.values(dummyStats).reduce((acc, value) => acc + value, 0);
+    const total = Object.values(chartWinrate).reduce((acc, value) => acc + value, 0);
   
-    if (total !== 100) {
-      const difference = 100 - total;
-      dummyStats.good += difference;
+    if (total > 0) {
+      const normalizedStats = Object.fromEntries(
+        Object.entries(chartWinrate).map(([key, value]) => [key, (value / total) * 100])
+      );
+      setRealStats(chartWinrate);
+      setUserStats(normalizedStats);
+    } else {
+      setUserStats({wins:50, lose:50})
     }
-  
-    setUserStats(dummyStats);
-  }, []);
+  }, [chartWinrate]);
   
   // percentage validation
   useEffect(() => {
@@ -107,10 +126,13 @@ function Home () {
     }
   };
 
-  // SET cards
+
+
   useEffect(() => {
-    fetchSets();
-  }, []);
+    if (chartWinrate) {
+      console.log('Fetched WINRATE in effect: ', chartWinrate);
+    }
+  }, [chartWinrate]);
 
   const handleAddStudySet = async () => {
     addStudySet();
@@ -130,16 +152,15 @@ function Home () {
 
   //doughnut chart labels
   const chartData = {
-    labels: ['Good', 'Neutral', 'Bad', 'Not Learned'],
+    labels: ['Wins', 'Lose'],
     datasets: [
       {
         data: [
-          userStats.good,
-          userStats.neutral,
-          userStats.bad,
-          userStats.notLearned
+          userStats.wins,
+          userStats.lose,
         ],
-        backgroundColor: ['#0077b6', '#0096c7', '#41b8d5', '#6ce5e8'],
+        // , '#41b8d5', '#6ce5e8'
+        backgroundColor: ['#0077b6', '#0096c7'],
         borderWidth: 0, 
         borderRadius: 25,
         spacing: -50,
@@ -207,7 +228,7 @@ function Home () {
               <div className="legend-details-container" key={stat}>
                 <div className="legend-colour" style={{ backgroundColor: chartData.datasets[0].backgroundColor[index] }}></div>
                 <div className="legend-label"> {stat.split(/(?=[A-Z])/).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}</div>
-                <div className="legend-percentage">{userStats[stat]}%</div>
+                <div className="legend-percentage">{realStats[stat]}</div>
               </div>
             ))}
           </div>

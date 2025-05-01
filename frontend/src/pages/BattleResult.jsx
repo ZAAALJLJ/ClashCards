@@ -53,6 +53,7 @@ function BattleResult (){
       console.log('Rank 1:', rankOne);
       console.log('Studyset ID:', studyset_id);
       updateWinner();
+      updateWins();
     }
   }, [rankOne]);
 
@@ -76,6 +77,18 @@ function BattleResult (){
       } catch (error) {
           console.error('Error adding winner:', error);
       }      
+    }
+  };
+
+  // UPDATE WINS
+  const updateWins = async () => {
+    if (rankOne == client_id) {
+      try {
+        await api.put(`/users/${client_id}/`);
+        console.log("UPDATED");
+      } catch (error) {
+        console.log('Error adding wins:', error);
+      }
     }
   };
 
