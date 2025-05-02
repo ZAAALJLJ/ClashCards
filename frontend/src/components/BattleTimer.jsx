@@ -23,7 +23,7 @@ const BattleTimer = ({ totalTime, onTimeUp }) => {
     }
   }, [timeElapsed, totalTime, onTimeUp]);
 
-//   const timeRemaining = totalTime - timeElapsed;
+  const timeRemaining = totalTime - timeElapsed;
   const progressPercentage = (timeElapsed / totalTime) * 100;
 
   // const formatTime = (seconds) => {
@@ -34,11 +34,11 @@ const BattleTimer = ({ totalTime, onTimeUp }) => {
 
   return (
     <div className="battle-timer-container">
-      <div className="battle-timer-track">
-        <div 
-          className="battle-timer-progress"
-          style={{ width: `${progressPercentage}%` }}
-        ></div>
+      <div className={`battle-timer-track ${timeRemaining <= 10 ? 'urgent' : ''}`}>
+      <div 
+        className={`battle-timer-progress ${timeRemaining <= 10 ? 'urgent' : ''}`}
+        style={{ width: `${progressPercentage}%` }}
+      ></div>
       </div>
       {/* <div className="battle-timer-text">
         {formatTime(timeRemaining)}

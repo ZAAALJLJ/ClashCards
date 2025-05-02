@@ -13,7 +13,8 @@ const Modal = ({
   submitText, 
   placeholder, 
   type,
-  onChange
+  onChange, 
+  client_id
 }) => {
     if (!show) return null;
     const [inputValue, setInputValue] = useState('');
@@ -61,7 +62,7 @@ const Modal = ({
                             <button className="modal-continue" onClick={onSubmit}>
                                 Continue Battle
                             </button>
-                            <Link to="/" className="modal-leave">
+                            <Link to={`/${client_id}`} className="modal-leave">
                                 Leave Battle
                             </Link>
                         </>
