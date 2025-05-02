@@ -108,12 +108,41 @@
     flex-direction: column;
 }
 
-.profile-stats-label{
-    flex:1;
-    align-self: start;
+.download-btn {
+    flex-shrink: 0;
+    background-color: transparent;
+    border: none;
+    color: #ffffff;
+    padding:1rem;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: max-content;
+  }
+
+.download-btn:hover {
+    background-color: #051537;
+}
+
+.stats-label-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.profile-stats-label {
+    flex-shrink: 1;
     font-weight: 700;
     font-size: 1.25rem;
-}
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
 
 .user-chart-container{
     flex:5;
