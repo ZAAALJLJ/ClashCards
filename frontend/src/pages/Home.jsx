@@ -31,7 +31,10 @@ function Home () {
   const fetchWinrate = async () => {
     try {
       const response = await api.get(`/users/${user_id}`);
-      setChartData(response.data);
+      setChartData({
+        wins: response.data.wins,
+        lose: response.data.lose
+      });
       console.log('Fetched WINRATE: ', response.data);
     } catch (error) {
       console.error('Error fetching WINRATE: ', error);

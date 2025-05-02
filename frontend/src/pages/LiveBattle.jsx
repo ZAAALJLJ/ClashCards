@@ -10,6 +10,7 @@ import getCards from '../services/getCards.js';
 import { updateRanking } from '../services/updateRanking.js';
 import { getUpdatedScoreList } from '../services/getUpdatedScoreList.js';
 import { getVisibleIndices } from '../utils/progressHelpers';
+import api from '../api.js';
 
 function LiveBattle (){
     
@@ -34,12 +35,10 @@ function LiveBattle (){
     const [hasGameStarted, setHasGameStarted] = useState(false);
     const [showStartModal, setShowStartModal] = useState(true);
     const [playerCount, setPlayerCount] = useState(1); 
+    const [beststreak, setbeststreak] = useState(0); 
+    const [currentstreak, setcurrentstreak] = useState(0); 
+
     const navigate = useNavigate();
-
-
-
-    // player set score
-    const [player_score, setPlayerScore] = useState(0);
 
     // websocket
     const [ws, setWs] = useState(null);
@@ -74,6 +73,8 @@ function LiveBattle (){
 
     // TO BATTLERESULT
     const goBattleResult = async () => {
+        console.log("Console Log in GBR:", beststreak);
+        updateConsistency((beststreak / flashcards.length) * 100);
         navigate("/battleresult", { state: {
             score: 85,
             totalQuestions: 10,
@@ -104,12 +105,34 @@ function LiveBattle (){
             return; 
         }
         setMessage('');
+
+        // IF THE ANSWER IS CORRECT
         if (flashcards[currentQuestionIndex]?.answer === message.trim()) {
         const newScore = score + 10;
+        console.log(newScore)
         setScore(newScore);
         sendToServer(newScore);
+        updateRight();
+        setcurrentstreak(prevStreak => {
+            const newStreak = prevStreak + 1;
+            console.log("Current Streak", newStreak);
+    
+            if (newStreak > beststreak) {
+                setbeststreak(newStreak);
+                console.log("Best Streak PERFECT", newStreak);
+            }
+            return newStreak;
+        });
+        } else {
+            updateWrong();
+            if (currentstreak > beststreak) {
+                setbeststreak(currentstreak);
+                console.log("Best Streak NOT PERFECT:", currentstreak);
+            }
+            setcurrentstreak(0);
         }
     
+
         const nextIndex = currentQuestionIndex + 1;
         if (nextIndex >= flashcards.length) {
         setIsQuizFinished(true);
@@ -117,6 +140,9 @@ function LiveBattle (){
         setTimeout(() => {
             setShowConfetti(false);
         }, 5000);
+        updateTime(((totalTime - timeLeft) / totalTime) * 100)
+        updateFinished();
+
         } else {
         setCurrentQuestionIndex(nextIndex);
         }
@@ -124,11 +150,12 @@ function LiveBattle (){
       };
       
 
-    const sendToServer = (event) => {
-        if (ws && score) {
-            ws.send((score));
+    const sendToServer = (scoreToSend) => {
+        if (ws && scoreToSend !== null) {
+            console.log("Sending to server:", scoreToSend);
+            ws.send(JSON.stringify({ score: scoreToSend }));
         }
-    }
+    };
 
     // websocket set button READY
     const sendReady = (event) => {
@@ -163,6 +190,13 @@ function LiveBattle (){
                     return;
                 }
 
+                if ('updated_score' in data) {
+                    console.log("SCORE IS UPDATINGGGG")
+                    console.log(data)
+                    updateScore(data.name, data.updated_score)
+                    updatePlayerRanks();
+                }
+
                 if ('ready_clients' in data) {
                     const clients_ready = data.ready_clients;
                     console.log("Ready clients:", clients_ready);
@@ -175,12 +209,7 @@ function LiveBattle (){
                     setRankItems(formattedRankItems);
                 }
 
-                if ('updated_score' in data) {
-                    console.log("SCORE IS UPDATINGGGG")
-                    console.log(data)
-                    updateScore(data.name, data.updated_score)
-                    updatePlayerRanks();
-                }
+                
 
             } catch (error) {
 
@@ -248,6 +277,8 @@ const handleLeaveBattle = () => {
     useEffect(() => {
         if (isTimeUp && !isQuizFinished) {
             setShowConfetti(true);
+            updateUnfinished();
+            updateTime(100);
             setTimeout(() => {
                 setShowConfetti(false);
             }, 5000);
@@ -277,7 +308,57 @@ const handleLeaveBattle = () => {
         return <div>Loading flashcards...</div>;
     }
 
+    const updateRight = async () => {
+        try {
+            await api.put(`/users/${client_id}/right`);
+        } catch (error) {
+            console.error('Error adding right:', error);
+        }
+    }
 
+    const updateWrong = async () => {
+        try {
+            await api.put(`/users/${client_id}/wrong`);
+        } catch (error) {
+            console.error('Error adding wrong:', error);
+        }
+    }
+
+    const updateFinished = async () => {
+        try {
+            await api.put(`/users/${client_id}/finished_battle`);
+        } catch (error) {
+            console.error('Error adding finished_battle:', error);
+        }
+    }
+
+    const updateUnfinished = async () => {
+        try {
+            await api.put(`/users/${client_id}/unfinished_battle`);
+        } catch (error) {
+            console.error('Error adding unfinished_battle:', error);
+        }
+    }
+
+    const updateTime = async (time) => {
+        try {
+            await api.put(`/users/${client_id}/average_time`, null, {
+                params: { time: time }
+            });
+        } catch (error) {
+            console.error('Error adding unfinished_battle:', error);
+        }
+    }
+
+    const updateConsistency = async (best) => {
+        try {
+            await api.put(`/users/${client_id}/consistency`, null, {
+                params: { correct: best }
+            });
+        } catch (error) {
+            console.error('Error adding consistency:', error);
+        }
+    }
     // const sampleData = {
     //     score: 85, 
     //     totalQuestions: 10, 
