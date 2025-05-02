@@ -30,7 +30,13 @@ async def create_user(user: User):
          "username": user.username,
          "password": hashed_password,
          "wins": user.wins,
-         "lose": user.lose
+         "lose": user.lose,
+         "right": user.right,
+         "wrong": user.wrong,
+         "finished_battle": user.finished_battle,
+         "unfinished_battle": user.unfinished_battle,
+         "average_time": user.average_time,
+         "consistency": user.consistency
     }
     user_collection.insert_one(user_data)
     

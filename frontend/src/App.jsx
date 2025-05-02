@@ -19,6 +19,7 @@ function App() {
   const [showContent, setShowContent] = useState(false);
   const hideSidebarRoutes = ['/login', '/signup', '/livebattle', '/battleresult', '/soloreview', '/test'];
   const shouldHideSidebar = hideSidebarRoutes.includes(location.pathname.toLowerCase());
+  
 
   useEffect(() => {
     setShowContent(true);
@@ -26,15 +27,16 @@ function App() {
 
   if (!showContent) return null; 
 
+  {console.log("From APP:", location.pathname)}
   return (
     <div>
-      {!shouldHideSidebar && <Sidebar/>} 
+      {!shouldHideSidebar && <Sidebar user_id={location.pathname.split('/')[1]}/>} 
       <main className='main-content'>
         <Routes>
           <Route path='/:user_id' element={<Home/>}/>
           <Route path='/login' element={<Login/>} />
           <Route path='/signup' element={<SignUp/>} />
-          <Route path='/profile' element={<Profile/>}/>
+          <Route path='/profile/:user_id' element={<Profile/>}/>
           <Route path='/studyset/:user_id/:id' element={<StudySet/>}/>
           <Route path='/soloreview/:studyset_id' element={<SoloReview/>}/>
           <Route path='/livebattle/:user_id/:battle_id/:livebattle_id' element={<LiveBattle/>}/>

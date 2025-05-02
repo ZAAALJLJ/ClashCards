@@ -78,7 +78,7 @@ async def websocket_endpoint(websocket: WebSocket, battle_id: str, client_id: st
     await manager.connect(websocket, battle_id, client_id)
     try:
         while True:
-            data = await websocket.receive_text()
+            data = await websocket.receive_text() 
             
             
             # player presses READY
@@ -87,10 +87,18 @@ async def websocket_endpoint(websocket: WebSocket, battle_id: str, client_id: st
                 await manager.mark_player_ready(battle_id, client_id)
             #     await manager.send_personal_message(f"Youre now ready!", websocket)
             
-            client_score = {
-                'name': client_id,
-                'updated_score': data
-            }
+            if data != "ready":
+                parsed_data = json.loads(data)
+                score = parsed_data.get("score")
+                client_score = {
+                    'name': client_id,
+                    'updated_score': score
+                }
+            else:
+                client_score = {
+                    'name': client_id,
+                    'updated_score': 0
+                }
             
             json_client_score = json.dumps(client_score)
             await manager.broadcast(json_client_score, battle_id)

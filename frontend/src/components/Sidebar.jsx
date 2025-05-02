@@ -6,21 +6,22 @@ import { CgProfile } from "react-icons/cg";
 import { IoSettingsSharp } from "react-icons/io5";
 import "../css/Sidebar.css";
 
-function Sidebar() {
+function Sidebar({user_id}) {
+  console.log("From SIDEBAR:", user_id);
   return <nav className="sidebar">
     <div className="sidebar-brand">
-      <Link to="/">
+      <Link to={`/${user_id}`}>
         <GiApothecary className="logo-icon"/>
       </Link>
     </div>
     <div className="sidebar-links">
-      <Link to='/' className="nav-link">
+      <Link to={`/${user_id}`} className="nav-link">
         <FaBook className="brand-icon"/>
         <div className="icon-title">
           Library
         </div>
       </Link>
-      <Link to='/profile' className="nav-link">
+      <Link to={`/profile/${user_id}`} className="nav-link">
         <CgProfile className="brand-icon"/>
         <div className="icon-title">
             Profile

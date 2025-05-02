@@ -3,12 +3,47 @@ import '../css/Profile.css';
 import defaultProfilePic from '../assets/fallback-profile-image.jpg';
 import ProgressBarStatistics from '../components/ProgressBarStatistics.jsx';
 import RadarChart from '../components/RadarChart.jsx';
+import { useParams } from 'react-router-dom';
+import api from '../api.js';
 
 function Profile (){
+    const {user_id} = useParams();
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const labels = ['WIN', 'ACC', 'CFG', 'LRN', 'CON'];
     const fullLabels = ['Wins', 'Accuracy', 'Correct First Guess', 'Learned', 'Consistency'];
+
+    // FETCH Wins and Lose
+    const [winRate, setwinRate] = useState(null);
+    // FETCH Right and Wrong
+    const [accuracy, setAccuracy] = useState(null);
+    // FETCH Finished and unfinished data
+    const [perseverace, setPerseverance] = useState(null);
+    // FETCH Average time
+    const [avg, setAverage] = useState(null);
+    // FETCH Consistency
+    const [consistency, setConsistency] = useState(null);
+
+    const fetchWinrate = async () => {
+        try {
+            const response = await api.get(`/users/${user_id}`);
+            setwinRate(((response.data.wins / (response.data.wins + response.data.lose) * 100)));
+            setAccuracy(((response.data.right / (response.data.right + response.data.wrong)) * 100));
+            setAccuracy(((response.data.right / (response.data.right + response.data.wrong)) * 100));
+            setPerseverance(((response.data.finish / (response.data.finish + response.data.unfinish)) * 100));
+            setAverage(response.data.avg);
+            setConsistency(response.data.cons);
+            console.log('Fetched WINRATE: ', response.data.wins / (response.data.wins - response.data.lose) * 100);
+        } catch (error) {
+            console.error('Error fetching WINRATE: ', error);
+        }
+    };
+
+
+    // FETCH useEffect
+    useEffect(() => {
+        fetchWinrate();
+    }, [])
 
     useEffect(() => {
         const user = {
@@ -16,7 +51,7 @@ function Profile (){
           profilePic: "../assets/fallback-profile-image.jpg",
           name: "Dragons A. Bool",
           email: "jun@gmail.com",
-          progressArr: [75, 90, 80, 30, 60]
+          progressArr: [winRate, accuracy, perseverace, avg, consistency]
         };
       
         const timer = setTimeout(() => {
@@ -25,7 +60,7 @@ function Profile (){
         }, 1000);
       
         return () => clearTimeout(timer);
-      }, []);
+    }, [winRate]);
       
 
     const handleImageError = (e) => {
