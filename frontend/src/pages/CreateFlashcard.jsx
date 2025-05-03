@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react';
 import '../css/CreateFlashcard.css'
 import api from '../api'
+import 'font-awesome/css/font-awesome.min.css';
 import CreatedFlashcard from '../components/CreatedFlashcard';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 
 function CreateFlashcard () {
-    const { studyset_id } = useParams();
+    const { studyset_id, userID } = useParams();
     const [flashcards, setCards] = useState([]);
     const [flashcard, setCard] = useState({studyset_id: studyset_id, question: '', answer: ''});
+    const [questionCount, setQuestionCount] = useState(0);
+    const [answerCount, setAnswerCount] = useState(0);
     const [isUpdating, setUpdate] = useState(false);
     const [currentKey, setKey] = useState({id: ''});
     const [title, setTitle] = useState('');
+    const [errors, setErrors] = useState({ question: '', answer: '' });
+    const navigate = useNavigate();
 
     // GET all cards
     const fetchCards = async () => {
@@ -45,12 +50,40 @@ function CreateFlashcard () {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setCard({ ...flashcard, [name]: value});
+
+        if (name === 'question') {
+            setQuestionCount(value.length);
+        } else if (name === 'answer') {
+            setAnswerCount(value.length);
+        }
     }
 
+    // Handle Clear action
+    const handleClear = () => {
+        setCard({ studyset_id: studyset_id, question: '', answer: '' }); 
+        setKey({ id: '' });  
+        setUpdate(false);  
+        setQuestionCount(0);
+        setAnswerCount(0);
+        setErrors({ question: '', answer: '' });
+    };
+
+
+    //input validation
+    const validate = () => {
+        const newErrors = {};
+        if (!flashcard.question.trim()) newErrors.question = 'Question is required.';
+        if (!flashcard.answer.trim()) newErrors.answer = 'Answer is required.';
+        if (flashcard.question.length > 500) newErrors.question = 'Question cannot be longer than 500 characters.';
+        if (flashcard.answer.length > 500) newErrors.answer = 'Answer cannot be longer than 500 characters.';
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
     
     // ADD cards to db
     const handleAddCard = async () => {
-        
+        if (!validate()) return; 
+
         const trimmedQuestion = flashcard.question.trim();
         const trimmedAnswer = flashcard.answer.trim();
 
@@ -70,11 +103,15 @@ function CreateFlashcard () {
 
     // UPDATE cards in db
     const updateCard = async (id, updatedData) => {
+        if (!validate()) return;
+
         try {
             await api.put(`/flashcards/${id}/`, updatedData);
             
             console.log("Flashcard updated");
             fetchCards();
+            setCard({ studyset_id: studyset_id, question: '', answer: '' }); 
+            setUpdate(false);
 
         } catch (error) {
             console.error('Error adding cards:', error);
@@ -109,15 +146,26 @@ function CreateFlashcard () {
             setKey({id: ''});
             setCard({studyset_id: studyset_id, question: '', answer: ''});
             setUpdate(false);
+            setQuestionCount(0);
+            setAnswerCount(0);
+            setErrors({ question: '', answer: '' });
         } catch (error) {
             console.error('Error create button:', error);
         }
     }
 
+
+    const goBackToStudyset = () => {
+        navigate(`/studyset/${userID}/${studyset_id}`);
+    };
+
     return (
         <div className="create-page">
             <div className='create-page-container'>
                 <div className="create-nav-bar">
+                    <button className="btn-back" onClick={goBackToStudyset}>
+                        <i className="fa fa-arrow-left"></i>
+                    </button>
                     <div className="create-title">
                         {title}
                     </div>
@@ -130,7 +178,7 @@ function CreateFlashcard () {
                                     Question
                                 </label>
                                 <input 
-                                    className='question' 
+                                     className={`question ${errors.question || questionCount > 500 ? 'input-error' : ''}`}  
                                     type='text' 
                                     id='question'
                                     name='question'
@@ -139,6 +187,16 @@ function CreateFlashcard () {
                                     onChange={handleInputChange}
                                     required
                                 />
+                                <div className='error-container'>
+                                    <div className={`char-counter ${questionCount > 500 ? 'error-counter' : ''}`}>
+                                        {questionCount}/500
+                                    </div>
+                                    {errors.question && 
+                                        <div className="error-text">
+                                            {errors.question}
+                                        </div>}
+                                </div>
+                                
                             </div>
                             <hr className='horizontal-line'/>
                             <div className='create-answer'>
@@ -146,7 +204,7 @@ function CreateFlashcard () {
                                     Answer
                                 </label>
                                 <input 
-                                    className='answer' 
+                                     className={`answer ${errors.answer || answerCount > 500 ? 'input-error' : ''}`} 
                                     type='text' 
                                     id='answer'
                                     name='answer'
@@ -155,10 +213,25 @@ function CreateFlashcard () {
                                     onChange={handleInputChange}
                                     required
                                 />
+                                <div className='error-container'>
+                                    <div className={`char-counter ${answerCount > 500 ? 'error-counter' : ''}`}>
+                                        {answerCount}/500
+                                    </div>
+                                    {errors.answer && 
+                                        <div className="error-text">
+                                            {errors.answer}
+                                        </div>}
+                                </div>
+                                 
                             </div>
                             <div className='sd-flashcard-btn'>
                                 <button type='button' className='btn-sd' onClick={() => isUpdating ? updateCard(currentKey.id, flashcard): handleAddCard()}>Save</button>
-                                <button type='button' className='btn-sd' onClick={() => deleteCard(currentKey.id)}>Delete</button>
+                                {isUpdating && currentKey.id && (
+                                    <button type='button' className='btn-sd' onClick={() => deleteCard(currentKey.id)}>
+                                        Delete
+                                    </button>
+                                )}
+                                <button type='button' className='btn-sd' onClick={handleClear}>Clear</button>
                             </div>
                         </form>                
 
