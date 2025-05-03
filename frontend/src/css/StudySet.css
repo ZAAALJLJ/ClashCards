@@ -88,6 +88,9 @@
     align-items: center;
 }
 
+.unavailable-message{
+    padding: 2rem;
+}
 
 .leaderboard {
     flex: 1;
@@ -97,7 +100,17 @@
     min-width: 0;
     max-width: 500px;
     overflow: hidden;
+    justify-content: center;
 }
+
+.leaderboard .unavailable-message {
+    display: flex;
+    align-items: center;
+    border: 0.5px solid rgba(240, 248, 255, 0.308);
+    border-radius: 2rem;
+    height: 100%;
+}
+
 
 
 .large-screen-only {
