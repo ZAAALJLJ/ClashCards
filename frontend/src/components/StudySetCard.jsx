@@ -4,14 +4,14 @@ import { MdDelete } from "react-icons/md";
 
 import { useState } from 'react';
 import Modal from './Modal'; 
+import api from '../api';
 
 function StudySetCard({userID, props}) {
     const navigate = useNavigate();
-    const { title, flashcardCount } = props;
+    const { title } = props;
     
     const [showModal, setShowModal] = useState(false);
 
-    console.log("studyset", props.id);
 
     
     const openModal = (e) => {
@@ -25,7 +25,16 @@ function StudySetCard({userID, props}) {
 
     const confirmDelete = () => {
         setShowModal(false);
+        deleteStudyset();
         alert(`Deleted study set: ${title}`); 
+    };
+
+    const deleteStudyset = async () => {
+        try {
+            await api.delete(`studysets/${props.id}`)
+        } catch (error) {
+            console.error('Error deleting studyset:', error);
+        }
     };
 
     // GO to STUDYSET

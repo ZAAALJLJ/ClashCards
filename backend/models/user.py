@@ -11,9 +11,11 @@ class User(BaseModel):
     password: str
     wins: Optional[int] = 0
     lose: Optional[int] = 0
-    right: int
-    wrong: int
-    finished_battle: int
-    unfinished_battle: int
-    average_time: List[int] # ((totaltime - timeleft) / totaltime) x 100
-    consistency: int
+    right: int = 0
+    wrong: int = 0
+    finished_battle: int = 0
+    unfinished_battle: int = 0
+    average_time: List[int] = [] # ((totaltime - timeleft) / totaltime) x 100
+    consistency: List[int] = []
+    
+    

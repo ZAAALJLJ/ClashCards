@@ -37,6 +37,7 @@ function LiveBattle (){
     const [playerCount, setPlayerCount] = useState(1); 
     const [beststreak, setbeststreak] = useState(0); 
     const [currentstreak, setcurrentstreak] = useState(0); 
+    const [rankOne, setRankOne] = useState();
 
     const navigate = useNavigate();
 
@@ -73,14 +74,15 @@ function LiveBattle (){
 
     // TO BATTLERESULT
     const goBattleResult = async () => {
-        console.log("Console Log in GBR:", beststreak);
+        console.log("Console Log in GBR:", rankOne);
         updateConsistency((beststreak / flashcards.length) * 100);
         navigate("/battleresult", { state: {
             score: 85,
             totalQuestions: 10,
             client_id: user_id,
             players: rankItems.map(({ name, score }) => ({ name, score })),
-            studyset_id: livebattle_id
+            studyset_id: livebattle_id,
+            rank1: rankOne
           }
         });
     }
@@ -171,9 +173,36 @@ function LiveBattle (){
         }
     };
 
+    const getUsername = async (user) => {
+        try {
+            const response = await api.get(`/users/${user}/username`);
+            console.log("username:", response.data.username);
+            return response.data.username;
+        } catch (error) {
+            console.error('Faied to get username:', error);
+        }
+    }
+
+    const fetchAndSetRankItems = async (clients_ready) => {
+        const formattedRankItems = await Promise.all(
+          clients_ready.map(async (clientId, index) => {
+            const username = await getUsername(clientId);
+            return {
+              clientId,
+              rank: index + 1,
+              name: username,
+              score: 0
+            };
+          })
+        );
+      
+        setRankItems(formattedRankItems);
+        setRankOne(formattedRankItems[0].clientId);
+    };
+
     // websocket connection
     useEffect(() => {
-        const socket = new WebSocket(`ws://localhost:8000/ws/${battle_id}/${client_id}`); // creates the socket for this specific client
+        const socket = new WebSocket(`ws://localhost:8001/ws/${battle_id}/${client_id}`); // creates the socket for this specific client
         // socketRef.current = socket;
         
         socket.onmessage = (event) => {
@@ -193,20 +222,19 @@ function LiveBattle (){
                 if ('updated_score' in data) {
                     console.log("SCORE IS UPDATINGGGG")
                     console.log(data)
-                    updateScore(data.name, data.updated_score)
-                    updatePlayerRanks();
+
+                    const handleScoreUpdate = async () => {
+                        const username = await getUsername(data.name);
+                        updateScore(username, data.updated_score);
+                        updatePlayerRanks();
+                    };
+                
+                    handleScoreUpdate();
                 }
 
                 if ('ready_clients' in data) {
                     const clients_ready = data.ready_clients;
-                    console.log("Ready clients:", clients_ready);
-                    const formattedRankItems = clients_ready.map((clientId, index) => ({
-                        rank: index + 1, // 1, 2, 3, ...
-                        name: clientId,  // the client ID as name
-                        score: 0         // start score at 0
-                    }));
-                
-                    setRankItems(formattedRankItems);
+                    fetchAndSetRankItems(clients_ready);
                 }
 
                 
@@ -352,6 +380,7 @@ const handleLeaveBattle = () => {
 
     const updateConsistency = async (best) => {
         try {
+            console.log(`/users/${client_id}/consistentcy/best`)
             await api.put(`/users/${client_id}/consistency`, null, {
                 params: { correct: best }
             });
@@ -359,6 +388,7 @@ const handleLeaveBattle = () => {
             console.error('Error adding consistency:', error);
         }
     }
+
     // const sampleData = {
     //     score: 85, 
     //     totalQuestions: 10, 

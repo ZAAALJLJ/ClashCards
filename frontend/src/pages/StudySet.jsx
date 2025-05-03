@@ -85,14 +85,15 @@ function StudySet (){
                     const response = await api.get(`/studysets/${id}`);
                     const studyset = response.data
 
-                    const ranked = [...studyset.winners]
-                    .sort((a,b) => b.wins - a.wins)
-                    .map((item, index) => ({
-                        rank: index + 1,
-                        name: item.name,
-                        score: item.wins,
-                    }));
-
+                    const ranked = await Promise.all(
+                        [...studyset.winners].map(async (item, index) => ({
+                            rank: index + 1,
+                            name: await getUsername(item.name), // assuming item.name is user ID
+                            score: item.wins,
+                        }))
+                    );
+                    
+                    getUsername(user_id);
                     setRankItems(ranked);
                 } catch (error) {
                     console.error('Failed to fetch studyset:', error);
@@ -104,7 +105,15 @@ function StudySet (){
               }
         }, [id]);
     
-    
+    const getUsername = async (user) => {
+        try {
+            const response = await api.get(`/users/${user}/username`);
+            console.log("username:", response.data.username);
+            return response.data.username;
+        } catch (error) {
+            console.error('Faied to get username:', error);
+        }
+    }
           useEffect(() => {
             const handleClickOutside = (event) => {
                 if (
@@ -132,7 +141,7 @@ function StudySet (){
                 <div className={`home-buttons ${isMenuOpen ? "show" : ""}`}>
                     <button className="btn-home" onClick={goCreateFC}>+ Create Flashcard</button>
                     <button className="btn-home" onClick={() => setShowModal(true)}>Battle</button>
-                    <button className="btn-home" onClick={goSoloReview}>Solo Review Mode</button>
+                    {/* <button className="btn-home" onClick={goSoloReview}>Solo Review Mode</button> */}
                 </div>
                 <div className="hamburger-icon" onClick={toggleMenu}>
                     <span className="hamburger-bar"></span>

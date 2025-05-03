@@ -13,12 +13,13 @@ function BattleResult (){
   const [rankItems, setRankItems] = useState([]);
   const [rankOne, setRankOne] = useState(null);
 
-  const { score, totalQuestions, client_id, players, studyset_id } = location.state || {
+  const { score, totalQuestions, client_id, players, studyset_id, rank1 } = location.state || {
     score: 0, 
     totalQuestions: 0, 
     client_id: '', 
     players: [],
-    studyset_id: ''
+    studyset_id: '',
+    rank1: ''
   };
 
   useEffect(() => {
@@ -39,7 +40,7 @@ function BattleResult (){
       }));
 
       console.log('Rnk1:', updatedList[0].name);
-      setRankOne(updatedList[0].name);
+      setRankOne(rank1);
 
     setTimeout(() => {
       setRankItems(updatedList);
@@ -70,6 +71,8 @@ function BattleResult (){
 
   // UPDATE WINNER
   const updateWinner = async () => {
+    console.log("Rankone", rankOne);
+    console.log("Client", client_id);
     if (rankOne == client_id) {
       try {
         await api.put(`/studysets/${studyset_id}/add-winner?name=${rankOne}`);
