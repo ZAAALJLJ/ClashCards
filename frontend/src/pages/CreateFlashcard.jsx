@@ -96,7 +96,7 @@ function CreateFlashcard () {
             console.log("Flashcard deleted");
             fetchCards();
             setKey({id: ''});
-            setCard({ question: '', answer: ''});
+            setCard({studyset_id: studyset_id, question: '', answer: ''});
 
         } catch (error) {
             console.error('Error deleting cards:', error);
