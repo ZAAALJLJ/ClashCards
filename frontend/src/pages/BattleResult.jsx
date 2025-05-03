@@ -4,12 +4,15 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import '../css/BattleResult.css'
 import Leaderboard from '../components/LeaderboardCard';
 import api from '../api';
+import getUsername from '../services/getUsername';
+
 
 
 function BattleResult (){
   const location = useLocation();
   const navigate = useNavigate();
   // const { score, totalQuestions, client_id, players } = location.state || {};
+  const [currentUser, setCurrentUser] = useState('');
   const [rankItems, setRankItems] = useState([]);
   const [rankOne, setRankOne] = useState(null);
 
@@ -21,6 +24,16 @@ function BattleResult (){
     studyset_id: '',
     rank1: ''
   };
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      const username = await getUsername(client_id);
+      setCurrentUser(username);
+    };
+  
+    fetchUsername();
+  }, [client_id]);
+  
 
   useEffect(() => {
     if (!score || !client_id) return;
@@ -103,7 +116,7 @@ function BattleResult (){
                   showCrown = {true}
                   rankItems={rankItems}
                   isLoading = {false}
-                  highlightName={client_id}
+                  highlightName={currentUser}
               />
 
               <button className='battle-home-btn' onClick={() => navigate(`/${client_id}`)}>Return Home</button>

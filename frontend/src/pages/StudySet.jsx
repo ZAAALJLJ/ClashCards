@@ -20,9 +20,19 @@ function StudySet (){
 
     // get user for leaderboard highlight
     useEffect(() => {
-        setCurrentUser("Jackie Butter"); 
-        console.log("Current User:", currentUser); 
-    }, [currentUser]);
+        const fetchCurrentUser = async () => {
+            try {
+              const response = await api.get(`/users/${user_id}/username`); 
+              setCurrentUser(response.data.username); 
+            } catch (error) {
+              console.error('Failed to fetch user data:', error);
+            }
+          };
+      
+          if (user_id) {
+            fetchCurrentUser();
+          }
+        }, [user_id]);
 
     //nav bar toggle
     const toggleMenu = () => {
@@ -172,6 +182,7 @@ function StudySet (){
                             showCrown={true}
                             rankItems={rankItems}
                             isLoading={false}
+                            highlightName={currentUser}
                         />
                     )}
                 </div>
