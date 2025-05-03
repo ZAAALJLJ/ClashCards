@@ -35,7 +35,6 @@ function Home () {
         wins: response.data.wins,
         lose: response.data.lose
       });
-      console.log('Fetched WINRATE: ', response.data);
     } catch (error) {
       console.error('Error fetching WINRATE: ', error);
     }
@@ -113,6 +112,7 @@ function Home () {
         console.log('This the problem: ', studyset_to_add);
         await api.post('/studysets/', studyset_to_add);
         setStudyset({owner_ids: [user_id], title: '', winners: []});
+        fetchSets();
     } catch (error) {
         console.error('Error adding studyset:', error);
     }
@@ -121,6 +121,12 @@ function Home () {
   // CREATE studysets
   const addStudySet = async (id) => {
     try {
+        console.log("MAY ID SA STUDSET:", id);
+        const response = await api.get(`/studysets/${id}`);
+        if (!response.data) {
+          console.log("Studyset doesn't exist");
+          return;
+        }
         await api.put(`/studysets/${owner_add}?user_id=${user_id}`);
         setStudyset({owner_ids: [user_id], title: '', winners: []});
         fetchSets();
@@ -129,16 +135,8 @@ function Home () {
     }
   };
 
-
-
-  useEffect(() => {
-    if (chartWinrate) {
-      console.log('Fetched WINRATE in effect: ', chartWinrate);
-    }
-  }, [chartWinrate]);
-
   const handleAddStudySet = async () => {
-    addStudySet();
+    addStudySet(owner_add);
     setShowModalAdd(false);
   }
 

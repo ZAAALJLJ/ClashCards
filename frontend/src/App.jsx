@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Route, Routes, useLocation } from 'react-router-dom'
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import './App.css'
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -16,13 +16,23 @@ import Test from './pages/Test'
 
 function App() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [showContent, setShowContent] = useState(false);
   const hideSidebarRoutes = ['/login', '/signup', '/livebattle', '/battleresult', '/soloreview', '/test'];
   const shouldHideSidebar = hideSidebarRoutes.includes(location.pathname.toLowerCase());
+  const extractUserId = (pathname) => {
+    const match = pathname.match(/\/(?:profile|studyset|createflashcard|livebattle)\/([^/]+)/) 
+                || pathname.match(/^\/([^/]+)$/); // fallback for /:user_id route
   
+    return match ? match[1] : null;
+  };
 
   useEffect(() => {
-    setShowContent(true);
+    if (location.pathname === '/' || location.pathname === '') {
+      navigate('/login', { replace: true });
+    } else {
+      setShowContent(true);
+    }
   }, [location]);
 
   if (!showContent) return null; 
@@ -30,7 +40,7 @@ function App() {
   {console.log("From APP:", location.pathname)}
   return (
     <div>
-      {!shouldHideSidebar && <Sidebar user_id={location.pathname.split('/')[1]}/>} 
+      {!shouldHideSidebar && <Sidebar user_id={extractUserId(location.pathname)}/>} 
       <main className='main-content'>
         <Routes>
           <Route path='/:user_id' element={<Home/>}/>
@@ -38,11 +48,10 @@ function App() {
           <Route path='/signup' element={<SignUp/>} />
           <Route path='/profile/:user_id' element={<Profile/>}/>
           <Route path='/studyset/:user_id/:id' element={<StudySet/>}/>
-          <Route path='/soloreview/:studyset_id' element={<SoloReview/>}/>
+          {/* <Route path='/soloreview/:studyset_id' element={<SoloReview/>}/> */}
           <Route path='/livebattle/:user_id/:battle_id/:livebattle_id' element={<LiveBattle/>}/>
           <Route path='/battleresult' element={<BattleResult/>}/>
           <Route path='/createflashcard/:user_id/:studyset_id' element={<CreateFlashcard/>}/>
-          <Route path='/test' element={<Test/>}/>
         </Routes>
       </main>
     </div>

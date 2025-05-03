@@ -50,6 +50,15 @@ function CreateFlashcard () {
     
     // ADD cards to db
     const handleAddCard = async () => {
+        
+        const trimmedQuestion = flashcard.question.trim();
+        const trimmedAnswer = flashcard.answer.trim();
+
+        if (!trimmedQuestion || !trimmedAnswer) {
+            alert("Both question and answer fields are required.");
+            return;
+        }
+
         try {
             await api.post('/flashcards/', flashcard);
             setCards([...flashcards, flashcard]);
@@ -128,6 +137,7 @@ function CreateFlashcard () {
                                     placeholder='Type question here'
                                     value={flashcard.question}
                                     onChange={handleInputChange}
+                                    required
                                 />
                             </div>
                             <hr className='horizontal-line'/>
@@ -143,6 +153,7 @@ function CreateFlashcard () {
                                     placeholder='Type answer here'
                                     value={flashcard.answer}
                                     onChange={handleInputChange}
+                                    required
                                 />
                             </div>
                             <div className='sd-flashcard-btn'>

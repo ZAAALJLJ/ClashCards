@@ -28,6 +28,13 @@ async def get_user_winrate(id: str):
     
     return {"wins": wins, "lose": lose, "right": right, "wrong": wrong, "finish": finish, "unfinish": unfinish, "avg": avg, "consistent": cons}
 
+@user_router.get("/users/{id}/username")
+async def ger_username(id: str):
+    user = user_collection.find_one({"_id": ObjectId(id)})
+    username = user.get("username")
+    
+    return {"username": username}
+    
 @user_router.get("/users/")
 async def get_users():
     users = list_user(user_collection.find())
@@ -58,13 +65,16 @@ async def add_time(user_id: str, time: int = Query(...)):
     user_collection.find_one_and_update({"_id": ObjectId(user_id)}, {"$push": {"average_time": time}}, return_document=True)
   
 @user_router.put("/users/{user_id}/consistency")
-async def add_correct(user_id: str, correct: int = Query(...)):
+async def add_correct(user_id: str, correct: float = Query(...)):
     user_collection.find_one_and_update({"_id": ObjectId(user_id)}, {"$push": {"consistency": correct}}, return_document=True)
   
 @user_router.get("/userss/")
 async def update_users():
+    target_user_id = ObjectId("6815a570c20810163171516d")
+
     for user in user_collection.find():
         updates = {}
+
         if "right" not in user:
             updates["right"] = 0
         if "wrong" not in user:
@@ -75,7 +85,13 @@ async def update_users():
             updates["unfinished_battle"] = 0
         if "average_time" not in user:
             updates["average_time"] = []
-        updates["consistency"] = []
+
+        # Only overwrite consistency and average_time for specific user
+        if user["_id"] == target_user_id:
+            updates["consistency"] = []
+            updates["average_time"] = []
 
         if updates:
             user_collection.update_one({"_id": user["_id"]}, {"$set": updates})
+
+    return {"status": "Users updated"}
