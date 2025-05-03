@@ -53,7 +53,7 @@ function StudySetCard({userID, props}) {
                 <div className='card-title'>
                     <h3>{title}</h3>
                     <div className="title-line"></div>
-                    <p className="flashcard-count">{props.id}</p>
+                    <p className="flashcard-count">StudySet ID: {props.id}</p>
                 </div>
             </div>
             <Modal 

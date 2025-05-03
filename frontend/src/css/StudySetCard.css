@@ -61,5 +61,7 @@
     font-size: 14px;
     color: white; 
     margin-top: 8px; 
-    padding: 0 1rem;
+    padding: 0 0.5rem;
+    text-align: start;
+    text-overflow: ellipsis;
 }

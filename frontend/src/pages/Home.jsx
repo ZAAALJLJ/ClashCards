@@ -79,6 +79,9 @@ function Home () {
   const [studysets, setSets] = useState([]);
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [owner_add, setAddOwner] = useState('');
+  const [addStudySetError, setAddStudySetError] = useState('');
+  const [errorText, setErrorText] = useState('');
+
 
   // GET studysets
   const fetchSets = async () => {
@@ -124,20 +127,24 @@ function Home () {
         console.log("MAY ID SA STUDSET:", id);
         const response = await api.get(`/studysets/${id}`);
         if (!response.data) {
+          alert("Study set doesn't exist.");
           console.log("Studyset doesn't exist");
           return;
         }
+
         await api.put(`/studysets/${owner_add}?user_id=${user_id}`);
         setStudyset({owner_ids: [user_id], title: '', winners: []});
         fetchSets();
+        setShowModalAdd(false);
     } catch (error) {
         console.error('Error adding studyset:', error);
+        setAddStudySetError("This study set doesn't exist.");
     }
   };
 
   const handleAddStudySet = async () => {
-    addStudySet(owner_add);
-    setShowModalAdd(false);
+    setAddStudySetError('');
+    await addStudySet(owner_add);
   }
 
   //api call for study set creation
@@ -150,6 +157,7 @@ function Home () {
       setShowModal(false);
     }, 1000); 
   };
+  
 
   //doughnut chart labels
   const chartData = {
@@ -219,11 +227,21 @@ function Home () {
         </div>
         <div className="stats-container">
           <div className="chart-container">
-            <Doughnut data={chartData} options={chartOptions} />
-            <div className="chart-center">
-              {Object.values(userStats).reduce((a, b) => a + b)}%
-            </div>
-          </div>
+            {realStats.wins === 0 && realStats.lose === 0 ? (
+              <div className="no-data-message">
+                <p>No data available.</p>
+                <p>Complete a battle to view your stats!</p>
+              </div>
+            ) : (
+              <>
+                <Doughnut data={chartData} options={chartOptions} />
+                <div className="chart-center">
+                  {Math.round(Object.values(userStats).reduce((a, b) => a + b))}%
+                </div>
+              </>
+            )}
+        </div>
+        {realStats.wins !== 0 || realStats.lose !== 0 ? (
           <div className="chart-legend-container">
             {Object.keys(userStats).map((stat, index) => (
               <div className="legend-details-container" key={stat}>
@@ -233,6 +251,7 @@ function Home () {
               </div>
             ))}
           </div>
+        ) : null}
         </div>
       </div>
       <Modal
@@ -249,15 +268,19 @@ function Home () {
       />
       <Modal
           show={showModalAdd}
-          onClose={() => setShowModalAdd(false)}
+          onClose={() => {
+            setShowModalAdd(false);
+            setAddStudySetError('');
+          }}
           onSubmit={handleAddStudySet}
-          title="Create a New Study Set"
-          bodyText="Please enter the name for your new study set."
+          title="Add Existing Study Set"
+          bodyText="Please enter the study set ID."
           inputField={true}
           cancelText="Cancel"
           submitText="Add"
-          placeholder="Enter Study Set Name"
+          placeholder="Enter Study Set ID"
           onChange={handleInputChangeAdd}
+          errorText={addStudySetError}
       />
     </div>
   );
