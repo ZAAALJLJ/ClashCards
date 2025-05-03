@@ -57,6 +57,16 @@
     margin: 0 auto;
 }
 
+.detail-container{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap:10px;
+    padding: 0 0.5rem;
+}
+
 .flashcard-count {
     font-size: 14px;
     color: white; 
@@ -64,4 +74,50 @@
     padding: 0 0.5rem;
     text-align: start;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    box-sizing: border-box;
+    display: inline-block;
+}
+
+.copy-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    transition: background-color 0.2s;
+}
+
+
+    .copy-btn:hover {
+        background-color: #3a4d6b;
+    }
+
+    .copy-btn:focus {
+        outline: none;
+        border: none;
+    }
+
+
+.copy-icon {
+    color: #fff;
+    font-size: 18px;
+}
+
+.copy-message {
+    font-size: 14px;
+    color: green;
+    margin-left: 8px;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.copy-message.show {
+    opacity: 1;
 }

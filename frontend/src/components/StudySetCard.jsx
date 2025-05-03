@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import '../css/StudySetCard.css'
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdContentCopy } from "react-icons/md";
 
 import { useState } from 'react';
 import Modal from './Modal'; 
@@ -11,7 +11,7 @@ function StudySetCard({userID, props}) {
     const { title } = props;
     
     const [showModal, setShowModal] = useState(false);
-
+    const [copyMessage, setCopyMessage] = useState('');
 
     
     const openModal = (e) => {
@@ -42,6 +42,20 @@ function StudySetCard({userID, props}) {
         navigate(`/studyset/${userID}/${props.id}`);
     }
 
+    const copyStudySetId = (e) => {
+        e.stopPropagation();
+
+        navigator.clipboard.writeText(props.id)
+            .then(() => {
+                setCopyMessage('Copied!'); 
+                setTimeout(() => {
+                    setCopyMessage(''); 
+                }, 2000);
+            })
+            .catch((error) => {
+                console.error('Error copying text: ', error);
+            });
+    };
     return (
         <div>
             <div className="study-set-card" onClick={goStudySet}>
@@ -53,7 +67,14 @@ function StudySetCard({userID, props}) {
                 <div className='card-title'>
                     <h3>{title}</h3>
                     <div className="title-line"></div>
-                    <p className="flashcard-count">StudySet ID: {props.id}</p>
+                    <div className='detail-container'>
+                        <p className="flashcard-count">StudySet ID: {props.id}</p>
+                        <button className="copy-btn" onClick={copyStudySetId}>
+                            <MdContentCopy className="copy-icon" />
+                        </button>
+                        {copyMessage && <span className="copy-message">{copyMessage}</span>}
+                    </div>
+                    
                 </div>
             </div>
             <Modal 
