@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 function SignUp (){
     const navigate = useNavigate();
     const [allUser, setAllUser] = useState([]);
-    const [user, setUser] = useState({username: '', password: ''});
+    const [user, setUser] = useState({username: '', email: '', password: ''});
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
