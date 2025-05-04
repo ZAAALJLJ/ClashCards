@@ -96,6 +96,8 @@ function CreateFlashcard () {
             await api.post('/flashcards/', flashcard);
             setCards([...flashcards, flashcard]);
             setCard({studyset_id: studyset_id, question: '', answer: ''});
+            setQuestionCount(0);
+            setAnswerCount(0);
         } catch (error) {
             console.error('Error adding cards:', error);
         }
@@ -111,6 +113,8 @@ function CreateFlashcard () {
             console.log("Flashcard updated");
             fetchCards();
             setCard({ studyset_id: studyset_id, question: '', answer: '' }); 
+            setQuestionCount(0);
+            setAnswerCount(0);
             setUpdate(false);
 
         } catch (error) {
@@ -124,6 +128,8 @@ function CreateFlashcard () {
         setCard({studyset_id: studyset_id, question: cardData.question, answer: cardData.answer});
         setKey({id: cardData.id});
         setUpdate(true);
+        setQuestionCount(cardData.question.length);
+        setAnswerCount(cardData.answer.length);
       };
 
     // DELETE card
