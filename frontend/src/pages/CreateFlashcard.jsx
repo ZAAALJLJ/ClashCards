@@ -16,6 +16,8 @@ function CreateFlashcard () {
     const [currentKey, setKey] = useState({id: ''});
     const [title, setTitle] = useState('');
     const [errors, setErrors] = useState({ question: '', answer: '' });
+    const [messageType, setMessageType] = useState(''); 
+    const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
     // GET all cards
@@ -98,7 +100,19 @@ function CreateFlashcard () {
             setCard({studyset_id: studyset_id, question: '', answer: ''});
             setQuestionCount(0);
             setAnswerCount(0);
+            setMessage('Flashcard added successfully!');
+            setMessageType('success');
+            setTimeout(() => {
+                setMessage('');
+                setMessageType('');
+            }, 3000);
         } catch (error) {
+            setMessage('Error adding flashcard. Please try again.'); 
+            setMessageType('error');
+            setTimeout(() => {
+                setMessage('');
+                setMessageType('');
+            }, 3000);
             console.error('Error adding cards:', error);
         }
     };
@@ -116,8 +130,20 @@ function CreateFlashcard () {
             setQuestionCount(0);
             setAnswerCount(0);
             setUpdate(false);
-
+            setMessage('Flashcard updated successfully!');
+            setMessageType('success');
+            setTimeout(() => {
+                setMessage('');
+                setMessageType('');
+            }, 3000);
         } catch (error) {
+            setMessage('Error updating flashcard. Please try again.');
+            setMessageType('error');
+
+            setTimeout(() => {
+                setMessage('');
+                setMessageType('');
+            }, 3000);
             console.error('Error adding cards:', error);
         }
     };
@@ -140,8 +166,21 @@ function CreateFlashcard () {
             fetchCards();
             setKey({id: ''});
             setCard({studyset_id: studyset_id, question: '', answer: ''});
-
+            setQuestionCount(0); 
+            setAnswerCount(0);
+            setMessage('Flashcard deleted successfully!'); 
+            setMessageType('success');
+            setTimeout(() => {
+                setMessage('');
+                setMessageType('');
+            }, 3000);
         } catch (error) {
+            setMessage('Error deleting flashcard. Please try again.'); 
+            setMessageType('error');
+            setTimeout(() => {
+                setMessage('');
+                setMessageType('');
+            }, 3000);
             console.error('Error deleting cards:', error);
         }
     }
@@ -253,6 +292,13 @@ function CreateFlashcard () {
                         ))}
                     </div>
                 </div>
+            </div>
+            <div className={`message-container ${message ? 'message-show' : ''}`}>
+                {message && (
+                    <div className={`message ${messageType}`}>
+                        {message}
+                    </div>
+                )}
             </div>
         </div>
     )
