@@ -2,7 +2,6 @@
     width: calc(100% - 1rem);
     min-width: 5rem;
     min-height: 7rem;
-
     border-radius: 1rem;
     border: 1px solid #385698;
     background-color: #0e2359;
@@ -14,24 +13,29 @@
     align-items: center;
     position: relative;
     margin: 1rem;
+    box-sizing: border-box; 
+    overflow: visible; 
+    word-wrap: break-word;
 }
-
-.created-question {
+.created-question, .created-answer {
     display: flex;
-    flex: 2;
+    flex: 1;
     align-items: center;
+    justify-content: center;
     font-size: small;
-}
-
-.created-answer {
-    display: flex;
-    flex: 2;
-    align-items: center;
-    font-size: small;
+    width: 100%; 
+    padding: 0.5rem;
+    overflow: visible; 
+    text-overflow: ellipsis; 
+    word-wrap: break-word;
+    white-space: normal;
+    word-wrap: break-word;
 }
 
 .created-divider {
     width: 100%;
     border: 1px solid #385698;
+    margin:0;
+    padding: 0;
 }
 
