@@ -7,15 +7,59 @@ import defaultProfilePic from '../assets/fallback-profile-image.jpg';
 import ProgressBarStatistics from '../components/ProgressBarStatistics.jsx';
 import RadarChart from '../components/RadarChart.jsx';
 import { useParams } from 'react-router-dom';
+import getUsername from '../services/getUsername.js';
+import profilePic from '../assets/profilepic.png'
 import api from '../api.js';
 
 function Profile (){
     const {user_id} = useParams();
     const [user, setUser] = useState(null);
+    const [username, setUsername] = useState('');
     const [isLoading, setIsLoading] = useState(true);
-    const labels = ['WIN', 'ACC', 'CFG', 'LRN', 'CON'];
-    const fullLabels = ['Wins', 'Accuracy', 'Correct First Guess', 'Learned', 'Consistency'];
+    const labels = ['WIN', 'ACC', 'PER', 'AVG', 'CON'];
+    const fullLabels = ['Winrate', 'Accuracy', 'Perseverance', 'Average Time', 'Consistency'];
     const statsRef = useRef(null);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+          try {
+            const fetchedUsername = await getUsername(user_id);
+            setUsername(fetchedUsername || 'Unknown User'); 
+    
+            const response = await api.get(`/users/${user_id}`);
+            const data = response.data;
+           
+            if (data) {
+                setUser({
+                    title: data.title || "Legendary Sculptor",
+                    profilePic: data.profilePic || defaultProfilePic,
+                    username: fetchedUsername,
+                    email: data.email,
+                    progressArr: [data.winRate, data.accuracy, data.perseverance, data.avg, data.consistency]
+                });
+            } else {
+                console.error("User data is null or undefined.");
+            }
+
+            console.log(user.profilePic);
+
+          } catch (error) {
+            console.error('Error fetching user data:', error);
+            setIsLoading(false);
+          } finally {
+            setIsLoading(false); 
+          }
+        };
+    
+        fetchUserData();
+    }, [user_id]); 
+    
+
+    const handleImageError = (e) => {
+        e.target.onerror = null;
+        e.target.src = defaultProfilePic;
+        e.target.className = "profile-pic fallback-pic";
+    };
 
     const downloadPDF = () => {
         const input = statsRef.current;
@@ -49,8 +93,7 @@ function Profile (){
     const fetchWinrate = async () => {
         try {
             const response = await api.get(`/users/${user_id}`);
-            setwinRate(((response.data.wins / (response.data.wins + response.data.lose) * 100)));
-            setAccuracy(((response.data.right / (response.data.right + response.data.wrong)) * 100));
+            setwinRate(((response.data.wins / (response.data.wins + response.data.lose)) * 100));
             setAccuracy(((response.data.right / (response.data.right + response.data.wrong)) * 100));
             setPerseverance(((response.data.finish / (response.data.finish + response.data.unfinish)) * 100));
             setAverage(response.data.avg);
@@ -69,10 +112,10 @@ function Profile (){
 
     useEffect(() => {
         const user = {
-          username: "Legendary Sculptor",
-          profilePic: "../assets/fallback-profile-image.jpg",
-          name: "Dragons A. Bool",
-          email: "jun@gmail.com",
+          title: "Legendary Sculptor",
+          profilePic: profilePic,
+          username: "sendpulls",
+          email: "rhke3wc20w@smykwb.com",
           progressArr: [winRate, accuracy, perseverace, avg, consistency]
         };
       
@@ -83,13 +126,6 @@ function Profile (){
       
         return () => clearTimeout(timer);
     }, [winRate]);
-      
-
-    const handleImageError = (e) => {
-        e.target.onerror = null;
-        e.target.src = defaultProfilePic;
-        e.target.className = "profile-pic fallback-pic";
-    };
 
     return (
         <div className="profile-page">
@@ -122,14 +158,15 @@ function Profile (){
                                         <div className="skeleton-shimmer" />
                                     </div>
                                 ) : (
-                                    <h2>{user.username}</h2>
+                                    <h2>{user?.title}</h2>
+
                                 )}
                             </div>
                         </div>
                         <div className='user-details-container'>
                             {[
-                                { label: 'Name', content: user?.name },
-                                { label: 'Email', content: user?.email }
+                                { label: 'Name', content: user?.username },
+                                // { label: 'Email', content: user?.email }
                             ].map(({ label, content }) => (
                                 <div className='user-info-container' key={label}>
                                     <span className='user-details-label'>{label}</span>

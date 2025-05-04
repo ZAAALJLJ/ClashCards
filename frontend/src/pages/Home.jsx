@@ -168,8 +168,8 @@ function Home () {
           userStats.wins,
           userStats.lose,
         ],
-        // , '#41b8d5', '#6ce5e8'
-        backgroundColor: ['#0077b6', '#0096c7'],
+        // , '#0096c7', '#41b8d5'
+        backgroundColor: ['#6ce5e8', '#0077b6'],
         borderWidth: 0, 
         borderRadius: 25,
         spacing: -50,
