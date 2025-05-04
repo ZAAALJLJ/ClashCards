@@ -11,10 +11,15 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 @login_router.post("/login")
 async def login_user(data: LoginModel):
-    user = user_collection.find_one({"username": data.username})
+    user = user_collection.find_one({"email": data.email})
     if not user:
-        raise HTTPException(status_code=400, detail="Invalid username or password")
-    if not pwd_context.verify(data.password, user["password"]):
-        raise HTTPException(status_code=400, detail="Invalid username or password")
+        raise HTTPException(status_code=400, detail="Invalid email or password")
+    if not pwd_context.verify(data.password, user["hashed_password"]):
+        raise HTTPException(status_code=400, detail="Invalid email or password")
     
-    return {"message": "Login successful", "username": user["username"], "_id": str(user["_id"])}
+    return {
+        "message": "Login successful",
+        "username": user["username"],
+        "email": user["email"],
+        "_id": str(user["_id"])
+    }

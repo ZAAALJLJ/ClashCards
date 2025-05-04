@@ -1,21 +1,41 @@
-from typing import Optional
-from pydantic import BaseModel
-from typing import List
+from typing import Optional, List
+from pydantic import BaseModel, EmailStr, Field, validator
+from passlib.hash import bcrypt
+from datetime import datetime
 
 class LoginModel(BaseModel):
-    username: str
+    email: EmailStr
     password: str
 
 class User(BaseModel):
-    username: str
-    password: str
-    wins: Optional[int] = 0
-    lose: Optional[int] = 0
-    right: int = 0
-    wrong: int = 0
-    finished_battle: int = 0
-    unfinished_battle: int = 0
-    average_time: List[int] = [] # ((totaltime - timeleft) / totaltime) x 100
-    consistency: List[int] = []
-    
-    
+    username: str = Field(..., min_length=3, max_length=50)
+    email: EmailStr
+    password: str = Field(..., min_length=6)
+    hashed_password: str = ''
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    wins: int = Field(default=0, ge=0)
+    lose: int = Field(default=0, ge=0)
+    right: int = Field(default=0, ge=0)
+    wrong: int = Field(default=0, ge=0)
+    finished_battle: int = Field(default=0, ge=0)
+    unfinished_battle: int = Field(default=0, ge=0)
+    average_time: List[int] = Field(default_factory=list)  # ((totaltime - timeleft) / totaltime) x 100
+    consistency: List[int] = Field(default_factory=list)
+
+    @validator('password')
+    def hash_password(cls, password):
+        if not any(char.isupper() for char in password):
+            raise ValueError('Password must contain at least one uppercase letter')
+        if not any(char.islower() for char in password):
+            raise ValueError('Password must contain at least one lowercase letter')
+        if not any(char.isdigit() for char in password):
+            raise ValueError('Password must contain at least one number')
+        return password
+
+    def set_password(self, password: str):
+        self.hashed_password = bcrypt.hash(password)
+
+    def verify_password(self, password: str) -> bool:
+        if not self.hashed_password:
+            return False
+        return bcrypt.verify(password, self.hashed_password)

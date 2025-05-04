@@ -21,22 +21,35 @@ async def get_users(id: str):
 
 @signup_router.post("/signup/")
 async def create_user(user: User):
+    # Check if username or email already exists
     if user_collection.find_one({"username": user.username}):
-        raise HTTPException(status_code=400, detail="Username already exsits")
+        raise HTTPException(status_code=400, detail="Username already exists")
+    if user_collection.find_one({"email": user.email}):
+        raise HTTPException(status_code=400, detail="Email already registered")
     
-    hashed_password = pwd_context.hash(user.password)
+    # Hash the password
+    user.set_password(user.password)
     
     user_data = {
-         "username": user.username,
-         "password": hashed_password,
-         "wins": user.wins,
-         "lose": user.lose,
-         "right": user.right,
-         "wrong": user.wrong,
-         "finished_battle": user.finished_battle,
-         "unfinished_battle": user.unfinished_battle,
-         "average_time": user.average_time,
-         "consistency": user.consistency
+        "username": user.username,
+        "email": user.email,
+        "hashed_password": user.hashed_password,
+        "created_at": user.created_at,
+        "wins": user.wins,
+        "lose": user.lose,
+        "right": user.right,
+        "wrong": user.wrong,
+        "finished_battle": user.finished_battle,
+        "unfinished_battle": user.unfinished_battle,
+        "average_time": user.average_time,
+        "consistency": user.consistency
     }
-    user_collection.insert_one(user_data)
     
+    result = user_collection.insert_one(user_data)
+    
+    return {
+        "message": "User created successfully",
+        "user_id": str(result.inserted_id),
+        "username": user.username,
+        "email": user.email
+    }

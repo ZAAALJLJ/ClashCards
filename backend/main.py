@@ -9,9 +9,16 @@ from routes.user_route import user_router
 
 app = FastAPI()
 
+# Root route to check if API is running
+@app.get("/")
+async def root():
+    return {"message": "ClashCards API is running"}
+
 # allow CORS for frontend
 origins = [
     'http://localhost:5173',
+    'http://127.0.0.1:8000',
+    'http://localhost:8000'
 ]
 
 app.add_middleware(
