@@ -14,6 +14,7 @@ function Home () {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [studyset_to_add, setStudyset] = useState({owner_ids: [user_id], title: '', winners: []});
   const [chartWinrate, setChartData] = useState();
+ 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -40,10 +41,13 @@ function Home () {
     }
   };
 
-    // SET cards
-    useEffect(() => {
-      fetchSets();
-    }, []);
+  //ui demo dummy data delete
+  // useEffect(() => {
+  //   const dummyData = { wins: 8, lose: 4 };
+  //   setUserStats(dummyData);
+  //   setRealStats(dummyData);
+
+  // }, []); 
 
   //fetch data for doughnut chart
   useEffect(() => {
@@ -52,28 +56,22 @@ function Home () {
     if (!chartWinrate) return;
     
     //doughnut chart percentage
-    const total = Object.values(chartWinrate).reduce((acc, value) => acc + value, 0);
-  
+    const total = chartWinrate.wins + chartWinrate.lose;
+
     if (total > 0) {
-      const normalizedStats = Object.fromEntries(
-        Object.entries(chartWinrate).map(([key, value]) => [key, (value / total) * 100])
-      );
+      const winsPercentage = (chartWinrate.wins / total) * 100;
+      const losePercentage = (chartWinrate.lose / total) * 100;
+      setUserStats({ wins: winsPercentage, lose: losePercentage });
       setRealStats(chartWinrate);
-      setUserStats(normalizedStats);
     } else {
       setUserStats({wins:50, lose:50})
     }
   }, [chartWinrate]);
-  
-  // percentage validation
-  useEffect(() => {
-    if (userStats) {
-      const total = Object.values(userStats).reduce((acc, value) => acc + value, 0);
-      if (total !== 100) {
-        console.warn('User stats do not add up to 100%. Current total:', total);
-      }
-    }
-  }, [userStats]);  
+
+    // SET cards
+    useEffect(() => {
+      fetchSets();
+    }, []);
 
   const [showModal, setShowModal] = useState(false);
   const [studysets, setSets] = useState([]);
@@ -159,7 +157,7 @@ function Home () {
   };
   
 
-  //doughnut chart labels
+  // doughnut chart labels
   const chartData = {
     labels: ['Wins', 'Lose'],
     datasets: [
@@ -199,6 +197,9 @@ function Home () {
     }
   };
   
+  const winRate = (realStats.wins + realStats.lose > 0) 
+  ? Math.round((realStats.wins / (realStats.wins + realStats.lose)) * 100)
+  : 50; // Default to 50% if no data
 
   return (
     <div className = "home-page">
@@ -236,7 +237,7 @@ function Home () {
               <>
                 <Doughnut data={chartData} options={chartOptions} />
                 <div className="chart-center">
-                  {Math.round(Object.values(userStats).reduce((a, b) => a + b))}%
+                  {winRate}%
                 </div>
               </>
             )}
