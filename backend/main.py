@@ -15,18 +15,16 @@ async def root():
     return {"message": "ClashCards API is running"}
 
 # allow CORS for frontend
-origins = [
-    'http://localhost:5173',
-    'http://127.0.0.1:8000',
-    'http://localhost:8000'
-]
+origins = ['*']  # Allow all origins for development
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=['*'],
-    allow_headers=['*'],
+    allow_credentials=False,  # Set to False since we're using '*' for origins
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600
 )
 
 app.include_router(websocket_router)

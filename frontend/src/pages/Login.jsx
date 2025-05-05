@@ -9,23 +9,57 @@ function Login (){
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [user, setUser] = useState({username: '', password: ''});
+    const [isFormValid, setIsFormValid] = useState(false);
 
     const handleInputChange = (e) => {
-      const { name, value } = e.target;
-      setUser({ ...user, [name]: value});
+        const { name, value } = e.target;
+        const updatedUser = { ...user, [name]: value };
+        setUser(updatedUser);
+        validateForm(updatedUser);
     }
+
+    const validateForm = (currentUser) => {
+        const isValid = 
+            currentUser.username.length >= 3 &&
+            currentUser.username.length <= 50 &&
+            currentUser.password.length >= 6;
+        setIsFormValid(isValid);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!isFormValid) return;
+
         try {
             const response = await api.post('/login/', user);
-            console.log("Login successful", user);
-            console.log("Loglog id:", response.data);
-            navigate(`/${response.data._id}`);
-        } catch (error){
+            
+            if (response.data && response.data.message === "Login successful") {
+                // Save user data to localStorage
+                localStorage.setItem('user', JSON.stringify({
+                    username: response.data.username,
+                    email: response.data.email,
+                    userId: response.data.user_id
+                }));
+                
+                // Show success message
+                alert('Login successful!');
+                
+                // Reset form
+                setUser({username: '', password: ''});
+                
+                // Navigate to home page
+                navigate('/');
+            } else {
+                alert('Invalid login response from server');
+            }
+        } catch (error) {
             console.error("Login error: ", error);
+            if (error.response) {
+                alert(error.response.data.detail || 'Invalid username or password');
+            } else {
+                alert('Error connecting to server. Please try again.');
+            }
         }
-        console.log('Login submitted', { username, password });
     };
 
     const handleGoogleLoginSuccess = (response) => {
@@ -82,7 +116,17 @@ function Login (){
                                
                             </div>
 
-                            <button type="submit">Login</button>
+                            <button 
+                                type="submit" 
+                                disabled={!isFormValid} 
+                                style={{ 
+                                    opacity: isFormValid ? 1 : 0.5, 
+                                    cursor: isFormValid ? 'pointer' : 'not-allowed',
+                                    color: isFormValid ? 'white' : '#666666'
+                                }}
+                            >
+                                Login
+                            </button>
                         </form>
                     </div>
 {/* 

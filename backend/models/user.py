@@ -4,7 +4,7 @@ from passlib.hash import bcrypt
 from datetime import datetime
 
 class LoginModel(BaseModel):
-    email: EmailStr
+    username: str
     password: str
 
 class User(BaseModel):
