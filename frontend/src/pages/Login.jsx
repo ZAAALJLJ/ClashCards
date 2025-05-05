@@ -47,8 +47,8 @@ function Login (){
                 // Reset form
                 setUser({username: '', password: ''});
                 
-                // Navigate to home page
-                navigate('/');
+                // Navigate to home page with user_id
+                navigate(`/${response.data.user_id}`);
             } else {
                 alert('Invalid login response from server');
             }

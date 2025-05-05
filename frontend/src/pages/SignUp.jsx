@@ -72,8 +72,8 @@ function SignUp (){
             // Reset form
             setUser({username: '', email: '', password: ''});
             setConfirmPassword('');
-            // Redirect to home page
-            navigate('/');
+            // Navigate to home page with user_id
+            navigate(`/${response.data.user_id}`);
         }
     } catch (error) {
         console.error('Error adding user:', error);
