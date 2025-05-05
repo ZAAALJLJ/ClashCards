@@ -9,14 +9,24 @@ function Login (){
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [user, setUser] = useState({username: '', password: ''});
+    const [error, setError] = useState('');
+    const [isFormFilled, setIsFormFilled] = useState(false);
+
 
     const handleInputChange = (e) => {
       const { name, value } = e.target;
-      setUser({ ...user, [name]: value});
+      const newUser = { ...user, [name]: value};
+      setUser(newUser);
+      if (error) {
+        setError('');
+      }
+      // Check if all fields are filled
+      setIsFormFilled(newUser.username.trim() !== '' && newUser.password.trim() !== '');
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setError('');
         try {
             const response = await api.post('/login/', user);
             console.log("Login successful", user);
@@ -24,6 +34,7 @@ function Login (){
             navigate(`/${response.data._id}`);
         } catch (error){
             console.error("Login error: ", error);
+            setError("Invalid username or password.");
         }
         console.log('Login submitted', { username, password });
     };
@@ -48,15 +59,17 @@ function Login (){
                 </div>
                 <div className="login-form-container">
                     <div className='login-form'>
+
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
-                                <label htmlFor="username">User Name</label>
+                                <label htmlFor="username">Username</label>
                                 <input 
                                     type="text" 
                                     id="username"
                                     name="username" 
                                     value={user.username}
                                     onChange={handleInputChange} 
+                                    className={error ? "error-input" : ""}
                                     required 
                                 />
                             </div>
@@ -70,6 +83,7 @@ function Login (){
                                         name="password" 
                                         value={user.password}
                                         onChange={handleInputChange} 
+                                        className={error ? "error-input" : ""}
                                         required 
                                     />
                                     <span
@@ -79,10 +93,16 @@ function Login (){
                                         {showPassword ? <FaEyeSlash /> : <FaEye />}
                                     </span>
                                 </div>
-                               
+                                {error && <div className="error-message">{error}</div>}
+
                             </div>
 
-                            <button type="submit">Login</button>
+                            <button 
+                                type="submit" 
+                                className={isFormFilled ? 'button-filled' : ''}
+                            >
+                                Login
+                            </button>
                         </form>
                     </div>
 {/* 

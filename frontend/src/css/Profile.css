@@ -73,11 +73,16 @@
     margin: 0;
     color: #ffffff;
     font-size: 1.2rem;
+    word-wrap: break-word;
+    word-break: break-word;
 }
 
 .user-details-container{
     padding: 2.5rem 1rem;
     align-items: center;
+    text-align: start;
+    word-wrap: break-word;
+    word-break: break-word;
 }
 
 .user-info-container{

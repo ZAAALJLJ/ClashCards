@@ -14,7 +14,8 @@ const Modal = ({
   placeholder, 
   type,
   onChange, 
-  client_id
+  client_id, 
+  errorText
 }) => {
     if (!show) return null;
     const [inputValue, setInputValue] = useState('');
@@ -46,7 +47,7 @@ const Modal = ({
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
-                        placeholder="Enter study set name"
+                        placeholder={placeholder || "Enter study set name"} 
                         value={inputValue}
                         onChange={(e) => {
                             setInputValue(e.target.value);
@@ -56,6 +57,9 @@ const Modal = ({
                     />
                 </form>
                 )}
+
+                {errorText && (<div className="modal-error-text">{errorText}</div>)}
+
                 <div className="modal-buttons">
                     {type === 'leave' ? (
                         <>
