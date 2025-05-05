@@ -72,7 +72,11 @@ function StudySetCard({userID, props}) {
                         <button className="copy-btn" onClick={copyStudySetId}>
                             <MdContentCopy className="copy-icon" />
                         </button>
-                        {copyMessage && <span className="copy-message">{copyMessage}</span>}
+                        {copyMessage && (
+                            <span className={`copy-message ${copyMessage ? 'show' : ''}`}>
+                                {copyMessage}
+                            </span>
+                        )}
                     </div>
                     
                 </div>
