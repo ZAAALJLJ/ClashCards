@@ -93,17 +93,32 @@
     button {
         width: 100%;
         padding: 10px;
-        background-color: #203364;
-        border: 1px solid #a6a6a6;
+        margin-top: 20px;
+        border: none;
         border-radius: 2rem;
-        font-size: 1.1rem;
+        background-color: #203364;
+        color: white;
         cursor: pointer;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
     }
-    
+
+    button.button-filled {
+        background-color: white !important;
+        color: #000 !important;
+        border: 2px solid #000 !important;
+        font-weight: bold;
+    }
+
     button:hover {
         background-color: #11234b;
     }
 
+    button.button-filled:hover {
+        background-color: #f0f0f0 !important;
+        transform: scale(1.02);
+    }
+    
     .divider {
         display: flex;
         align-items: center;

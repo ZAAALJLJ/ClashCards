@@ -10,14 +10,18 @@ function Login (){
     const [showPassword, setShowPassword] = useState(false);
     const [user, setUser] = useState({username: '', password: ''});
     const [error, setError] = useState('');
+    const [isFormFilled, setIsFormFilled] = useState(false);
 
 
     const handleInputChange = (e) => {
       const { name, value } = e.target;
-      setUser({ ...user, [name]: value});
+      const newUser = { ...user, [name]: value};
+      setUser(newUser);
       if (error) {
         setError('');
       }
+      // Check if all fields are filled
+      setIsFormFilled(newUser.username.trim() !== '' && newUser.password.trim() !== '');
     }
 
     const handleSubmit = async (e) => {
@@ -58,7 +62,7 @@ function Login (){
 
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
-                                <label htmlFor="username">User Name</label>
+                                <label htmlFor="username">Username</label>
                                 <input 
                                     type="text" 
                                     id="username"
@@ -93,7 +97,12 @@ function Login (){
 
                             </div>
 
-                            <button type="submit">Login</button>
+                            <button 
+                                type="submit" 
+                                className={isFormFilled ? 'button-filled' : ''}
+                            >
+                                Login
+                            </button>
                         </form>
                     </div>
 {/* 
