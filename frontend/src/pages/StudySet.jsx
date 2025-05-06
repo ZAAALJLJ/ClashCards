@@ -6,7 +6,7 @@ import Leaderboard from '../components/LeaderboardCard';
 import crownLogo from '../assets/crown.png';
 import api from '../api';
 import Modal from '../components/Modal';
-
+import { FaRandom } from 'react-icons/fa';
 
 
 function StudySet (){
@@ -147,6 +147,9 @@ function StudySet (){
             return () => document.removeEventListener("click", handleClickOutside);
         }, [showLeaderboard]);
 
+        const shuffleFC = () => {
+            console.log('Shuffle button clicked. ');
+        };
 
     return (
         <div className="study-set">
@@ -155,6 +158,9 @@ function StudySet (){
                     {title}
                 </div>
                 <div className={`home-buttons ${isMenuOpen ? "show" : ""}`}>
+                    <button className="btn-home" onClick={shuffleFC}> 
+                        <FaRandom className="shuffle-icon" />
+                    </button>
                     <button className="btn-home" onClick={goCreateFC}>+ Create Flashcard</button>
                     <button className="btn-home" onClick={() => setShowModal(true)}>Battle</button>
                     {/* <button className="btn-home" onClick={goSoloReview}>Solo Review Mode</button> */}

@@ -32,7 +32,8 @@ function Login (){
             console.error("Login error: ", error);
             setError("Invalid username or password.");
         }
-        console.log('Login submitted', { username, password });
+        console.log('Login submitted', { username: user.username, password: user.password });
+
     };
 
     const handleGoogleLoginSuccess = (response) => {

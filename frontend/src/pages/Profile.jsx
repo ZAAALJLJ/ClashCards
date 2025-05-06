@@ -104,7 +104,6 @@ function Profile (){
         }
     };
 
-
     // FETCH useEffect
     useEffect(() => {
         fetchWinrate();
@@ -166,7 +165,7 @@ function Profile (){
                         <div className='user-details-container'>
                             {[
                                 { label: 'Name', content: user?.username },
-                                // { label: 'Email', content: user?.email }
+                                { label: 'Email', content: user?.email }
                             ].map(({ label, content }) => (
                                 <div className='user-info-container' key={label}>
                                     <span className='user-details-label'>{label}</span>
