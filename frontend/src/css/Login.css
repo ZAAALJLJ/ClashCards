@@ -73,7 +73,22 @@
         background-color: white;
         color: black;
     }
-
+    
+    .form-group input.error-input {
+        border: 2px solid red;
+      }
+      
+    .error-message {
+        color: red;
+        margin-top: 5px;
+        font-size: 0.9rem;
+    }
+    
+    .error-message {
+        color: red;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
     
     button {
         width: 100%;

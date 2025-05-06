@@ -6,7 +6,7 @@ import Leaderboard from '../components/LeaderboardCard';
 import crownLogo from '../assets/crown.png';
 import api from '../api';
 import Modal from '../components/Modal';
-
+import { FaRandom } from 'react-icons/fa';
 
 
 function StudySet (){
@@ -16,12 +16,23 @@ function StudySet (){
     const navigate = useNavigate();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState(null); 
+    const [leaderboardError, setLeaderboardError] = useState(false);
 
     // get user for leaderboard highlight
     useEffect(() => {
-        setCurrentUser("Jackie Butter"); 
-        console.log("Current User:", currentUser); 
-    }, [currentUser]);
+        const fetchCurrentUser = async () => {
+            try {
+              const response = await api.get(`/users/${user_id}/username`); 
+              setCurrentUser(response.data.username); 
+            } catch (error) {
+              console.error('Failed to fetch user data:', error);
+            }
+          };
+      
+          if (user_id) {
+            fetchCurrentUser();
+          }
+        }, [user_id]);
 
     //nav bar toggle
     const toggleMenu = () => {
@@ -85,18 +96,23 @@ function StudySet (){
                     const response = await api.get(`/studysets/${id}`);
                     const studyset = response.data
 
-                    const ranked = await Promise.all(
-                        [...studyset.winners].map(async (item, index) => ({
-                            rank: index + 1,
-                            name: await getUsername(item.name), // assuming item.name is user ID
-                            score: item.wins,
-                        }))
-                    );
-                    
+                    if (studyset.winners && studyset.winners.length > 0) {
+                        const ranked = await Promise.all(
+                            [...studyset.winners].map(async (item, index) => ({
+                                rank: index + 1,
+                                name: await getUsername(item.name), 
+                                score: item.wins,
+                            }))
+                        );
+                        setRankItems(ranked);
+                    } else {
+                        setLeaderboardError(true); 
+                    }
+
                     getUsername(user_id);
-                    setRankItems(ranked);
                 } catch (error) {
                     console.error('Failed to fetch studyset:', error);
+                    setLeaderboardError(true);
                 }
             }
 
@@ -131,6 +147,9 @@ function StudySet (){
             return () => document.removeEventListener("click", handleClickOutside);
         }, [showLeaderboard]);
 
+        const shuffleFC = () => {
+            console.log('Shuffle button clicked. ');
+        };
 
     return (
         <div className="study-set">
@@ -139,6 +158,9 @@ function StudySet (){
                     {title}
                 </div>
                 <div className={`home-buttons ${isMenuOpen ? "show" : ""}`}>
+                    <button className="btn-home" onClick={shuffleFC}> 
+                        <FaRandom className="shuffle-icon" />
+                    </button>
                     <button className="btn-home" onClick={goCreateFC}>+ Create Flashcard</button>
                     <button className="btn-home" onClick={() => setShowModal(true)}>Battle</button>
                     {/* <button className="btn-home" onClick={goSoloReview}>Solo Review Mode</button> */}
@@ -154,16 +176,21 @@ function StudySet (){
                     {flashcards.length > 0 ? (
                         <FlashcardCarousel cards={flashcards} />
                     ) : (
-                        <p>Loading</p>
+                        <p className='unavailable-message'>No flashcards available yet. Please create some!</p>
                     )}
                 </div>
                 <div className='leaderboard large-screen-only'>
-                    <Leaderboard 
-                        title = "Leaderboard"
-                        showCrown = {true} 
-                        rankItems = {rankItems}
-                        isLoading = {false}
-                    />
+                    {leaderboardError ? (
+                        <p className='unavailable-message'>Leaderboard unavailable. Please try again later.</p>
+                    ) : (
+                        <Leaderboard 
+                            title="Leaderboard"
+                            showCrown={true}
+                            rankItems={rankItems}
+                            isLoading={false}
+                            highlightName={currentUser}
+                        />
+                    )}
                 </div>
                 <div className="floating-leaderboard-toggle small-screen-only">
                     <button

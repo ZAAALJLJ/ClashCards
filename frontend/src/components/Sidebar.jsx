@@ -3,7 +3,7 @@ import { FaBook } from "react-icons/fa";
 import { GiApothecary } from "react-icons/gi";
 import { Link } from "react-router-dom";
 import { CgProfile } from "react-icons/cg";
-import { IoSettingsSharp } from "react-icons/io5";
+import { FaSignOutAlt } from "react-icons/fa";
 import "../css/Sidebar.css";
 
 function Sidebar({user_id}) {
@@ -28,9 +28,9 @@ function Sidebar({user_id}) {
         </div>
       </Link>
       <Link to='/' className="nav-link">
-        <IoSettingsSharp className="brand-icon"/>
+      <FaSignOutAlt className="brand-icon"/>
         <div className="icon-title">
-            Settings
+            Logout
         </div>
       </Link>
     </div>
