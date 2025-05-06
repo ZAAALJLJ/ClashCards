@@ -56,7 +56,7 @@ function SignUp (){
 
     try {
         console.log('Sending signup request with:', { ...user, password: '[REDACTED]' });
-        const response = await api.post('/signup/', user, {
+        const response = await api.post('/signup/', {credentials: user}, {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
