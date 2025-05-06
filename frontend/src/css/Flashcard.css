@@ -44,3 +44,9 @@
     transform: rotateY(180deg);
   }
   
+
+  @media(max-width: 768px){
+    .flashcard-face{
+      font-size: 2vh;
+    }
+  }

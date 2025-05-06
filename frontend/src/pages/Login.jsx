@@ -9,6 +9,7 @@ function Login (){
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [user, setUser] = useState({username: '', password: ''});
+
     const [isFormValid, setIsFormValid] = useState(false);
 
     const handleInputChange = (e) => {
@@ -55,6 +56,9 @@ function Login (){
             }
         } catch (error) {
             console.error("Login error: ", error);
+
+        console.log('Login submitted', { username: user.username, password: user.password });
+
             if (error.response) {
                 alert(error.response.data.detail || 'Invalid username or password');
             } else {
@@ -83,6 +87,7 @@ function Login (){
                 </div>
                 <div className="login-form-container">
                     <div className='login-form'>
+
                         <form onSubmit={handleSubmit}>
                             <div className="form-group">
                                 <label htmlFor="username">User Name</label>
@@ -92,6 +97,7 @@ function Login (){
                                     name="username" 
                                     value={user.username}
                                     onChange={handleInputChange} 
+                                    className={error ? "error-input" : ""}
                                     required 
                                 />
                             </div>
@@ -105,6 +111,7 @@ function Login (){
                                         name="password" 
                                         value={user.password}
                                         onChange={handleInputChange} 
+                                        className={error ? "error-input" : ""}
                                         required 
                                     />
                                     <span
@@ -114,7 +121,8 @@ function Login (){
                                         {showPassword ? <FaEyeSlash /> : <FaEye />}
                                     </span>
                                 </div>
-                               
+                                {error && <div className="error-message">{error}</div>}
+
                             </div>
 
                             <button 

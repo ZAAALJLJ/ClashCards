@@ -11,6 +11,8 @@ import { updateRanking } from '../services/updateRanking.js';
 import { getUpdatedScoreList } from '../services/getUpdatedScoreList.js';
 import { getVisibleIndices } from '../utils/progressHelpers';
 import api from '../api.js';
+import getUsername from '../services/getUsername';
+
 
 function LiveBattle (){
     
@@ -38,6 +40,8 @@ function LiveBattle (){
     const [beststreak, setbeststreak] = useState(0); 
     const [currentstreak, setcurrentstreak] = useState(0); 
     const [rankOne, setRankOne] = useState();
+    const [currentUser, setCurrentUser] = useState('');
+
 
     const navigate = useNavigate();
 
@@ -48,6 +52,18 @@ function LiveBattle (){
     useEffect(() => {
         setShowStartModal(true);
     }, []);
+    
+    //Fetch the current user
+    useEffect(() => {
+        const fetchUsername = async () => {
+          const username = await getUsername(client_id);
+          setCurrentUser(username);
+        };
+      
+        fetchUsername();
+      }, [client_id]);
+      
+
     
 
     //timer
@@ -202,7 +218,9 @@ function LiveBattle (){
 
     // websocket connection
     useEffect(() => {
-        const socket = new WebSocket(`ws://localhost:8002/ws/${battle_id}/${client_id}`); // creates the socket for this specific client
+
+        const socket = new WebSocket(`ws://localhost:8000/ws/${battle_id}/${client_id}`); // creates the socket for this specific client
+
         // socketRef.current = socket;
         
         socket.onmessage = (event) => {
@@ -465,6 +483,7 @@ const handleLeaveBattle = () => {
                             showCrown = {true} 
                             rankItems = {rankItems}
                             isLoading = {false}
+                            highlightName={currentUser}
                         />
                     </div>
                 <div className='live-flashcard-container'>

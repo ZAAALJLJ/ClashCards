@@ -93,3 +93,9 @@
                     color: #e0e0e0; 
                 }
 
+        .modal-error-text {
+            color: red;
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+                  
