@@ -9,12 +9,17 @@ login_router = APIRouter()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-@login_router.post("/login")
+@login_router.post("/login/")
 async def login_user(data: LoginModel):
     user = user_collection.find_one({"username": data.username})
     if not user:
         raise HTTPException(status_code=400, detail="Invalid username or password")
-    if not pwd_context.verify(data.password, user["password"]):
+    if not pwd_context.verify(data.password, user["hashed_password"]):
         raise HTTPException(status_code=400, detail="Invalid username or password")
     
-    return {"message": "Login successful", "username": user["username"], "_id": str(user["_id"])}
+    return {
+        "message": "Login successful",
+        "username": user["username"],
+        "email": user["email"],
+        "user_id": str(user["_id"])
+    }

@@ -9,17 +9,22 @@ from routes.user_route import user_router
 
 app = FastAPI()
 
+# Root route to check if API is running
+@app.get("/")
+async def root():
+    return {"message": "ClashCards API is running"}
+
 # allow CORS for frontend
-origins = [
-    'http://localhost:5173',
-]
+origins = ['*']  # Allow all origins for development
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=['*'],
-    allow_headers=['*'],
+    allow_credentials=False,  # Set to False since we're using '*' for origins
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600
 )
 
 app.include_router(websocket_router)
