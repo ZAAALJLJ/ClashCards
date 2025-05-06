@@ -38,7 +38,7 @@ const Leaderboard = ({
                         <div className="empty-message">No leaderboard data available</div>
                     ) : (
                         rankItems.map((item) => {
-                            const isHighlighted = item.name.toLowerCase() === highlightName.toLowerCase();
+                            const isHighlighted = item.name?.toLowerCase() === highlightName.toLowerCase();
                             console.log("Rank Item:", item.name, "Highlight Name:", highlightName, "Is Highlighted:", isHighlighted);
                             return (
                                 <motion.div
@@ -51,7 +51,7 @@ const Leaderboard = ({
                                 >
                                     <div className="rank-number">{item.rank}</div>
                                     <div className={`user-name ${isHighlighted ? 'highlight' : ''}`}>
-                                        {item.name}
+                                        {item.name || 'Unknown'}
                                     </div>
                                     <div className="battle-score">{item.score}</div>
                                 </motion.div>
