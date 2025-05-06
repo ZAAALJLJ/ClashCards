@@ -32,9 +32,15 @@ async def get_user_winrate(id: str):
 
 @user_router.get("/users/{id}/username")
 async def ger_username(id: str):
-    user = user_collection.find_one({"_id": ObjectId(id)})
-    username = user.get("credentials", {}).get("username")
-    
+    try:
+        user = user_collection.find_one({"_id": ObjectId(id)})
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid ID format")
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    username = user.get("username")
     return {"username": username}
     
 @user_router.get("/users/")

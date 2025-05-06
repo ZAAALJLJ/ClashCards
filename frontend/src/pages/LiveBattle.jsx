@@ -191,6 +191,7 @@ function LiveBattle (){
 
     const getUsername = async (user) => {
         try {
+            console.log("ETO KASI USER:", user);
             const response = await api.get(`/users/${user}/username`);
             console.log("username:", response.data.username);
             return response.data.username;
