@@ -53,6 +53,7 @@ const Leaderboard = ({
                                     <div className={`user-name ${isHighlighted ? 'highlight' : ''}`}>
                                         {item.name || 'Unknown'}
                                     </div>
+
                                     <div className="battle-score">{item.score}</div>
                                 </motion.div>
                             );

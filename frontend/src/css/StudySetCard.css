@@ -40,6 +40,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
+    box-sizing: border-box;
 }
 
 .card-title h3 {
@@ -48,6 +49,10 @@
     font-weight: bold;
     color: white; 
     padding: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
 }
 
 .title-line {

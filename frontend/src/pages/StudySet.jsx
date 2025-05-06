@@ -158,7 +158,7 @@ function StudySet (){
                     {title}
                 </div>
                 <div className={`home-buttons ${isMenuOpen ? "show" : ""}`}>
-                    <button className="btn-home" onClick={shuffleFC}> 
+                    <button className="btn-home shuffle-btn" onClick={shuffleFC}> 
                         <FaRandom className="shuffle-icon" />
                     </button>
                     <button className="btn-home" onClick={goCreateFC}>+ Create Flashcard</button>
