@@ -19,14 +19,28 @@ const Modal = ({
 }) => {
     if (!show) return null;
     const [inputValue, setInputValue] = useState('');
+    const [inputError, setInputError] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (inputField && inputValue.trim()) {
-            onSubmit(inputValue);
-            setInputValue(''); 
-        } else if (!inputField) {
-            onSubmit();
+        if (inputField && !inputValue.trim()) {
+            
+            setInputError(true);
+        } else {
+            
+            setInputError(false);
+            if (inputField) {
+                onSubmit(inputValue);
+                setInputValue('');
+            } else {
+                onSubmit();
+            }
+        }
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && inputValue.trim() === '') {
+            e.preventDefault();
         }
     };
 
@@ -44,18 +58,19 @@ const Modal = ({
                     <p key={idx}>{line}</p>
                 ))}
                 {inputField && (
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        placeholder={placeholder || "Enter study set name"} 
-                        value={inputValue}
-                        onChange={(e) => {
-                            setInputValue(e.target.value);
-                            if (onChange) onChange(e.target.value); // Notify parent
-                        }}                        
-                        required
-                    />
-                </form>
+                    <form onSubmit={handleSubmit}>
+                        <input
+                            type="text"
+                            placeholder={placeholder || "Enter study set name"} 
+                            value={inputValue}
+                            onChange={(e) => {
+                                setInputValue(e.target.value);
+                                if (onChange) onChange(e.target.value); // Notify parent
+                            }}     
+                            onKeyDown={handleKeyDown}                   
+                            required
+                        />
+                    </form>
                 )}
 
                 {errorText && (<div className="modal-error-text">{errorText}</div>)}
@@ -75,9 +90,9 @@ const Modal = ({
                            <button className="modal-continue" onClick={onClose}>
                                 {cancelText || 'Cancel'}
                             </button>
-                          <button className="modal-delete" onClick={onSubmit}>
-                            {submitText || 'Delete'}
-                          </button>
+                            <button className="modal-delete" onClick={onSubmit}>
+                                {submitText || 'Delete'}
+                            </button>
                         </>
                     ) : type === 'confirm' ? (
                         <>
@@ -93,7 +108,11 @@ const Modal = ({
                             <button className="modal-cancel" onClick={onClose}>
                                 {cancelText || 'Cancel'}
                             </button>
-                            <button className="modal-submit" onClick={() => onSubmit(inputValue)}>
+                            <button 
+                              className="modal-submit" 
+                              onClick={() => onSubmit(inputValue)} 
+                              disabled={inputValue.trim() === ''}  
+                            >
                                 {submitText || 'Submit'}
                             </button>
                         </>

@@ -35,6 +35,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     width:20vw;
+    text-align: start;
 }
 
 .btn-home{
