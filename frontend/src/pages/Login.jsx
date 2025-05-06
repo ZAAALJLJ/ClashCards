@@ -9,14 +9,18 @@ function Login (){
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [user, setUser] = useState({username: '', password: ''});
-
+    const [error, setError] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
+    // const [isLoading, setIsLoading] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         const updatedUser = { ...user, [name]: value };
         setUser(updatedUser);
         validateForm(updatedUser);
+        if (error) {
+            setError('');
+        }
     }
 
     const validateForm = (currentUser) => {
@@ -28,9 +32,9 @@ function Login (){
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
         if (!isFormValid) return;
-
+         e.preventDefault();
+        setError('');
         try {
             console.log("USER", {credentials: user});
             const response = await api.post('/login/', user);
@@ -57,12 +61,12 @@ function Login (){
         } catch (error) {
             console.error("Login error: ", error);
 
-        console.log('Login submitted', { username: user.username, password: user.password });
+            console.log('Login submitted', { username: user.username });
 
             if (error.response) {
-                alert(error.response.data.detail || 'Invalid username or password');
+                setError(error.response.data.detail || 'Invalid username or password');
             } else {
-                alert('Error connecting to server. Please try again.');
+                setError('Error connecting to server. Please try again.');
             }
         }
     };
