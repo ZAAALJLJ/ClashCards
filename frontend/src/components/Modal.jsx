@@ -20,6 +20,7 @@ const Modal = ({
     if (!show) return null;
     const [inputValue, setInputValue] = useState('');
     const [inputError, setInputError] = useState(false);
+    const [isReady, setIsReady] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -38,6 +39,11 @@ const Modal = ({
         }
     };
 
+    const handleReadyClick = () => {
+        setIsReady(true); 
+        onSubmit(); 
+    };
+
     const handleKeyDown = (e) => {
         if (e.key === 'Enter' && inputValue.trim() === '') {
             e.preventDefault();
@@ -49,7 +55,11 @@ const Modal = ({
     return (
         <div 
             className="modal-overlay" 
-            onClick={() => type !== 'confirm' && onClose()} 
+            onClick={(e) => {
+                if (type !== 'confirm' && !e.target.closest('.modal-leave')) {
+                    onClose();
+                }
+            }} 
         >
 
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -96,12 +106,17 @@ const Modal = ({
                         </>
                     ) : type === 'confirm' ? (
                         <>
-                            <Link to="/" className="modal-leave">
+                            <Link to={`/${client_id}`} className="modal-leave">
                                 Leave
                             </Link>
-                          <button className="modal-submit" onClick={onSubmit}>
-                            {submitText || 'Start'}
-                          </button>
+                            <button 
+                                className={`modal-submit ${isReady ? 'ready' : ''}`} 
+                                onClick={handleReadyClick} 
+                                disabled={isReady}
+                            >
+                                {isReady ? 'Ready' : submitText || 'Start'}
+                            </button>
+
                         </>
                     ) :  (
                         <>
@@ -111,7 +126,6 @@ const Modal = ({
                             <button 
                               className="modal-submit" 
                               onClick={() => onSubmit(inputValue)} 
-                              disabled={inputValue.trim() === ''}  
                             >
                                 {submitText || 'Submit'}
                             </button>
