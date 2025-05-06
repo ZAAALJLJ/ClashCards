@@ -10,7 +10,7 @@ function Test () {
    */
 
     useEffect(() => {
-        const socket = new WebSocket('ws://localhost:8001/ws'); // creates the socket for this specific client
+        const socket = new WebSocket('ws://localhost:8002/ws'); // creates the socket for this specific client
         // socketRef.current = socket;
         
         socket.onmessage = (event) => {

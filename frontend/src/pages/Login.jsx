@@ -31,8 +31,8 @@ function Login (){
         if (!isFormValid) return;
 
         try {
-            console.log("USER", user);
-            const response = await api.post('/login/', {credentials: user});
+            console.log("USER", {credentials: user});
+            const response = await api.post('/login/', user);
             
             if (response.data && response.data.message === "Login successful") {
                 // Save user data to localStorage
