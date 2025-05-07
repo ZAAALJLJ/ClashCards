@@ -10,20 +10,39 @@ class ConnectionManager:
         # Just initialize the active connection list
         self.active_connections_dict = defaultdict(list)
         self.players_ready_dict = defaultdict(list)
+        self.battle_locked_dict = defaultdict(lambda: False)
 
-        
+    
     async def connect(self, websocket: WebSocket, battle_id: str, client_id: str):
+        if self.battle_locked_dict[battle_id]:
+            await websocket.accept()
+            await websocket.send_text(json.dumps({"error": "Battle already started"}))
+            await websocket.close()
+            return
+        
         await websocket.accept() # waits until the websocket is accepted
         self.active_connections_dict[battle_id].append(websocket)
         self.players_ready_dict.setdefault(battle_id, {})[client_id] = False
-        print("HEEEEEEEEEEEEEEEEEELLLLLPPPPPPPP", self.active_connections_dict)
+        
+        await self.send_player_count(battle_id, str(len(self.players_ready_dict[battle_id])))
+        print("Length", len(self.players_ready_dict[battle_id]))
         
     def disconnect(self, websocket: WebSocket, battle_id: str): # removing from the list
         if websocket in self.active_connections_dict[battle_id]:
             self.active_connections_dict[battle_id].remove(websocket) 
         if not self.active_connections_dict[battle_id]:
+            print(f"All players left. Resetting battle {battle_id}.")
             del self.active_connections_dict[battle_id]
+            self.players_ready_dict.pop(battle_id, None)
+            self.battle_locked_dict[battle_id] = False
         
+    async def send_player_count(self, battle_id: str, message: str):
+        for connections in self.active_connections_dict[battle_id]:
+            player_count = {
+            'player_count': message
+            }
+            await connections.send_text(json.dumps(player_count))
+            
     async def send_personal_message(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
         
@@ -65,6 +84,7 @@ class ConnectionManager:
         client_id_message = {
             'ready_clients': client_ids
         }
+        self.battle_locked_dict[battle_id] = True
         await self.broadcast_players_ready(message, battle_id)
 
         json_message = json.dumps(client_id_message)

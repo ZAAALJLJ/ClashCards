@@ -105,6 +105,12 @@ function BattleResult (){
       } catch (error) {
         console.log('Error adding wins:', error);
       }
+    } else {
+      try {
+        await api.put(`/users/${client_id}/lose`);
+      } catch (error) {
+        console.log('Error adding lose:', error);
+      }
     }
   };
 

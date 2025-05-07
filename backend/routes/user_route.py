@@ -26,8 +26,7 @@ async def get_user_winrate(id: str):
     
     if consistency:
         cons = sum(consistency) / len(consistency)
-    else: avg = 0
-    
+    else: cons = 0
     return {"wins": wins, "lose": lose, "right": right, "wrong": wrong, "finish": finish, "unfinish": unfinish, "avg": avg, "cons": cons}
 
 @user_router.get("/users/{id}/username")
@@ -43,6 +42,19 @@ async def ger_username(id: str):
     username = user.get("username")
     return {"username": username}
     
+@user_router.get("/users/{id}/email")
+async def get_email(id: str):
+    try:
+        user = user_collection.find_one({"_id": ObjectId(id)})
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid ID format")
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    username = user.get("email")
+    return {"email": username}
+    
 @user_router.get("/users/")
 async def get_users():
     users = list_user(user_collection.find())
@@ -51,6 +63,10 @@ async def get_users():
 @user_router.put("/users/{user_id}")
 async def update_card(user_id: str):
     user_collection.update_one({"_id": ObjectId(user_id)}, {"$inc": {"battle-stats.wins": 1}})
+    
+@user_router.put("/users/{user_id}/lose")
+async def update_lose(user_id: str):
+    user_collection.update_one({"_id": ObjectId(user_id)}, {"$inc": {"battle-stats.lose": 1}})
     
 @user_router.put("/users/{user_id}/right")
 async def update_card_right(user_id: str):

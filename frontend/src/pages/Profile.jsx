@@ -10,11 +10,13 @@ import { useParams } from 'react-router-dom';
 import getUsername from '../services/getUsername.js';
 import profilePic from '../assets/profilepic.png'
 import api from '../api.js';
+import getEmail from '../services/getEmail.js';
 
 function Profile (){
     const {user_id} = useParams();
     const [user, setUser] = useState(null);
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const labels = ['WIN', 'ACC', 'PER', 'AVG', 'CON'];
     const fullLabels = ['Winrate', 'Accuracy', 'Perseverance', 'Average Time', 'Consistency'];
@@ -23,37 +25,41 @@ function Profile (){
     useEffect(() => {
         const fetchUserData = async () => {
           try {
-            const fetchedUsername = await getUsername(user_id);
-            setUsername(fetchedUsername || 'Unknown User'); 
-    
+            const [fetchedUsername, fetchedEmail] = await Promise.all([
+                getUsername(user_id),
+                getEmail(user_id)
+            ]);
+
+            setUsername(fetchedUsername || 'Unknown User');
+            setEmail(fetchedEmail || 'No Email');
+      
             const response = await api.get(`/users/${user_id}`);
             const data = response.data;
-           
+      
+            
             if (data) {
-                setUser({
-                    title: data.title || "Legendary Sculptor",
-                    profilePic: data.profilePic || defaultProfilePic,
-                    username: fetchedUsername,
-                    email: data.email,
-                    progressArr: [data.winRate, data.accuracy, data.perseverance, data.avg, data.consistency]
-                });
+              setUser({
+                title: data.title || "Legendary Sculptor",
+                profilePic: data.profilePic || defaultProfilePic,
+                username: fetchedUsername,
+                email: fetchedEmail,
+                progressArr: [data.winRate, data.accuracy, data.perseverance, data.avg, data.consistency]
+              });
             } else {
-                console.error("User data is null or undefined.");
+              console.error("User data is null or undefined.");
             }
-
-            console.log(user.profilePic);
-
+      
           } catch (error) {
             console.error('Error fetching user data:', error);
             setIsLoading(false);
           } finally {
-            setIsLoading(false); 
+            setIsLoading(false);
           }
         };
-    
+      
         fetchUserData();
-    }, [user_id]); 
-    
+      }, [user_id]);
+      
 
     const handleImageError = (e) => {
         e.target.onerror = null;
@@ -113,8 +119,8 @@ function Profile (){
         const user = {
           title: "Legendary Sculptor",
           profilePic: profilePic,
-          username: "sendpulls",
-          email: "rhke3wc20w@smykwb.com",
+          username: username,
+          email: email,
           progressArr: [winRate, accuracy, perseverace, avg, consistency]
         };
       

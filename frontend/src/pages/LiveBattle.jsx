@@ -223,7 +223,7 @@ function LiveBattle (){
     // websocket connection
     useEffect(() => {
 
-        const socket = new WebSocket(`ws://localhost:8000/ws/${battle_id}/${client_id}`); // creates the socket for this specific client
+        const socket = new WebSocket(`ws://localhost:8002/ws/${battle_id}/${client_id}`); // creates the socket for this specific client
 
         // socketRef.current = socket;
         
@@ -232,6 +232,7 @@ function LiveBattle (){
 
             try {
                 const data = JSON.parse(event.data);
+                console.log("ONMESSAGE", data);
 
                 if (data.message === "All players ready") {
                     console.log("ONMESSAGE WORKED");
@@ -257,6 +258,18 @@ function LiveBattle (){
                 if ('ready_clients' in data) {
                     const clients_ready = data.ready_clients;
                     fetchAndSetRankItems(clients_ready);
+                }
+
+                if ('player_count' in data) {
+                    const player_count = data.player_count;
+                    console.log("Player count", player_count);
+                    setPlayerCount(player_count);
+                }
+
+                if ('error' in data) {
+                    const eror = data;
+                    console.log("ERROR", eror);
+                    // change modal
                 }
 
                 
@@ -292,6 +305,7 @@ function LiveBattle (){
 
         setWs(socket); 
 
+        
         return () => {
             socket.close();
         };
