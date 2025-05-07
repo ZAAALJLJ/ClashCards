@@ -7,7 +7,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 
 function CreateFlashcard () {
-    const { studyset_id, userID } = useParams();
+    const { studyset_id, user_id } = useParams();
     const [flashcards, setCards] = useState([]);
     const [flashcard, setCard] = useState({studyset_id: studyset_id, question: '', answer: ''});
     const [questionCount, setQuestionCount] = useState(0);
@@ -199,9 +199,9 @@ function CreateFlashcard () {
         }
     }
 
-
+    // TO FIX
     const goBackToStudyset = () => {
-        navigate(`/studyset/${userID}/${studyset_id}`);
+        navigate(`/studyset/${user_id}/${studyset_id}`);
     };
 
     return (
