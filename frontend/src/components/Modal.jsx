@@ -19,14 +19,34 @@ const Modal = ({
 }) => {
     if (!show) return null;
     const [inputValue, setInputValue] = useState('');
+    const [inputError, setInputError] = useState(false);
+    const [isReady, setIsReady] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (inputField && inputValue.trim()) {
-            onSubmit(inputValue);
-            setInputValue(''); 
-        } else if (!inputField) {
-            onSubmit();
+        if (inputField && !inputValue.trim()) {
+            
+            setInputError(true);
+        } else {
+            
+            setInputError(false);
+            if (inputField) {
+                onSubmit(inputValue);
+                setInputValue('');
+            } else {
+                onSubmit();
+            }
+        }
+    };
+
+    const handleReadyClick = () => {
+        setIsReady(true); 
+        onSubmit(); 
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && inputValue.trim() === '') {
+            e.preventDefault();
         }
     };
 
@@ -35,7 +55,11 @@ const Modal = ({
     return (
         <div 
             className="modal-overlay" 
-            onClick={() => type !== 'confirm' && onClose()} 
+            onClick={(e) => {
+                if (type !== 'confirm' && !e.target.closest('.modal-leave')) {
+                    onClose();
+                }
+            }} 
         >
 
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -44,18 +68,19 @@ const Modal = ({
                     <p key={idx}>{line}</p>
                 ))}
                 {inputField && (
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        placeholder={placeholder || "Enter study set name"} 
-                        value={inputValue}
-                        onChange={(e) => {
-                            setInputValue(e.target.value);
-                            if (onChange) onChange(e.target.value); // Notify parent
-                        }}                        
-                        required
-                    />
-                </form>
+                    <form onSubmit={handleSubmit}>
+                        <input
+                            type="text"
+                            placeholder={placeholder || "Enter study set name"} 
+                            value={inputValue}
+                            onChange={(e) => {
+                                setInputValue(e.target.value);
+                                if (onChange) onChange(e.target.value); // Notify parent
+                            }}     
+                            onKeyDown={handleKeyDown}                   
+                            required
+                        />
+                    </form>
                 )}
 
                 {errorText && (<div className="modal-error-text">{errorText}</div>)}
@@ -75,25 +100,33 @@ const Modal = ({
                            <button className="modal-continue" onClick={onClose}>
                                 {cancelText || 'Cancel'}
                             </button>
-                          <button className="modal-delete" onClick={onSubmit}>
-                            {submitText || 'Delete'}
-                          </button>
+                            <button className="modal-delete" onClick={onSubmit}>
+                                {submitText || 'Delete'}
+                            </button>
                         </>
                     ) : type === 'confirm' ? (
                         <>
-                            <Link to="/" className="modal-leave">
+                            <Link to={`/${client_id}`} className="modal-leave">
                                 Leave
                             </Link>
-                          <button className="modal-submit" onClick={onSubmit}>
-                            {submitText || 'Start'}
-                          </button>
+                            <button 
+                                className={`modal-submit ${isReady ? 'ready' : ''}`} 
+                                onClick={handleReadyClick} 
+                                disabled={isReady}
+                            >
+                                {isReady ? 'Ready' : submitText || 'Start'}
+                            </button>
+
                         </>
                     ) :  (
                         <>
                             <button className="modal-cancel" onClick={onClose}>
                                 {cancelText || 'Cancel'}
                             </button>
-                            <button className="modal-submit" onClick={() => onSubmit(inputValue)}>
+                            <button 
+                              className="modal-submit" 
+                              onClick={() => onSubmit(inputValue)} 
+                            >
                                 {submitText || 'Submit'}
                             </button>
                         </>
