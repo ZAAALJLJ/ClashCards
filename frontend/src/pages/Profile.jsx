@@ -11,6 +11,7 @@ import getUsername from '../services/getUsername.js';
 import profilePic from '../assets/profilepic.png'
 import api from '../api.js';
 import getEmail from '../services/getEmail.js';
+import { progress } from 'framer-motion';
 
 function Profile (){
     const {user_id} = useParams();
@@ -21,6 +22,19 @@ function Profile (){
     const labels = ['WIN', 'ACC', 'PER', 'AVG', 'CON'];
     const fullLabels = ['Winrate', 'Accuracy', 'Perseverance', 'Average Time', 'Consistency'];
     const statsRef = useRef(null);
+    const performanceTitles = {
+        10: "Barely Trying",
+        20: "Rookie in Training",
+        30: "Persistent Learner",
+        40: "Improving Apprentice",
+        50: "Consistent Striver",
+        60: "Resilient Achiever",
+        70: "Reliable Performer",
+        80: "Elite Competitor",
+        90: "Master Strategist",
+        100: "Flashcard Champion"
+      };
+      
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -38,6 +52,9 @@ function Profile (){
       
             
             if (data) {
+                const totalScore = winRate + accuracy + perseverace + avg + consistency;
+                const totalStats = Math.floor(totalScore / 10) * 10;
+                const title = performanceTitles[totalStats];
               setUser({
                 title: data.title || "Legendary Sculptor",
                 profilePic: data.profilePic || defaultProfilePic,
@@ -112,12 +129,17 @@ function Profile (){
 
     // FETCH useEffect
     useEffect(() => {
+                
         fetchWinrate();
     }, [])
 
     useEffect(() => {
+        const totalScore = winRate + accuracy + perseverace + avg + consistency;
+        const totalStats = Math.abs(Math.floor(totalScore / 100)) * 10;
+        const title = performanceTitles[totalStats];
+        console.log("TITULO", totalStats);
         const user = {
-          title: "Legendary Sculptor",
+          title: title,
           profilePic: profilePic,
           username: username,
           email: email,
@@ -130,7 +152,7 @@ function Profile (){
         }, 1000);
       
         return () => clearTimeout(timer);
-    }, [winRate]);
+    }, [winRate, accuracy, perseverace, avg, consistency, profilePic, username, email]);
 
     return (
         <div className="profile-page">
