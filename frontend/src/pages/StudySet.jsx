@@ -11,6 +11,8 @@ import { FaRandom } from 'react-icons/fa';
 
 function StudySet (){
     const { user_id, id } = useParams();
+    const [unshuffled, setUnshuffled] = useState([]);
+    const [isShuffled, setIsShuffled] = useState(false);
     const [flashcards, setCards] = useState([]);
     const [title, setTitle] = useState('');
     const navigate = useNavigate();
@@ -49,6 +51,7 @@ function StudySet (){
             const response = await api.get(`/flashcards/${id}`);
             console.log('Fetched cards:', response.data);
             setCards(response.data);
+            setUnshuffled(response.data);
         } catch(error) {
             console.error('Error fetching cards:', error);            
         }
@@ -74,11 +77,6 @@ function StudySet (){
     // Go to CREATEFLASHCARD
     const goCreateFC = async () => {
         navigate(`/createflashcard/${user_id}/${id}`);
-    }
-
-    // Go to SOLOREVIEW
-    const goSoloReview = async () => {
-        navigate(`/soloreview/${id}`);
     }
 
     // Go to LIVEBATTLE
@@ -150,6 +148,18 @@ function StudySet (){
 
         const shuffleFC = () => {
             console.log('Shuffle button clicked. ');
+            const shuffled = [...unshuffled];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i+1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            if (isShuffled) {
+                setCards(unshuffled);
+            } else {
+                setCards(shuffled);
+            }
+            setIsShuffled(!isShuffled);
+            
         };
 
     return (
@@ -159,7 +169,9 @@ function StudySet (){
                     {title}
                 </div>
                 <div className={`home-buttons ${isMenuOpen ? "show" : ""}`}>
+
                     <button className="btn-home shuffle-btn" onClick={shuffleFC}> 
+
                         <FaRandom className="shuffle-icon" />
                     </button>
                     <button className="btn-home" onClick={goCreateFC}>+ Create Flashcard</button>
