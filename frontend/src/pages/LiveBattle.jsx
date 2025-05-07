@@ -41,6 +41,8 @@ function LiveBattle (){
     const [currentstreak, setcurrentstreak] = useState(0); 
     const [rankOne, setRankOne] = useState();
     const [currentUser, setCurrentUser] = useState('');
+    const [isReady, setIsReady] = useState(false);
+
 
 
     const navigate = useNavigate();
@@ -179,6 +181,7 @@ function LiveBattle (){
     const sendReady = (event) => {
         if (ws) {
             ws.send("ready");
+            setIsReady(true);
         }
     }
 
@@ -220,7 +223,7 @@ function LiveBattle (){
     // websocket connection
     useEffect(() => {
 
-        const socket = new WebSocket(`ws://localhost:8002/ws/${battle_id}/${client_id}`); // creates the socket for this specific client
+        const socket = new WebSocket(`ws://localhost:8000/ws/${battle_id}/${client_id}`); // creates the socket for this specific client
 
         // socketRef.current = socket;
         
@@ -504,6 +507,7 @@ const handleLeaveBattle = () => {
                                 </div>
                             )}
                         </span>
+                        
                         </div>
                         <div className='answer-container'>
                             <form onSubmit={handleSubmit} className="message-form">
@@ -575,6 +579,7 @@ const handleLeaveBattle = () => {
                 bodyText={`${playerCount} player${playerCount !== 1 ? 's' : ''} in lobby.\n You will have limited time to answer all flashcards.  Ready to start?`}
                 cancelText="Cancel"
                 submitText="Ready"
+                client_id={client_id} 
                 type="confirm"
             />
 

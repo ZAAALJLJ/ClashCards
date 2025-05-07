@@ -17,7 +17,8 @@ function StudySet (){
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState(null); 
     const [leaderboardError, setLeaderboardError] = useState(false);
-
+    const [lobbyCodeError, setLobbyCodeError] = useState('');
+    
     // get user for leaderboard highlight
     useEffect(() => {
         const fetchCurrentUser = async () => {
@@ -158,7 +159,7 @@ function StudySet (){
                     {title}
                 </div>
                 <div className={`home-buttons ${isMenuOpen ? "show" : ""}`}>
-                    <button className="btn-home" onClick={shuffleFC}> 
+                    <button className="btn-home shuffle-btn" onClick={shuffleFC}> 
                         <FaRandom className="shuffle-icon" />
                     </button>
                     <button className="btn-home" onClick={goCreateFC}>+ Create Flashcard</button>
@@ -226,6 +227,8 @@ function StudySet (){
                 cancelText="Cancel"
                 submitText="Enter"
                 placeholder="Enter Lobby code"
+                errorText={lobbyCodeError}
+                onChange={(e) => setLobbyCode(e.target.value)}
             />
         </div>
     );
