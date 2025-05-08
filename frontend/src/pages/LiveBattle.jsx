@@ -16,9 +16,8 @@ import getUsername from '../services/getUsername';
 
 function LiveBattle (){
     
-    const { user_id, livebattle_id } = useParams('');
+    const { user_id, livebattle_id, battle_id  } = useParams('');
     const client_id = user_id;
-    const { battle_id } = useParams('');
 
     const title = getStudysetTitle(livebattle_id);
     const flashcards = getCards(livebattle_id);
@@ -29,7 +28,7 @@ function LiveBattle (){
     const [showLeaveModal, setShowLeaveModal] = useState(false);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [timeLeft, setTimeLeft] = useState(180);
-    const totalTime = 20;
+    const totalTime = 30;
     const totalflashcards = flashcards.length;
     const progressTrackerRef = useRef(null);
     const [score, setScore] = useState(0);
@@ -42,6 +41,10 @@ function LiveBattle (){
     const [rankOne, setRankOne] = useState();
     const [currentUser, setCurrentUser] = useState('');
     const [isReady, setIsReady] = useState(false);
+    const [startModalText, setStartModalText] = useState("You will have limited time to answer all flashcards. Ready to start?");
+    const [startModalTitle, setStartModalTitle] = useState("Waiting for Players...");
+    const [isStartModalError, setIsStartModalError] = useState(false);
+    const [isInGame, setIsInGame] = useState(false); 
 
 
 
@@ -269,7 +272,13 @@ function LiveBattle (){
                 if ('error' in data) {
                     const eror = data;
                     console.log("ERROR", eror);
-                    // change modal
+                    if (data.error?.toLowerCase().includes("battle already")) {
+                        setStartModalTitle("Battle Already in Progress");
+                        setStartModalText("This battle has already started. Please try joining another one.");
+                        setIsStartModalError(true);
+                        setShowStartModal(true);
+                    }
+                    return;
                 }
 
                 
@@ -283,7 +292,12 @@ function LiveBattle (){
                 setShowStartModal(false);
                 setTimeLeft(totalTime); 
                 return;
-            }else{
+            } else if (event.data === "battle already in progress") {
+                setStartModalTitle("Battle Already in Progress");
+                setStartModalText("This battle has already started. Please try joining another one.");
+                setIsStartModalError(true);
+                setShowStartModal(true);
+            } else {
                 console.error('Error:', error);  
             }
                    
@@ -584,16 +598,26 @@ const handleLeaveBattle = () => {
             
             <div>
             <Modal
+                key={isStartModalError ? 'error' : 'waiting'}
                 show={showStartModal}
-                onClose={() => {}} 
+                onClose={() => {
+                    if (isStartModalError) navigate(`/${client_id}`);
+                }}
                 onSubmit={() => {
                     // wait until all players are ready
-                    sendReady();
+                    if (!isStartModalError) sendReady();
+                    else navigate(`/${client_id}`);
                 }}
-                title="Waiting for Players..."
-                bodyText={`${playerCount} player${playerCount !== 1 ? 's' : ''} in lobby.\n You will have limited time to answer all flashcards.  Ready to start?`}
-                cancelText="Cancel"
-                submitText="Ready"
+                title={startModalTitle}
+                bodyText={
+                    isStartModalError
+                        ? "This battle has already started. Please try joining another one."
+                        : hasGameStarted
+                        ? "" // Leave body text empty if the game has already started.
+                        : `${playerCount} player${playerCount !== 1 ? 's' : ''} in lobby.\n ${startModalText}`
+                }
+                cancelText={isStartModalError ? null : "Cancel"}
+                submitText={isStartModalError ? "OK" : "Ready"}
                 client_id={client_id} 
                 type="confirm"
             />
