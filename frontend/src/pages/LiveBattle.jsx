@@ -538,6 +538,7 @@ const handleLeaveBattle = () => {
                                                 ? 'Quiz Over!'
                                                 : 'Type your answer here...'
                                           }
+                                        required
                                         className="message-input"
                                         rows={1}
                                         disabled={!hasGameStarted || isTimeUp || isQuizFinished}
