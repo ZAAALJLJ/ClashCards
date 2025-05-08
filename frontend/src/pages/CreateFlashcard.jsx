@@ -115,6 +115,7 @@ function CreateFlashcard () {
             }, 3000);
             console.error('Error adding cards:', error);
         }
+        fetchCards();
     };
 
     // UPDATE cards in db
@@ -152,6 +153,7 @@ function CreateFlashcard () {
     const createdCLicked = (cardData) => {
         console.log("Received from child:", cardData);
         setCard({studyset_id: studyset_id, question: cardData.question, answer: cardData.answer});
+        // card not yet sent to the ba
         setKey({id: cardData.id});
         setUpdate(true);
         setQuestionCount(cardData.question.length);

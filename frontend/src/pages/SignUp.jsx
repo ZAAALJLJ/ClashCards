@@ -73,7 +73,7 @@ function SignUp (){
             setUser({username: '', email: '', password: ''});
             setConfirmPassword('');
             // Navigate to home page with user_id
-            navigate(`/${response.data.user_id}`);
+            navigate(`/`);
         }
     } catch (error) {
         console.error('Error adding user:', error);
