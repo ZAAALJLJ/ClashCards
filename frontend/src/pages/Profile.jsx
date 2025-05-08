@@ -10,50 +10,73 @@ import { useParams } from 'react-router-dom';
 import getUsername from '../services/getUsername.js';
 import profilePic from '../assets/profilepic.png'
 import api from '../api.js';
+import getEmail from '../services/getEmail.js';
+import { progress } from 'framer-motion';
 
 function Profile (){
     const {user_id} = useParams();
     const [user, setUser] = useState(null);
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const labels = ['WIN', 'ACC', 'PER', 'AVG', 'CON'];
     const fullLabels = ['Winrate', 'Accuracy', 'Perseverance', 'Average Time', 'Consistency'];
     const statsRef = useRef(null);
+    const performanceTitles = {
+        10: "Barely Trying",
+        20: "Rookie in Training",
+        30: "Persistent Learner",
+        40: "Improving Apprentice",
+        50: "Consistent Striver",
+        60: "Resilient Achiever",
+        70: "Reliable Performer",
+        80: "Elite Competitor",
+        90: "Master Strategist",
+        100: "Flashcard Champion"
+      };
+      
 
     useEffect(() => {
         const fetchUserData = async () => {
           try {
-            const fetchedUsername = await getUsername(user_id);
-            setUsername(fetchedUsername || 'Unknown User'); 
-    
+            const [fetchedUsername, fetchedEmail] = await Promise.all([
+                getUsername(user_id),
+                getEmail(user_id)
+            ]);
+
+            setUsername(fetchedUsername || 'Unknown User');
+            setEmail(fetchedEmail || 'No Email');
+      
             const response = await api.get(`/users/${user_id}`);
             const data = response.data;
-           
+      
+            
             if (data) {
-                setUser({
-                    title: data.title || "Legendary Sculptor",
-                    profilePic: data.profilePic || defaultProfilePic,
-                    username: fetchedUsername,
-                    email: data.email,
-                    progressArr: [data.winRate, data.accuracy, data.perseverance, data.avg, data.consistency]
-                });
+                const totalScore = winRate + accuracy + perseverace + avg + consistency;
+                const totalStats = Math.floor(totalScore / 10) * 10;
+                const title = performanceTitles[totalStats];
+              setUser({
+                title: data.title || "Legendary Sculptor",
+                profilePic: data.profilePic || defaultProfilePic,
+                username: fetchedUsername,
+                email: fetchedEmail,
+                progressArr: [data.winRate, data.accuracy, data.perseverance, data.avg, data.consistency]
+              });
             } else {
-                console.error("User data is null or undefined.");
+              console.error("User data is null or undefined.");
             }
-
-            console.log(user.profilePic);
-
+      
           } catch (error) {
             console.error('Error fetching user data:', error);
             setIsLoading(false);
           } finally {
-            setIsLoading(false); 
+            setIsLoading(false);
           }
         };
-    
+      
         fetchUserData();
-    }, [user_id]); 
-    
+      }, [user_id]);
+      
 
     const handleImageError = (e) => {
         e.target.onerror = null;
@@ -106,15 +129,20 @@ function Profile (){
 
     // FETCH useEffect
     useEffect(() => {
+                
         fetchWinrate();
     }, [])
 
     useEffect(() => {
+        const totalScore = winRate + accuracy + perseverace + avg + consistency;
+        const totalStats = Math.abs(Math.floor(totalScore / 100)) * 10;
+        const title = performanceTitles[totalStats];
+        console.log("TITULO", totalStats);
         const user = {
-          title: "Legendary Sculptor",
+          title: title,
           profilePic: profilePic,
-          username: "sendpulls",
-          email: "rhke3wc20w@smykwb.com",
+          username: username,
+          email: email,
           progressArr: [winRate, accuracy, perseverace, avg, consistency]
         };
       
@@ -124,7 +152,7 @@ function Profile (){
         }, 1000);
       
         return () => clearTimeout(timer);
-    }, [winRate]);
+    }, [winRate, accuracy, perseverace, avg, consistency, profilePic, username, email]);
 
     return (
         <div className="profile-page">

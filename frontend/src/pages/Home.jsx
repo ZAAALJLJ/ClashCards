@@ -223,7 +223,7 @@ function Home () {
       <div className="content-container">
         <div className="study-card-container">
           {studysets.map(studysets => (
-            <StudySetCard key={studysets.id} userID={user_id} props={studysets}/>
+            <StudySetCard key={studysets.id} userID={user_id} props={studysets} refreshSets = {fetchSets}/>
           ))}
         </div>
         <div className="stats-container">

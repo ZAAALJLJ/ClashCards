@@ -6,8 +6,9 @@ import { useState } from 'react';
 import Modal from './Modal'; 
 import api from '../api';
 
-function StudySetCard({userID, props}) {
+function StudySetCard({userID, props, refreshSets}) {
     const navigate = useNavigate();
+    const [sets, setSets] = useState([])
     const { title } = props;
     
     const [showModal, setShowModal] = useState(false);
@@ -27,11 +28,13 @@ function StudySetCard({userID, props}) {
         setShowModal(false);
         deleteStudyset();
         alert(`Deleted study set: ${title}`); 
+        
     };
 
     const deleteStudyset = async () => {
         try {
             await api.delete(`studysets/${props.id}`)
+            refreshSets();
         } catch (error) {
             console.error('Error deleting studyset:', error);
         }
