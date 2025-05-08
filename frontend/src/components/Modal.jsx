@@ -106,9 +106,11 @@ const Modal = ({
                         </>
                     ) : type === 'confirm' ? (
                         <>
-                            <Link to={`/${client_id}`} className="modal-leave">
-                                Leave
-                            </Link>
+                             {cancelText && (
+                                <Link to={`/${client_id}`} className="modal-leave">
+                                    {cancelText}
+                                </Link>
+                            )}
                             <button 
                                 className={`modal-submit ${isReady ? 'ready' : ''}`} 
                                 onClick={handleReadyClick} 
