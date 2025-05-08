@@ -28,7 +28,7 @@ function LiveBattle (){
     const [showLeaveModal, setShowLeaveModal] = useState(false);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [timeLeft, setTimeLeft] = useState(180);
-    const totalTime = 60;
+    const totalTime = 30;
     const totalflashcards = flashcards.length;
     const progressTrackerRef = useRef(null);
     const [score, setScore] = useState(0);
