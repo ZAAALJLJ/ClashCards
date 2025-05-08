@@ -226,7 +226,7 @@ function LiveBattle (){
     // websocket connection
     useEffect(() => {
 
-        const socket = new WebSocket(`ws://localhost:8000/ws/${battle_id}/${client_id}/${livebattle_id}`); // creates the socket for this specific client
+        const socket = new WebSocket(`ws://localhost:8002/ws/${battle_id}/${client_id}/${livebattle_id}`); // creates the socket for this specific client
 
         // socketRef.current = socket;
         
