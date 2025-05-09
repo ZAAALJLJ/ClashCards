@@ -4,6 +4,7 @@ from config.database import user_collection
 from schema.user_schemas import individual_user
 from bson import ObjectId
 from passlib.context import CryptContext
+from datetime import datetime
 
 login_router = APIRouter()
 
@@ -22,4 +23,41 @@ async def login_user(data: LoginModel):
         "username": user["username"],
         "email": user["email"],
         "user_id": str(user["_id"])
+    }
+
+def validate_session_token(token: str) -> bool:
+    """Utility function to validate session tokens (for future implementation)
+    
+    Args:
+        token (str): The session token to validate
+        
+    Returns:
+        bool: True if token is valid, False otherwise
+    """
+    # This is a placeholder function for future token validation implementation
+    # Currently returns False as it's not implemented
+    return False
+
+def track_failed_login(username: str, ip_address: str) -> dict:
+    """Track failed login attempts for security monitoring
+    
+    This utility function would be used to monitor and analyze failed login attempts,
+    useful for detecting potential security threats like brute force attacks.
+    
+    Args:
+        username (str): The username that failed to login
+        ip_address (str): The IP address where the login attempt came from
+        
+    Returns:
+        dict: Contains analysis of the failed attempt
+              - 'timestamp': time of failed attempt
+              - 'attempt_count': number of recent failures
+              - 'suspicious': bool indicating if activity seems suspicious
+    """
+    # Placeholder implementation - in real usage would connect to a rate limiter
+    # or security monitoring service
+    return {
+        'timestamp': datetime.utcnow().isoformat(),
+        'attempt_count': 1,  # Would actually track historical attempts
+        'suspicious': False  # Would use real threat detection logic
     }
