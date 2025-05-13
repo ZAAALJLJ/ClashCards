@@ -89,8 +89,10 @@ This runs both the frontend and backend concurrently.
 
 ## 💖 Acknowledgment
 
-We would like to extend our heartfelt thanks to **Ms. Fatima Marie P. Agdon, MSCS**, our dedicated course instructor, for her invaluable guidance, support, and encouragement throughout the development of this project. Her passion for teaching and her approachable nature created an environment that fostered both learning and creativity.
+<div align="justify">
+We would like to extend our heartfelt thanks to <b>Ms. Fatima Marie P. Agdon, MSCS</b>, our dedicated course instructor, for her invaluable guidance, support, and encouragement throughout the development of this project. Her passion for teaching and her approachable nature created an environment that fostered both learning and creativity.
 
-Ms. Agdon’s well-known love for all things pink isn't just a style—it’s a reflection of her vibrant personality, warmth, and positivity. Just like her favorite color, she brings energy and brightness into the classroom, making each session not only educational but also uplifting.
+Ms. Agdon's well-known love for all things pink isn't just a style—it's a reflection of her vibrant personality, warmth, and positivity. Just like her favorite color, she brings energy and brightness into the classroom, making each session not only educational but also uplifting.
 
-Thank you, Ma’am, for inspiring us and making this journey both meaningful and memorable. 💗
+Thank you, Ma'am, for inspiring us and making this journey both meaningful and memorable.💗
+</div>
