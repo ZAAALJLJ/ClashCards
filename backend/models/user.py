@@ -5,7 +5,7 @@ from datetime import datetime
 
 class Credentials(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
-    email: EmailStr # change to 254
+    email: EmailStr 
     password: str = Field(..., min_length=6)
     hashed_password: str = ''
     
