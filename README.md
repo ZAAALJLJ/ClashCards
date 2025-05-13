@@ -42,17 +42,17 @@ This runs both the frontend and backend concurrently.
 ### 🔐 User Authentication
 
 **Step 1:** User must sign up (if they don't have an account)  
-*Insert image here*
+![Sign Up](images/signup.png)
 
 **Step 2:** User must log in  
-*Insert image here*
+![Log in](images/login.png)
 
 ### 🗂️ Creating Study Set
 
 **Step 1:** Click the **+Flashcard Set** button  
 **Step 2:** Enter the Study Set name and click the **Create** button  
-*Insert image here*  
-*Insert image here*
+![Create](images/studysetcreate.png)  
+![Create](images/studysetcreated.png) 
 
 ### 📝 Creating FlashCard
 
