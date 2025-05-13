@@ -6,7 +6,7 @@ Clashcards aims to create a  web-based platform that will make learning fun, int
 
 
 
-## Installation
+## ⚙️ Installation
 
 1. Clone the repository
 
@@ -36,9 +36,10 @@ npm start
 This runs both the frontend and backend concurrently.
 
 
-## Usage Instruction
 
-### User Authentication
+## 📘 Usage Instruction
+
+### 🔐 User Authentication
 
 **Step 1:** User must sign up (if they don't have an account)  
 *Insert image here*
@@ -46,21 +47,21 @@ This runs both the frontend and backend concurrently.
 **Step 2:** User must log in  
 *Insert image here*
 
-### Creating Study Set
+### 🗂️ Creating Study Set
 
 **Step 1:** Click the **+Flashcard Set** button  
 **Step 2:** Enter the Study Set name and click the **Create** button  
 *Insert image here*  
 *Insert image here*
 
-### Creating FlashCard
+### 📝 Creating FlashCard
 
 **Step 1:** Click the created Study Set  
 **Step 2:** Click the **+Create FlashCard** button  
 **Step 3:** Fill in the fields for the question and answer, then click **Save**  
 *Insert image here*
 
-### Live Battle
+### ⚔️ Live Battle
 
 **Step 1:** Pick a Flashcard Set  
 **Step 2:** Click the **Battle** button  
@@ -69,3 +70,27 @@ This runs both the frontend and backend concurrently.
 
 **Step 4:** Click **Ready** and wait for the other player to join  
 *Insert image here*
+
+
+
+## 👥 Team Members
+
+- Agres, Zyrach Adrian A.  
+- Campued, Maryflor L.  
+- Medrano, Jian Klievert P.  
+- Mendoza, Jofether S.  
+- Montenegro, Ciavel Anby P.
+
+## 👩‍🏫 Course Instructor
+
+- Ms. Fatima Marie P. Agdon, MSCS
+
+
+
+## 💖 Acknowledgment
+
+We would like to extend our heartfelt thanks to **Ms. Fatima Marie P. Agdon, MSCS**, our dedicated course instructor, for her invaluable guidance, support, and encouragement throughout the development of this project. Her passion for teaching and her approachable nature created an environment that fostered both learning and creativity.
+
+Ms. Agdon’s well-known love for all things pink isn't just a style—it’s a reflection of her vibrant personality, warmth, and positivity. Just like her favorite color, she brings energy and brightness into the classroom, making each session not only educational but also uplifting.
+
+Thank you, Ma’am, for inspiring us and making this journey both meaningful and memorable. 💗
