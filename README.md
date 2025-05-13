@@ -59,17 +59,21 @@ This runs both the frontend and backend concurrently.
 **Step 1:** Click the created Study Set  
 **Step 2:** Click the **+Create FlashCard** button  
 **Step 3:** Fill in the fields for the question and answer, then click **Save**  
-*Insert image here*
+![Create Flashdard](images/flashcardcreate.png) 
+![Save Flashcard](images/flashcardsave.png) 
 
 ### ⚔️ Live Battle
 
 **Step 1:** Pick a Flashcard Set  
 **Step 2:** Click the **Battle** button  
 **Step 3:** Enter the Lobby Code  
-*Insert image here*
+![Lobby Code](images/lobbycode.png) 
 
 **Step 4:** Click **Ready** and wait for the other player to join  
-*Insert image here*
+![Waiting](images/livebattle.png)
+
+
+These are some necessary steps for using the system.
 
 
 
