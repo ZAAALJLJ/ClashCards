@@ -34,3 +34,38 @@ npm start
 ```  
 
 This runs both the frontend and backend concurrently.
+
+
+## Usage Instruction
+
+### User Authentication
+
+**Step 1:** User must sign up (if they don't have an account)  
+*Insert image here*
+
+**Step 2:** User must log in  
+*Insert image here*
+
+### Creating Study Set
+
+**Step 1:** Click the **+Flashcard Set** button  
+**Step 2:** Enter the Study Set name and click the **Create** button  
+*Insert image here*  
+*Insert image here*
+
+### Creating FlashCard
+
+**Step 1:** Click the created Study Set  
+**Step 2:** Click the **+Create FlashCard** button  
+**Step 3:** Fill in the fields for the question and answer, then click **Save**  
+*Insert image here*
+
+### Live Battle
+
+**Step 1:** Pick a Flashcard Set  
+**Step 2:** Click the **Battle** button  
+**Step 3:** Enter the Lobby Code  
+*Insert image here*
+
+**Step 4:** Click **Ready** and wait for the other player to join  
+*Insert image here*
