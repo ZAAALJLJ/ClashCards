@@ -90,8 +90,58 @@ async def add_time(user_id: str, time: int = Query(...)):
   
 @user_router.put("/users/{user_id}/consistency")
 async def add_correct(user_id: str, correct: float = Query(...)):
-    user_collection.find_one_and_update({"_id": ObjectId(user_id)}, {"$push": {"battle-stats.consistency": correct}}, return_document=True)
-  
+    user_collection.find_one_and_update({"_id": ObjectId(user_id)}, {"$push": {"battle-stats.consistency": correct}})
+
+def calculate_performance_score(wins: int, right_answers: int, consistency: list, avg_time: list) -> dict:
+    """Calculate a user's overall performance score based on various metrics
+    
+    This utility function computes a weighted performance score that could be used
+    for future features like matchmaking or leaderboards. Does not affect any
+    existing functionality as it's just a calculation helper.
+    
+    Args:
+        wins (int): Number of battle wins
+        right_answers (int): Number of correct answers
+        consistency (list): List of consistency scores
+        avg_time (list): List of average response times
+        
+    Returns:
+        dict: Performance metrics including:
+              - 'overall_score': weighted combination of all metrics
+              - 'accuracy_rating': score based on right answers
+              - 'speed_rating': score based on response times
+              - 'consistency_rating': score based on consistency
+    """
+    # Calculate component scores (all normalized to 0-100 scale)
+    win_score = min(100, wins * 5)  # Cap at 100
+    
+    accuracy_rating = (right_answers / (right_answers + 1)) * 100  # Avoid div by 0
+    
+    consistency_rating = 0
+    if consistency:
+        consistency_rating = sum(consistency) / len(consistency)
+    
+    speed_rating = 0
+    if avg_time:
+        # Convert time scores to 0-100 scale where lower times = higher scores
+        speed_scores = [max(0, 100 - (t / 10)) for t in avg_time]
+        speed_rating = sum(speed_scores) / len(speed_scores)
+    
+    # Calculate weighted overall score
+    overall_score = (
+        win_score * 0.3 +          # 30% weight for wins
+        accuracy_rating * 0.3 +     # 30% weight for accuracy
+        consistency_rating * 0.2 +   # 20% weight for consistency
+        speed_rating * 0.2          # 20% weight for speed
+    )
+    
+    return {
+        'overall_score': round(overall_score, 2),
+        'accuracy_rating': round(accuracy_rating, 2),
+        'speed_rating': round(speed_rating, 2),
+        'consistency_rating': round(consistency_rating, 2)
+    }
+
 @user_router.get("/userss/")
 async def update_users():
     for user in user_collection.find():
