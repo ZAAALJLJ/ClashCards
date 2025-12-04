@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from "react"
 
+// Base WebSocket URL (ws:// for local HTTP, wss:// for HTTPS in production)
+const WS_BASE = import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8002';
+
 function Test () {
     const [message, setMessage] = useState(''); // setting the message for the form
     const [messages, setMessages] = useState([]); // storing the array of messages
@@ -10,7 +13,7 @@ function Test () {
    */
 
     useEffect(() => {
-        const socket = new WebSocket('ws://localhost:8002/ws'); // creates the socket for this specific client
+        const socket = new WebSocket(`${WS_BASE}/ws`); // creates the socket for this specific client
         // socketRef.current = socket;
         
         socket.onmessage = (event) => {

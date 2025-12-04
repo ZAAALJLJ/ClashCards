@@ -29,11 +29,11 @@ This installs:
 
 3. Start the Application
 
- ```bash
+```bash
 npm start
 ```  
 
-This runs both the frontend and backend concurrently.
+This runs both the frontend and backend concurrently (FastAPI on http://localhost:8002, Vite on http://localhost:5173) so the API and websocket URLs the app expects are available.
 
 
 

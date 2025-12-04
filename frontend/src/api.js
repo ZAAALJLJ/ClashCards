@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+// Use environment variable for API base URL so it works locally and in deployment.
+// Vite exposes variables prefixed with VITE_ via import.meta.env.
 const api = axios.create({
-    baseURL: 'http://localhost:8002',
+    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8002',
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'

@@ -13,7 +13,8 @@ import { getVisibleIndices } from '../utils/progressHelpers';
 import api from '../api.js';
 import getUsername from '../services/getUsername';
 
-
+// Base WebSocket URL (ws:// for local HTTP, wss:// for HTTPS in production)
+const WS_BASE = import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8002';
 function LiveBattle (){
     
     const { user_id, livebattle_id, battle_id  } = useParams('');
@@ -225,8 +226,8 @@ function LiveBattle (){
 
     // websocket connection
     useEffect(() => {
-
-        const socket = new WebSocket(`ws://localhost:8002/ws/${battle_id}/${client_id}/${livebattle_id}`); // creates the socket for this specific client
+    
+        const socket = new WebSocket(`${WS_BASE}/ws/${battle_id}/${client_id}/${livebattle_id}`); // creates the socket for this specific client
 
         // socketRef.current = socket;
         
