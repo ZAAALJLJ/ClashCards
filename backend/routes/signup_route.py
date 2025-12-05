@@ -28,8 +28,15 @@ async def create_user(user: User, response: Response):
     if user_collection.find_one({"email": user.credentials.email}):
         raise HTTPException(status_code=400, detail="Email already registered")
     
-    # Hash the password
-    user.credentials.set_password(user.credentials.password)
+    # Ensure password is a string and hash it
+    password = user.credentials.password
+    if not password:
+        raise HTTPException(status_code=400, detail="Password is required")
+    if not isinstance(password, str):
+        raise HTTPException(status_code=400, detail=f"Password must be a string, got {type(password)}")
+    if len(password.encode('utf-8')) > 72:
+        raise HTTPException(status_code=400, detail="Password cannot be longer than 72 bytes")
+    user.credentials.set_password(password)
     
     user_data = {
         "username": user.credentials.username,
