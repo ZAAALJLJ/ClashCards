@@ -32,7 +32,8 @@ async def update_card(id: str, card: Flashcard):
     flashcard_collection.find_one_and_update({"_id": ObjectId(id)}, {"$set": dict(card)})
     return {"message": "Flashcard updated successfully"}
     
-@router.delete("/flashcards/{id}")
+@router.delete("/flashcards/{id}/")
 async def delete_card(id: str):
     flashcard_collection.find_one_and_delete({"_id": ObjectId(id)})
+    return {"message": "Flashcard deleted successfully"}
     
