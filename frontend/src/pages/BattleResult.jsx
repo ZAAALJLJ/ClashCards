@@ -63,13 +63,14 @@ function BattleResult (){
   }, [score, client_id, players]);
 
   useEffect(() => {
-    if (rankOne) {
+    if (rankOne && client_id && studyset_id) {
       console.log('Rank 1:', rankOne);
+      console.log('Client ID:', client_id);
       console.log('Studyset ID:', studyset_id);
       updateWinner();
       updateWins();
     }
-  }, [rankOne]);
+  }, [rankOne, client_id, studyset_id]);
 
   if (score === undefined || totalQuestions === undefined) {
     return (
@@ -86,10 +87,10 @@ function BattleResult (){
   const updateWinner = async () => {
     console.log("Rankone", rankOne);
     console.log("Client", client_id);
-    if (rankOne == client_id) {
+    if (rankOne === client_id) {
       try {
-        await api.put(`/studysets/${studyset_id}/add-winner?name=${rankOne}`);
-        setRankOne(null);
+        const winnerUsername = await getUsername(rankOne);
+        await api.put(`/studysets/${studyset_id}/add-winner?name=${winnerUsername}`);
       } catch (error) {
           console.error('Error adding winner:', error);
       }      
@@ -98,18 +99,20 @@ function BattleResult (){
 
   // UPDATE WINS
   const updateWins = async () => {
-    if (rankOne == client_id) {
+    console.log('updateWins called - rankOne:', rankOne, 'client_id:', client_id, 'comparison:', rankOne === client_id);
+    if (String(rankOne) === String(client_id)) {
       try {
-        await api.put(`/users/${client_id}/`);
-        console.log("UPDATED");
+        await api.put(`/users/${client_id}`);
+        console.log("Win added successfully");
       } catch (error) {
-        console.log('Error adding wins:', error);
+        console.error('Error adding wins:', error);
       }
     } else {
       try {
         await api.put(`/users/${client_id}/lose`);
+        console.log("Lose added successfully");
       } catch (error) {
-        console.log('Error adding lose:', error);
+        console.error('Error adding lose:', error);
       }
     }
   };

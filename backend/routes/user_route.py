@@ -63,6 +63,7 @@ async def get_users():
 @user_router.put("/users/{user_id}")
 async def update_card(user_id: str):
     user_collection.update_one({"_id": ObjectId(user_id)}, {"$inc": {"battle-stats.wins": 1}})
+    return {"message": "Win added successfully"}
     
 @user_router.put("/users/{user_id}/lose")
 async def update_lose(user_id: str):
