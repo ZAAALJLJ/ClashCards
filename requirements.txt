@@ -1,6 +1,7 @@
 fastapi
-uvicorn
+uvicorn[standard]
 pymongo[srv]
 passlib[bcrypt]
 bcrypt
 pydantic[email]
+websockets
