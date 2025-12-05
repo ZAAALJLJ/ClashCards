@@ -1,9 +1,7 @@
 from typing import Optional, List
 from pydantic import BaseModel, EmailStr, Field, validator
-from passlib.context import CryptContext
+import bcrypt
 from datetime import datetime
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class Credentials(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
@@ -25,14 +23,21 @@ class Credentials(BaseModel):
         # Ensure password is a string and handle edge cases
         if not isinstance(password, str):
             raise ValueError(f"Password must be a string, got {type(password)}")
-        if len(password.encode('utf-8')) > 72:
-            raise ValueError("Password cannot be longer than 72 bytes")
-        self.hashed_password = pwd_context.hash(password)
+        # Encode to bytes and truncate if necessary (bcrypt limit is 72 bytes)
+        password_bytes = password.encode('utf-8')
+        if len(password_bytes) > 72:
+            password_bytes = password_bytes[:72]
+        # Generate salt and hash
+        salt = bcrypt.gensalt()
+        self.hashed_password = bcrypt.hashpw(password_bytes, salt).decode('utf-8')
         
     def verify_password(self, password: str) -> bool:
         if not self.hashed_password:
             return False
-        return pwd_context.verify(password, self.hashed_password)
+        password_bytes = password.encode('utf-8')
+        if len(password_bytes) > 72:
+            password_bytes = password_bytes[:72]
+        return bcrypt.checkpw(password_bytes, self.hashed_password.encode('utf-8'))
     
 class BattleStats(BaseModel):
     wins: int = Field(default=0, ge=0)

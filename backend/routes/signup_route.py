@@ -3,12 +3,9 @@ from models.user import User
 from config.database import user_collection
 from schema.user_schemas import list_user, individual_user
 from bson import ObjectId
-from passlib.context import CryptContext
 from fastapi.middleware.cors import CORSMiddleware
 
 signup_router = APIRouter()
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated='auto')
 
 @signup_router.get("/signup/")
 async def get_users():
